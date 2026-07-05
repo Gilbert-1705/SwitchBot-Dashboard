@@ -1,0 +1,25 @@
+send_text:
+  name: Send Text
+  description: Sends custom text to the SwitchBot Weather Station.
+  fields:
+    text:
+      name: Text
+      description: Text to display
+      required: true
+      example: "Hallo Welt"
+
+refresh:
+  name: Refresh Dashboard
+  description: Refresh the dashboard.
+  
+preview:
+  name: Preview Dashboard
+  description: Preview a dashboard layout.
+  fields:
+    items:
+      name: Items
+      description: List of dashboard items.
+      required: false
+      example:
+        - icon: "🌤"
+          value: "24°C"
