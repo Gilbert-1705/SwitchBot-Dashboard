@@ -2,10 +2,10 @@
   "domain": "switchbot_dashboard",
   "name": "SwitchBot Dashboard",
   "version": "0.0.1",
-  "documentation": "",
+  "documentation": "https://github.com/Gilbert-1705/SwitchBot-Dashboard",
   "requirements": [],
   "codeowners": [
-    "@jan"
+    "@Gilbert-1705"
   ],
   "iot_class": "cloud_polling"
 }

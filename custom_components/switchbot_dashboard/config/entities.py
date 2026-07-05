@@ -1,6 +1,6 @@
 class Entities:
 
-    WEATHER_TEMPERATURE = "Tempertaursensor"
+    WEATHER_TEMPERATURE = "Temperatursensor"
     WEATHER_TREND = "Trendsensor"
 
     POWER = "Stromsensor"

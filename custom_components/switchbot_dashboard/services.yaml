@@ -15,11 +15,3 @@ refresh:
 preview:
   name: Preview Dashboard
   description: Preview a dashboard layout.
-  fields:
-    items:
-      name: Items
-      description: List of dashboard items.
-      required: false
-      example:
-        - icon: "🌤"
-          value: "24°C"
