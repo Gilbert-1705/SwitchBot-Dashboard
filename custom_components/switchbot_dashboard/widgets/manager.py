@@ -1,13 +1,22 @@
 from .config import WIDGETS
+from .config_models import (
+    EntityWidgetConfig,
+    WidgetConfig,
+    WindowWidgetConfig,
+)
 from .door import DoorWidget
-from .weather import WeatherWidget
 from .entity import EntityWidget
+from .weather import WeatherWidget
+from .window import WindowWidget
+from .waste import WasteWidget
 
 
 WIDGET_TYPES = {
     "weather": WeatherWidget,
     "entity": EntityWidget,
     "door": DoorWidget,
+    "window": WindowWidget,
+    "waste": WasteWidget,
 }
 
 
@@ -22,28 +31,43 @@ class WidgetManager:
 
         for cfg in WIDGETS:
 
-            widget_cls = WIDGET_TYPES.get(cfg["type"])
+            widget_cls = WIDGET_TYPES.get(cfg.type)
 
             if widget_cls is None:
                 continue
 
-            if widget_cls.requires_config:
+            # Widgets ohne Konfiguration
+            if not widget_cls.requires_config:
+                widgets.append(widget_cls(self.hass))
+                continue
 
+            # Fenster-Widget
+            if isinstance(cfg, WindowWidgetConfig):
                 widgets.append(
                     widget_cls(
                         hass=self.hass,
-                        entity=cfg["entity"],
-                        icon=cfg["icon"],
-                        formatter=cfg.get("formatter", ""),
-                        priority=cfg.get("priority", 100),
+                        entities=cfg.entities,
+                        priority=cfg.priority,
                     )
                 )
+                continue
 
-            else:
-
+            # Normales Entity-Widget
+            if isinstance(cfg, EntityWidgetConfig):
                 widgets.append(
-                    widget_cls(self.hass)
+                    widget_cls(
+                        hass=self.hass,
+                        entity=cfg.entity,
+                        icon=cfg.icon,
+                        formatter=cfg.formatter,
+                        priority=cfg.priority,
+                    )
                 )
+                continue
+
+            raise TypeError(
+                f"Unsupported widget config: {type(cfg).__name__}"
+            )
 
         return sorted(
             widgets,
