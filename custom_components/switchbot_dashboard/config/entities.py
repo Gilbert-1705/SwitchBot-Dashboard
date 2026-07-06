@@ -7,7 +7,7 @@ class Entities:
 
     DOOR = "SmartLock"
 
-    BALCONY_LIVING = "Balkontür 1"
-    BALCONY_DINING = "BAlkontür 2"
+    WINDOW_1 = "Balkontür 1"
+    WINDOW_2 = "BAlkontür 2"
 
     WASTE = "Müllsensor"
