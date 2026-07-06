@@ -17,3 +17,5 @@ class Icons:
     CLOSED = "●"
 
     WARNING = "!"
+
+    WASTE = "🗑"

@@ -18,3 +18,18 @@ and this project follows Semantic Versioning.
 - Preview service
 - Config models
 - Icon abstraction
+
+
+## [0.1.1] - 2026-07-06
+
+### Added
+
+- Waste collection widget with automatic upcoming collection detection.
+- Window widget supporting multiple configured entities.
+- Typed widget configuration using dataclasses.
+
+### Changed
+
+- Refactored widget manager to use typed configuration objects.
+- Simplified widget configuration handling.
+- Improved project structure and maintainability.

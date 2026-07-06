@@ -1,0 +1,85 @@
+from datetime import date
+import logging
+
+from .base import BaseWidget, DashboardItem
+from ..config.entities import Entities
+from ..icons import Icons
+
+_LOGGER = logging.getLogger(__name__)
+
+WASTE_TYPES = {
+    "Restabfall": "Rest",
+    "Gelber Sack": "Gelb",
+    "Papier": "Papier",
+    "Bioabfall": "Bio",
+}
+
+
+class WasteWidget(BaseWidget):
+
+    requires_config = False
+
+    def __init__(self, hass):
+        super().__init__(hass)
+        self.priority = 400
+
+    def render(self):
+
+        state = self.hass.states.get(Entities.WASTE)
+
+        if state is None:
+            return None
+
+        today = date.today()
+
+        next_date = None
+        waste_type = None
+
+        for key, value in state.attributes.items():
+
+            try:
+                current = date.fromisoformat(key)
+            except ValueError:
+                continue
+
+            if current < today:
+                continue
+
+            if next_date is None or current < next_date:
+                next_date = current
+                waste_type = value
+
+        if next_date is None or waste_type is None:
+            return None
+
+        days = (next_date - today).days
+
+        if days > 3:
+            return None
+
+        parts = [
+            WASTE_TYPES.get(item.strip(), item.strip())
+            for item in waste_type.split(",")
+        ]
+
+        waste_text = "+".join(parts)
+
+        if days == 0:
+            value = f"{waste_text} Heute"
+        elif days == 1:
+            value = f"{waste_text} Morgen"
+        else:
+            value = f"{waste_text} {days}T"
+
+        _LOGGER.debug(
+            "Next waste: %s (%s days) -> %s",
+            next_date,
+            days,
+            waste_text,
+        )
+
+        return DashboardItem(
+            icon=Icons.WASTE,
+            value=value,
+            priority=self.priority,
+        )
