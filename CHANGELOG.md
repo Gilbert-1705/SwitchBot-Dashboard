@@ -76,3 +76,26 @@ and this project follows Semantic Versioning.
   the SwitchBot firmware as preferred line-break position).
 - Window widget collapses three or more open rooms to "Wohnen+2".
 - Calendar widget truncates long event names ("Max Muste…").
+
+
+## [0.4.0] - 2026-07-12
+
+### Added
+
+- YAML widget configuration: widgets are configured in
+  configuration.yaml under `switchbot_dashboard.widgets`, no code
+  changes required. The Python config remains as fallback.
+- Configuration validation with helpful error messages naming widget
+  position, type and field, including suggestions for available options.
+- Widget registry (`register_widget_type`) — custom widgets get
+  configuration parsing and validation for free.
+- Formatter registry (`FormatterFactory.register`) for custom formatters.
+- `max_items` option to control how many widgets are displayed.
+- Full widget reference in docs/configuration.md incl. custom widget
+  and custom formatter guides.
+
+### Changed
+
+- All widgets are fully parameterized (door, weather and waste accept
+  entity options); widget manager builds widgets generically from
+  config dataclass fields.

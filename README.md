@@ -45,16 +45,25 @@ The priority engine collects all visible items, keeps the five most important on
 
 ## Configuration
 
-Widgets are configured as typed dataclasses in `custom_components/switchbot_dashboard/widgets/config.py`; entity IDs live in `custom_components/switchbot_dashboard/config/entities.py`. The integration itself is configured via YAML:
+Everything is configured in `configuration.yaml` — see the [full widget reference](docs/configuration.md):
 
 ```yaml
 switchbot_dashboard:
   token: !secret switchbot_token
   secret: !secret switchbot_secret
   device_id: !secret switchbot_device_id
+  max_items: 5
+  widgets:
+    - type: weather
+    - type: waste
+      entity: sensor.muellkalender
+    - type: calendar
+      entity: calendar.geburtstage
+      icon: "🎂"
+      days: 1
 ```
 
-Services: `switchbot_dashboard.preview` renders and sends the dashboard, `switchbot_dashboard.send_text` sends raw text.
+Custom widgets and formatters can be registered via the [widget API](docs/configuration.md#custom-widgets). Services: `switchbot_dashboard.preview` renders and sends the dashboard, `switchbot_dashboard.send_text` sends raw text.
 
 ## Display notes
 

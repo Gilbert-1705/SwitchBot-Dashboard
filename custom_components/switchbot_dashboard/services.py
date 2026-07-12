@@ -2,7 +2,7 @@ from .dashboard import DashboardRenderer
 from .widgets.manager import WidgetManager
 from homeassistant.core import HomeAssistant, ServiceCall
 
-from .const import DOMAIN
+from .const import CONF_MAX_ITEMS, CONF_WIDGETS, DOMAIN, MAX_ITEMS
 
 
 async def async_send_text(call: ServiceCall):
@@ -21,8 +21,15 @@ async def async_refresh(call: ServiceCall):
 
 async def async_preview(call: ServiceCall):
 
-    renderer = DashboardRenderer()
-    manager = WidgetManager(call.hass)
+    data = call.hass.data[DOMAIN]
+
+    renderer = DashboardRenderer(
+        max_items=data.get(CONF_MAX_ITEMS, MAX_ITEMS),
+    )
+    manager = WidgetManager(
+        call.hass,
+        configs=data.get(CONF_WIDGETS),
+    )
 
     for widget in manager.widgets():
 
