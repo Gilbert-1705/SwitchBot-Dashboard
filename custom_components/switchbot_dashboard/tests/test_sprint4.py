@@ -116,7 +116,7 @@ class PresenceWidgetTest(unittest.TestCase):
 
 class FuelWidgetTest(unittest.TestCase):
 
-    def _render(self, level, price, min_level=15.0, max_price=1.75):
+    def _render(self, level, price, min_level=20.0, max_price=1.75):
         hass = FakeHass({
             "tank": FakeState(level),
             "preis": FakeState(price),
@@ -137,18 +137,29 @@ class FuelWidgetTest(unittest.TestCase):
 
     def test_low_level_and_bad_price_shows_level(self):
         item = self._render("12", "1.95")
-        self.assertEqual(item.value, "12L")
+        self.assertEqual(item.value, "12%")
 
     def test_good_price_and_half_full_hints(self):
-        item = self._render("25", "1.60")
+        item = self._render("35", "1.60")
         self.assertEqual(item.value, "1.60")
         self.assertEqual(item.importance, 40)
 
     def test_full_tank_and_bad_price_hidden(self):
-        self.assertIsNone(self._render("50", "1.95"))
+        self.assertIsNone(self._render("90", "1.95"))
 
     def test_full_tank_and_good_price_hidden(self):
-        self.assertIsNone(self._render("50", "1.60"))
+        self.assertIsNone(self._render("90", "1.60"))
+
+    def test_liters_unit(self):
+        hass = FakeHass({"tank": FakeState("10")})
+        widget = FuelWidget(
+            hass,
+            level_entity="tank",
+            price_entity="preis",
+            min_level=15.0,
+            unit="l",
+        )
+        self.assertEqual(widget.render().value, "10L")
 
     def test_missing_sensors_hidden(self):
         hass = FakeHass({})
@@ -162,7 +173,7 @@ class FuelWidgetTest(unittest.TestCase):
         widget = FuelWidget(
             hass, level_entity="tank", price_entity="preis"
         )
-        self.assertEqual(widget.render().value, "10L")
+        self.assertEqual(widget.render().value, "10%")
 
 
 class RendererShorteningTest(unittest.TestCase):

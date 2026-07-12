@@ -70,6 +70,7 @@ class WidgetManager:
                         price_entity=cfg.price_entity,
                         min_level=cfg.min_level,
                         max_price=cfg.max_price,
+                        unit=cfg.unit,
                         priority=cfg.priority,
                     )
                 )
