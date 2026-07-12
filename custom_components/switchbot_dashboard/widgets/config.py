@@ -1,6 +1,11 @@
 from ..config.entities import Entities
 from ..icons import Icons
-from .config_models import EntityWidgetConfig, WidgetConfig, WindowWidgetConfig
+from .config_models import (
+    CalendarWidgetConfig,
+    EntityWidgetConfig,
+    WidgetConfig,
+    WindowWidgetConfig,
+)
 
 WIDGETS = [
     WidgetConfig(
@@ -29,5 +34,33 @@ WIDGETS = [
     WidgetConfig(
         type="waste",
         priority=400,
+    ),
+    CalendarWidgetConfig(
+        type="calendar",
+        entity=Entities.CALENDAR_BIRTHDAYS,
+        icon=Icons.BIRTHDAY,
+        days=1,
+        priority=500,
+    ),
+    CalendarWidgetConfig(
+        type="calendar",
+        entity=Entities.CALENDAR_APPOINTMENTS,
+        icon=Icons.CALENDAR,
+        days=1,
+        priority=510,
+    ),
+    CalendarWidgetConfig(
+        type="calendar",
+        entity=Entities.CALENDAR_HOLIDAYS,
+        icon=Icons.HOLIDAY,
+        days=1,
+        priority=520,
+    ),
+    CalendarWidgetConfig(
+        type="calendar",
+        entity=Entities.CALENDAR_VACATION,
+        icon=Icons.VACATION,
+        days=3,
+        priority=530,
     ),
 ]

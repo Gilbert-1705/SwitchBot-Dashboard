@@ -21,3 +21,8 @@ class Icons:
     WASTE = "🗑"
 
     DOOR = "🚪"
+
+    BIRTHDAY = "🎂"
+    CALENDAR = "📅"
+    HOLIDAY = "★"
+    VACATION = "✈"
