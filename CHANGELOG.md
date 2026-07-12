@@ -114,3 +114,19 @@ and this project follows Semantic Versioning.
   checks, HACS validation.
 - hacs.json and manifest metadata (version, issue tracker) for HACS.
 - README installation guide (HACS + manual).
+
+
+## [1.0.0] - 2026-07-12
+
+First stable release. 🎉
+
+A context-aware e-paper dashboard for the SwitchBot Weather Station:
+instead of permanently showing every sensor, the priority engine picks
+the five most relevant pieces of information for this moment.
+
+- 12 widgets: weather, entity, door, window, waste, calendar, presence,
+  fuel, appliance, solar, battery, ev
+- Priority engine with situational importance per widget
+- YAML configuration with validation and helpful error messages
+- Public API for custom widgets and formatters
+- 81 unit tests, CI, HACS-ready
