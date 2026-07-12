@@ -5,6 +5,12 @@ from dataclasses import dataclass
 class WidgetConfig:
     type: str
     priority: int = 100
+    # widgets sharing a group render at most one item (the most
+    # important one), e.g. door + window + alarm as group "haus"
+    group: str = ""
+    # day context: time windows that raise/lower importance,
+    # e.g. [{"between": ["06:00", "09:00"], "add": 20}]
+    boost: list | None = None
 
 
 @dataclass(slots=True)

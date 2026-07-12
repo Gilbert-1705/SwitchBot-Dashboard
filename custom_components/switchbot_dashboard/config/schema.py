@@ -96,6 +96,9 @@ def _coerce(prefix: str, key: str, value, field_type):
     if key == "conditions":
         return _validate_conditions(prefix, value)
 
+    if key == "boost":
+        return _validate_boost(prefix, value)
+
     choices = CHOICES.get(key)
 
     if choices is not None and value not in choices:
@@ -150,6 +153,59 @@ def _coerce(prefix: str, key: str, value, field_type):
                 f"{prefix}: '{key}' must be a string (got '{value}')"
             )
         return value
+
+    return value
+
+
+def _validate_boost(prefix: str, value):
+
+    if not isinstance(value, list) or not value:
+        raise ConfigError(
+            f"{prefix}: 'boost' must be a non-empty list"
+        )
+
+    for index, window in enumerate(value, start=1):
+
+        where = f"{prefix}, boost {index}"
+
+        if not isinstance(window, dict):
+            raise ConfigError(f"{where}: expected a mapping")
+
+        for key in window:
+            if key not in ("between", "add"):
+                raise ConfigError(
+                    f"{where}: unknown option '{key}'. "
+                    "Available: between, add"
+                )
+
+        between = window.get("between")
+
+        if (
+            not isinstance(between, (list, tuple))
+            or len(between) != 2
+        ):
+            raise ConfigError(
+                f"{where}: 'between' must be a list of two times, "
+                "e.g. [\"06:00\", \"09:00\"]"
+            )
+
+        for moment in between:
+            try:
+                hours, minutes = str(moment).split(":")
+                if not (0 <= int(hours) <= 23 and 0 <= int(minutes) <= 59):
+                    raise ValueError
+            except ValueError:
+                raise ConfigError(
+                    f"{where}: invalid time '{moment}' (use HH:MM)"
+                )
+
+        try:
+            int(window.get("add"))
+        except (ValueError, TypeError):
+            raise ConfigError(
+                f"{where}: 'add' must be a number "
+                f"(got '{window.get('add')}')"
+            )
 
     return value
 

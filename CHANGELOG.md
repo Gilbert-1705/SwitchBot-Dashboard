@@ -216,3 +216,20 @@ Smart Alerts. ⚠️
 
 - Appliance done ramp caps at 95 instead of 100: waiting laundry is
   loud but never triggers alarm mode.
+
+
+## [2.2.0] - 2026-07-12
+
+Groups & day context. 🕰
+
+### Added
+
+- Widget groups: widgets sharing a `group` render at most one item -
+  the most important one. Door, window and an alert as group "haus"
+  show one line instead of three.
+- Day context via `boost`: per-widget time windows that raise or
+  lower importance ("waste matters in the morning", "don't nag at
+  night"). Windows may wrap over midnight, multiple windows add up,
+  boosts are capped below alarm level.
+- Both are base options on every widget (incl. custom widgets) and
+  fully validated.

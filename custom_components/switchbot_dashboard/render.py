@@ -3,6 +3,7 @@
 from datetime import datetime
 
 from .const import MAX_ITEMS, PREVIEW_ENTITY_ID, QUIET_MAX_ITEMS
+from .context import active_boost, apply_boost
 from .dashboard import DashboardRenderer
 from .widgets.manager import WidgetManager
 
@@ -22,7 +23,22 @@ def render_dashboard(
     manager = WidgetManager(hass, configs=configs)
 
     for widget in manager.widgets():
-        renderer.add(widget.render())
+
+        item = widget.render()
+
+        if item is None:
+            continue
+
+        # pipeline options: groups and day context (see manager)
+        if widget.group:
+            item.group = widget.group
+
+        if widget.boost:
+            delta = active_boost(widget.boost)
+            if delta:
+                item.importance = apply_boost(item.importance, delta)
+
+        renderer.add(item)
 
     return renderer.render()
 

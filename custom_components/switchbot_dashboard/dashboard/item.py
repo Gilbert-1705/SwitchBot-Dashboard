@@ -9,11 +9,15 @@ class DashboardItem:
     importance -> how important is the information RIGHT NOW?
                   The dashboard only shows the most important items.
 
-    Importance scale:
-        100     warning, act immediately (e.g. locked but open)
-        70-90   relevant today (waste today, birthday, door open)
-        40-60   relevant soon (event in 2 days, window open)
-        10-30   background info (power draw, everything closed)
+    Importance bands (constants in const.py):
+        100     alarm, displaces everything non-essential
+        60-99   always shown (within max_items)
+        21-59   normal, competes for slots
+        0-20    background info, quiet days only
+
+    group -> items sharing a group compete: only the most
+    important item of a group is displayed (e.g. door, window and
+    alarm of the "haus" group render as one line).
     """
 
     icon: str
@@ -24,3 +28,5 @@ class DashboardItem:
     importance: int = 0
 
     visible: bool = True
+
+    group: str = ""

@@ -72,10 +72,11 @@
 - [x] Zeitbedingungen (duration: Tür seit 10 min offen)
 - [x] Alarmmodus: importance 100 verdrängt Normal- und Füller-Items
 
-## v2.2 Gruppen & Tageskontext
+## v2.2 ✅ Gruppen & Tageskontext
 
-- [ ] Widget-Gruppen: nur das wichtigste Item pro Gruppe
-- [ ] Tageskontext: zeitabhängige Importance-Modifikatoren
+- [x] Widget-Gruppen: group-Option, nur das wichtigste Item pro Gruppe
+- [x] Tageskontext: boost-Option (Zeitfenster + add, auch negativ,
+      über Mitternacht, gedeckelt unter Alarm-Level)
 
 ## v3.x Plattform
 

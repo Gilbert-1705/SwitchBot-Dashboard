@@ -124,7 +124,31 @@ Configuration errors are reported in the Home Assistant log with widget position
 
 ## Widget reference
 
-All widgets accept `priority` (display order, lower = further left).
+All widgets accept these base options:
+
+- `priority` — display order (lower = further left)
+- `group` — widgets sharing a group render at most one item, the
+  most important one. Example: door, window and an alert as group
+  `haus` show `⚠ Haus` instead of three separate lines.
+- `boost` — day context: time windows that raise or lower the
+  importance. Windows may wrap over midnight; multiple active
+  windows add up; boosts never reach alarm level (capped at 99).
+
+```yaml
+- type: waste
+  entity: sensor.muellkalender
+  boost:
+    - between: ["06:00", "09:00"]   # waste matters in the morning
+      add: 20
+
+- type: appliance
+  name: WM
+  running_entity: sensor.wm_status
+  done_entity: input_boolean.wm_fertig
+  boost:
+    - between: ["22:00", "06:00"]   # don't nag at night
+      add: -30
+```
 
 ### weather
 

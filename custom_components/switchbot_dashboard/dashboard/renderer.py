@@ -47,9 +47,21 @@ class DashboardRenderer:
 
         visible = sorted(
             (item for item in self.items if item.visible),
-            key=lambda item: item.importance,
-            reverse=True,
+            key=lambda item: (-item.importance, item.priority),
         )
+
+        # Groups: only the most important item per group survives
+        seen_groups: set[str] = set()
+        deduped = []
+
+        for item in visible:
+            if item.group:
+                if item.group in seen_groups:
+                    continue
+                seen_groups.add(item.group)
+            deduped.append(item)
+
+        visible = deduped
 
         # Alarm mode: a warning displaces everything non-essential
         if any(

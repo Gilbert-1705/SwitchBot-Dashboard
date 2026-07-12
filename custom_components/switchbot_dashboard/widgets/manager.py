@@ -39,13 +39,16 @@ class WidgetManager:
             key=lambda widget: widget.priority,
         )
 
+    # base options handled by the pipeline, not by the widgets
+    PIPELINE_FIELDS = ("type", "group", "boost")
+
     def _build(self, widget_cls, cfg):
 
         kwargs = {}
 
         for field in dataclass_fields(cfg):
 
-            if field.name == "type":
+            if field.name in self.PIPELINE_FIELDS:
                 continue
 
             value = getattr(cfg, field.name)
@@ -56,4 +59,10 @@ class WidgetManager:
 
             kwargs[field.name] = value
 
-        return widget_cls(hass=self.hass, **kwargs)
+        widget = widget_cls(hass=self.hass, **kwargs)
+
+        # attach pipeline options as attributes (see render.py)
+        widget.group = getattr(cfg, "group", "")
+        widget.boost = getattr(cfg, "boost", None)
+
+        return widget
