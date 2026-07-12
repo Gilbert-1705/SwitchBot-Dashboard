@@ -59,6 +59,36 @@ class PresenceWidgetConfig(WidgetConfig):
 
 
 @dataclass(slots=True)
+class SolarWidgetConfig(WidgetConfig):
+    entity: str = ""
+    icon: str = ""
+    # Erzeugung (W), ab der das Widget erscheint
+    min_power: float = 50.0
+
+
+@dataclass(slots=True)
+class BatteryWidgetConfig(WidgetConfig):
+    entity: str = ""
+    # Kurzname, z.B. "eBike" oder "Speicher"
+    name: str = ""
+    icon: str = ""
+    # Ladestand (%), ab dem der Akku wichtig wird
+    min_level: float = 20.0
+    # auch bei gutem Ladestand als Hintergrundinfo zeigen
+    show_always: bool = False
+
+
+@dataclass(slots=True)
+class EvWidgetConfig(WidgetConfig):
+    soc_entity: str = ""
+    charging_entity: str = ""
+    name: str = ""
+    icon: str = ""
+    min_level: float = 20.0
+    show_always: bool = False
+
+
+@dataclass(slots=True)
 class ApplianceWidgetConfig(WidgetConfig):
     # Kurzname fürs Display, z.B. "WM" oder "TR"
     name: str = ""

@@ -15,14 +15,18 @@ Siehe docs/configuration.md.
 from dataclasses import dataclass
 
 from .appliance import ApplianceWidget
+from .battery import BatteryWidget
 from .calendar import CalendarWidget
 from .config_models import (
     ApplianceWidgetConfig,
+    BatteryWidgetConfig,
     CalendarWidgetConfig,
     DoorWidgetConfig,
     EntityWidgetConfig,
+    EvWidgetConfig,
     FuelWidgetConfig,
     PresenceWidgetConfig,
+    SolarWidgetConfig,
     WasteWidgetConfig,
     WeatherWidgetConfig,
     WidgetConfig,
@@ -30,8 +34,10 @@ from .config_models import (
 )
 from .door import DoorWidget
 from .entity import EntityWidget
+from .ev import EvWidget
 from .fuel import FuelWidget
 from .presence import PresenceWidget
+from .solar import SolarWidget
 from .waste import WasteWidget
 from .weather import WeatherWidget
 from .window import WindowWidget
@@ -98,4 +104,16 @@ register_widget_type(
 register_widget_type(
     "appliance", ApplianceWidget, ApplianceWidgetConfig,
     required=("name", "running_entity", "done_entity"),
+)
+register_widget_type(
+    "solar", SolarWidget, SolarWidgetConfig,
+    required=("entity",),
+)
+register_widget_type(
+    "battery", BatteryWidget, BatteryWidgetConfig,
+    required=("entity",),
+)
+register_widget_type(
+    "ev", EvWidget, EvWidgetConfig,
+    required=("soc_entity",),
 )
