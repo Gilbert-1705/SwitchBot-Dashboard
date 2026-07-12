@@ -52,3 +52,22 @@ and this project follows Semantic Versioning.
 - Window widget 2.0: shows room names ("○ Wohnen", "○ Wohnen+Essen")
   instead of a counter.
 - Entity widget logs via `logging` instead of `print`.
+
+
+## [0.3.0] - 2026-07-12
+
+### Added
+
+- Presence widget: shows who is home ("⌂ Jan+Anna"), an empty house
+  ("⌂ Leer") is ranked more important than an occupied one.
+- Fuel widget: tank level in liters plus refuel recommendation based on
+  configurable level and price thresholds ("⛽ Tanken 1.65").
+- Text helpers (`shorten`, `join_names`) for the narrow e-paper display.
+
+### Changed
+
+- Renderer caps every widget value at 14 characters as a safety net;
+  separator between widgets is a named constant (three spaces, used by
+  the SwitchBot firmware as preferred line-break position).
+- Window widget collapses three or more open rooms to "Wohnen+2".
+- Calendar widget truncates long event names ("Max Muste…").

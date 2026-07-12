@@ -3,11 +3,15 @@ from .config import WIDGETS
 from .config_models import (
     CalendarWidgetConfig,
     EntityWidgetConfig,
+    FuelWidgetConfig,
+    PresenceWidgetConfig,
     WidgetConfig,
     WindowWidgetConfig,
 )
 from .door import DoorWidget
 from .entity import EntityWidget
+from .fuel import FuelWidget
+from .presence import PresenceWidget
 from .weather import WeatherWidget
 from .window import WindowWidget
 from .waste import WasteWidget
@@ -20,6 +24,8 @@ WIDGET_TYPES = {
     "window": WindowWidget,
     "waste": WasteWidget,
     "calendar": CalendarWidget,
+    "presence": PresenceWidget,
+    "fuel": FuelWidget,
 }
 
 
@@ -44,12 +50,26 @@ class WidgetManager:
                 widgets.append(widget_cls(self.hass))
                 continue
 
-            # Fenster-Widget
-            if isinstance(cfg, WindowWidgetConfig):
+            # Fenster- und Anwesenheits-Widget
+            if isinstance(cfg, (WindowWidgetConfig, PresenceWidgetConfig)):
                 widgets.append(
                     widget_cls(
                         hass=self.hass,
                         entities=cfg.entities,
+                        priority=cfg.priority,
+                    )
+                )
+                continue
+
+            # Tank-Widget
+            if isinstance(cfg, FuelWidgetConfig):
+                widgets.append(
+                    widget_cls(
+                        hass=self.hass,
+                        level_entity=cfg.level_entity,
+                        price_entity=cfg.price_entity,
+                        min_level=cfg.min_level,
+                        max_price=cfg.max_price,
                         priority=cfg.priority,
                     )
                 )

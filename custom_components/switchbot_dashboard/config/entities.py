@@ -17,3 +17,9 @@ class Entities:
     CALENDAR_APPOINTMENTS = "Terminkalender"
     CALENDAR_HOLIDAYS = "Feiertagskalender"
     CALENDAR_VACATION = "Urlaubskalender"
+
+    PERSON_1 = "Person 1"
+    PERSON_2 = "Person 2"
+
+    CAR_FUEL_LEVEL = "Tankfüllstand"
+    FUEL_PRICE = "Spritpreis"
