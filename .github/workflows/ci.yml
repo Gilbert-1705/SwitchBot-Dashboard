@@ -45,6 +45,10 @@ jobs:
 
   hacs:
     runs-on: ubuntu-latest
+    # Nicht blockierend: hacs/action meldet aktuell auch bei validen
+    # Dateien Fehler (hacs/integration#5252); brands erfordert einen
+    # separaten PR im home-assistant/brands-Repo
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -52,3 +56,4 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
+          ignore: brands
