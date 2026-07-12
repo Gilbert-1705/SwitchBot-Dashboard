@@ -5,12 +5,12 @@ CHARGING_STATES = ("on", "true", "charging", "laedt", "lädt")
 
 
 class EvWidget(BaseWidget):
-    """Elektroauto: Ladestand mit Ladestatus.
+    """Electric vehicle: state of charge with charging status.
 
-        🔌 64% lädt    Auto lädt gerade
-        🔌 12%         Ladestand niedrig -> anstecken (wichtig)
-        🔌 82%         mit show_always: Hintergrundinfo
-        (nichts)       Ladestand ok und show_always aus
+        🔌 64% lädt    currently charging
+        🔌 12%         SoC low -> plug in (important)
+        🔌 82%         with show_always: background info
+        (nothing)      SoC ok and show_always off
     """
 
     def __init__(
@@ -57,7 +57,7 @@ class EvWidget(BaseWidget):
             )
 
         if soc <= self.min_level:
-            # niedriger Ladestand ohne Ladevorgang: anstecken!
+            # low SoC and not charging: plug in!
             return DashboardItem(
                 icon=self.icon,
                 value=base,

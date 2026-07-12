@@ -8,12 +8,12 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class WidgetManager:
-    """Baut Widgets aus (Python- oder YAML-) Konfigurationen.
+    """Builds widgets from (Python or YAML) configurations.
 
-    Die Config-Dataclasses spiegeln die Konstruktor-Parameter der
-    Widgets: jedes Feld (außer ``type``) wird als Keyword-Argument
-    durchgereicht. Neue Widget-Typen brauchen deshalb keinen
-    Manager-Code, nur einen Eintrag in der Registry.
+    The config dataclasses mirror the widget constructor parameters:
+    every field (except ``type``) is passed through as a keyword
+    argument. New widget types therefore need no manager code, only
+    a registry entry.
     """
 
     def __init__(self, hass, configs=None):
@@ -50,7 +50,7 @@ class WidgetManager:
 
             value = getattr(cfg, field.name)
 
-            # None/leer heißt: Default des Widgets verwenden
+            # None/empty means: use the widget's default
             if value is None or value == "":
                 continue
 

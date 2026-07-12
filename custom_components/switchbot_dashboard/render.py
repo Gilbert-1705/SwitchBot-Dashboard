@@ -1,4 +1,4 @@
-"""Gemeinsame Render-Funktion für Services und Updater."""
+"""Shared render function for services and updater."""
 
 from datetime import datetime
 
@@ -8,7 +8,7 @@ from .widgets.manager import WidgetManager
 
 
 def render_dashboard(hass, configs=None, max_items: int = MAX_ITEMS) -> str:
-    """Rendert alle Widgets zu einer Displayzeile."""
+    """Renders all widgets into one display line."""
 
     renderer = DashboardRenderer(max_items=max_items)
     manager = WidgetManager(hass, configs=configs)
@@ -20,11 +20,11 @@ def render_dashboard(hass, configs=None, max_items: int = MAX_ITEMS) -> str:
 
 
 def publish_preview(hass, text: str, sent: bool):
-    """Spiegelt die gerenderte Zeile als lokale Entity.
+    """Mirrors the rendered line as a local entity.
 
-    ``sensor.switchbot_dashboard`` zeigt in Home Assistant immer den
-    aktuellen Displayinhalt — praktisch für Entwicklung (History,
-    Dashboards, Template-Debugging) ohne aufs E-Paper zu schauen.
+    ``sensor.switchbot_dashboard`` always shows the current display
+    content in Home Assistant — handy for development (history,
+    dashboards, template debugging) without looking at the e-paper.
     """
 
     hass.states.async_set(

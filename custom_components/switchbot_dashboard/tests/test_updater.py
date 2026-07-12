@@ -1,6 +1,6 @@
-"""Tests für den event-getriebenen Refresh (Updater).
+"""Tests for the event-driven refresh (updater).
 
-Ausführen (vom Repo-Root):
+Run (from the repo root):
 
     python3 custom_components/switchbot_dashboard/tests/test_updater.py
 """
@@ -8,7 +8,7 @@ Ausführen (vom Repo-Root):
 import asyncio
 import unittest
 
-import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
+import helpers  # noqa: F401  (stubs HA/aiohttp, sets sys.path)
 from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.updater import (
@@ -138,8 +138,8 @@ class UpdaterTest(unittest.TestCase):
 
         asyncio.run(updater.async_refresh())
 
-        # Direkt danach ändert sich der Wert: Rate-Limit greift,
-        # es wird ein Retry geplant statt gesendet
+        # The value changes right after: the rate limit kicks in,
+        # a retry is scheduled instead of sending
         state.state = "500"
         asyncio.run(updater.async_refresh())
 
@@ -162,7 +162,7 @@ class UpdaterTest(unittest.TestCase):
 
 
 class PreviewEntityTest(unittest.TestCase):
-    """Lokale Preview-Entity sensor.switchbot_dashboard."""
+    """Local preview entity sensor.switchbot_dashboard."""
 
     PREVIEW = "sensor.switchbot_dashboard"
 
@@ -200,7 +200,7 @@ class PreviewEntityTest(unittest.TestCase):
 
         asyncio.run(updater.async_refresh())
         hass.set_states.clear()
-        asyncio.run(updater.async_refresh())  # unverändert -> kein Send
+        asyncio.run(updater.async_refresh())  # unchanged -> no send
 
         state, attrs = hass.set_states[self.PREVIEW]
         self.assertEqual(state, "P 380W")

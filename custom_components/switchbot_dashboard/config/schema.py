@@ -1,12 +1,11 @@
-"""Validierung und Parsing der YAML-Widget-Konfiguration.
+"""Validation and parsing of the YAML widget configuration.
 
-Übersetzt die ``widgets:``-Liste aus configuration.yaml in die
-typisierten Config-Dataclasses. Die erlaubten Schlüssel und ihre
-Typen werden direkt aus den Dataclasses abgeleitet, Pflichtfelder
-kommen aus der Widget-Registry — eigene Widgets werden dadurch
-automatisch mitvalidiert.
+Translates the ``widgets:`` list from configuration.yaml into the
+typed config dataclasses. Allowed keys and their types are derived
+directly from the dataclasses, required fields come from the widget
+registry — custom widgets are validated automatically.
 
-Fehlermeldungen nennen immer Widget-Position, Typ und Feld.
+Error messages always name widget position, type and field.
 """
 
 from dataclasses import fields as dataclass_fields
@@ -15,10 +14,10 @@ from ..widgets.registry import get_registration, registered_types
 
 
 class ConfigError(Exception):
-    """Verständlicher Konfigurationsfehler."""
+    """Human-readable configuration error."""
 
 
-# Feldwerte mit eingeschränktem Wertebereich
+# Field values with a restricted set of choices
 CHOICES = {
     "mode": ("rooms", "state"),
     "unit": ("%", "l"),
@@ -26,7 +25,7 @@ CHOICES = {
 
 
 def build_widget_configs(raw: list) -> list:
-    """Baut aus der YAML-Liste die Config-Dataclasses."""
+    """Builds the config dataclasses from the YAML list."""
 
     configs = []
 

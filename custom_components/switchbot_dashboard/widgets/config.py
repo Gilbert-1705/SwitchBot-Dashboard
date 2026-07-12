@@ -28,8 +28,8 @@ WIDGETS = [
             Entities.WINDOW_1: "Balkon 1",
             Entities.WINDOW_2: "Balkon 2",
         },
-        # Beide Türen gehören zum selben Balkon - nur der Zustand
-        # zählt: "○ Offen", "○ Gekippt", "○ Offen+Gekippt"
+        # Both doors belong to the same balcony - only the state
+        # matters: "○ Offen", "○ Gekippt", "○ Offen+Gekippt"
         mode="state",
         priority=250,
     ),

@@ -1,18 +1,18 @@
-"""Event-getriebener Dashboard-Refresh.
+"""Event-driven dashboard refresh.
 
-Beobachtet alle konfigurierten Entities und aktualisiert das Display
-automatisch. Drei Schutzmechanismen halten API und E-Paper ruhig:
+Watches all configured entities and updates the display
+automatically. Three safeguards keep the API and the e-paper calm:
 
-1. Debounce: Zustandsänderungen werden 5 s gesammelt, bevor
-   gerendert wird (Türkontakt flattert, Schleudergang pausiert, ...).
-2. Änderungserkennung: gesendet wird nur, wenn sich die gerenderte
-   Zeile tatsächlich geändert hat.
-3. Rate-Limit: höchstens ein API-Call pro Minute (SwitchBot-
-   Empfehlung); frühere Trigger werden auf den nächsten erlaubten
-   Zeitpunkt verschoben.
+1. Debounce: state changes are collected for 5 s before rendering
+   (door contacts flap, spin cycles pause, ...).
+2. Change detection: only send when the rendered line actually
+   changed.
+3. Rate limit: at most one API call per minute (SwitchBot
+   recommendation); earlier triggers are deferred to the next
+   allowed moment.
 
-Ein periodischer Refresh (Standard: 15 min) fängt Änderungen ohne
-State-Event ab, z. B. den Datumswechsel für Müll- und Kalender-Widgets.
+A periodic refresh (default: 15 min) catches changes without a
+state event, e.g. the date rollover for waste and calendar widgets.
 """
 
 import logging
@@ -37,10 +37,10 @@ PERIODIC_REFRESH = 900
 
 
 def collect_entities(configs) -> set[str]:
-    """Sammelt alle Entity-IDs aus den Widget-Konfigurationen.
+    """Collects all entity IDs from the widget configurations.
 
-    Konvention: Felder, die ``entity`` heißen oder auf ``_entity``
-    enden, sowie die Schlüssel von ``entities``-Mappings.
+    Convention: fields named ``entity`` or ending in ``_entity``,
+    plus the keys of ``entities`` mappings.
     """
 
     entities: set[str] = set()
@@ -83,8 +83,8 @@ class DashboardUpdater:
         self.debounce = debounce
         self.min_interval = min_interval
         self.interval = interval
-        # dry_run: nur die lokale Preview-Entity aktualisieren,
-        # nie die SwitchBot-API aufrufen (Entwicklung)
+        # dry_run: only update the local preview entity, never
+        # call the SwitchBot API (development)
         self.dry_run = dry_run
 
         self._last_text: str | None = None
@@ -115,8 +115,8 @@ class DashboardUpdater:
             )
         )
 
-        # Initiales Rendern - erst wenn HA vollständig gestartet ist,
-        # damit alle Entities verfügbar sind
+        # Initial render - wait until HA has fully started so
+        # all entities are available
         if self.hass.is_running:
             await self.async_refresh()
         else:
@@ -156,7 +156,7 @@ class DashboardUpdater:
     # -- Refresh --------------------------------------------------
 
     def should_send(self, text: str, force: bool = False) -> bool:
-        """Nur senden, wenn sich der Displayinhalt geändert hat."""
+        """Only send when the display content changed."""
 
         if force:
             return True
@@ -164,7 +164,7 @@ class DashboardUpdater:
         return text != self._last_text
 
     def seconds_until_allowed(self) -> float:
-        """Verbleibende Rate-Limit-Wartezeit (0 = sofort erlaubt)."""
+        """Remaining rate-limit wait time (0 = allowed now)."""
 
         elapsed = time.monotonic() - self._last_send
 
@@ -204,7 +204,7 @@ class DashboardUpdater:
     def _schedule_retry(self, wait: float):
 
         if self._cancel_retry is not None:
-            return  # bereits geplant
+            return  # already scheduled
 
         _LOGGER.debug("Rate limit: retry in %.0fs", wait)
 

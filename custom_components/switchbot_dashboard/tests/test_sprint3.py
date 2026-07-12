@@ -1,6 +1,6 @@
-"""Tests für Sprint 3: Smart Door, Calendar, Window 2.0, Priority Engine.
+"""Tests for sprint 3: smart door, calendar, window 2.0, priority engine.
 
-Ausführen (vom Repo-Root):
+Run (from the repo root):
 
     python3 custom_components/switchbot_dashboard/tests/test_sprint3.py
 """
@@ -8,7 +8,7 @@ Ausführen (vom Repo-Root):
 import unittest
 from datetime import date, timedelta
 
-import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
+import helpers  # noqa: F401  (stubs HA/aiohttp, sets sys.path)
 from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.config.entities import Entities

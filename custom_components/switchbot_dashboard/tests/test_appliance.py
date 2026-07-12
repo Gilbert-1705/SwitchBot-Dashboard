@@ -1,13 +1,13 @@
-"""Tests für das Haushaltsgeräte-Widget (Waschmaschine/Trockner).
+"""Tests for the appliance widget (washer/dryer).
 
-Ausführen (vom Repo-Root):
+Run (from the repo root):
 
     python3 custom_components/switchbot_dashboard/tests/test_appliance.py
 """
 
 import unittest
 
-import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
+import helpers  # noqa: F401  (stubs HA/aiohttp, sets sys.path)
 from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.icons import Icons
@@ -43,7 +43,7 @@ class ApplianceWidgetTest(unittest.TestCase):
         self.assertEqual(item.importance, 15)
 
     def test_new_cycle_overrides_stale_done_flag(self):
-        # Läuft die Maschine wieder, ist der alte Reminder obsolet
+        # A new cycle makes the old done reminder obsolete
         item = self._render("run", "on")
         self.assertEqual(item.value, "WM läuft")
 

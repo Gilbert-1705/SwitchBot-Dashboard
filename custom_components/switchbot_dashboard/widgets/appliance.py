@@ -1,23 +1,23 @@
 from .base import BaseWidget, DashboardItem
 
-# Zustände werden case-insensitive verglichen; Gerätesensoren
-# liefern z.B. "run", "pause", "stop"
+# States are compared case-insensitively; appliance sensors
+# report e.g. "run", "pause", "stop"
 RUNNING_STATES = ("on", "true", "running", "run")
 PAUSED_STATES = ("pause", "paused")
 
 
 class ApplianceWidget(BaseWidget):
-    """Haushaltsgerät (Waschmaschine, Trockner, ...) mit Fertig-Flag.
+    """Household appliance (washer, dryer, ...) with a done flag.
 
-        🧺 WM Fertig    Gerät ist durchgelaufen, noch nicht geleert
-        🧺 WM läuft     Gerät läuft gerade (Hintergrundinfo)
-        🧺 WM Pause     Gerät pausiert (Hintergrundinfo)
-        (nichts)        Gerät ist aus und geleert
+        🧺 WM Fertig    cycle finished, not emptied yet
+        🧺 WM läuft     currently running (background info)
+        🧺 WM Pause     paused (background info)
+        (nothing)       idle and emptied
 
-    Da der Türstatus nicht abfragbar ist, ist das Fertig-Flag ein
-    input_boolean in Home Assistant: eine Automation setzt es, wenn
-    das Gerät fertig ist; zurückgesetzt wird es manuell — per App,
-    Dashboard oder Display-Button (Matter). Siehe docs/examples.md.
+    Since the appliance door state is not available, the done flag
+    is an input_boolean in Home Assistant: an automation sets it when
+    the cycle finishes; it is reset manually — via app, dashboard or
+    a display button (Matter). See docs/examples.md.
     """
 
     def __init__(
@@ -41,7 +41,7 @@ class ApplianceWidget(BaseWidget):
 
         running = self._state(self.running_entity)
 
-        # Läuft die Maschine wieder, ist der alte Reminder obsolet
+        # A new cycle makes the old done reminder obsolete
         if running in RUNNING_STATES:
             return DashboardItem(
                 icon=self.icon,

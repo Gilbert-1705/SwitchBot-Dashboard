@@ -22,15 +22,15 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass: HomeAssistant, config: dict):
-    """YAML-Setup (configuration.yaml)."""
+    """YAML setup (configuration.yaml)."""
 
     conf = config.get(DOMAIN)
 
     if conf is None:
         return True
 
-    # Widgets aus configuration.yaml; ohne "widgets:"-Block gilt
-    # weiterhin die Python-Konfiguration (widgets/config.py)
+    # Widgets from configuration.yaml; without a "widgets:" block
+    # the Python configuration (widgets/config.py) still applies
     widgets_conf = conf.get(CONF_WIDGETS)
     widgets = None
 
@@ -54,7 +54,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 
 async def async_setup_entry(hass: HomeAssistant, entry):
-    """UI-Setup (Config Flow). Widgets kommen weiterhin aus YAML."""
+    """UI setup (config flow). Widgets still come from YAML."""
 
     data = hass.data.get(DOMAIN, {})
 

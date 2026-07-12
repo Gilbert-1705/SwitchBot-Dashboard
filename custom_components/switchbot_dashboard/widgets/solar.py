@@ -4,13 +4,13 @@ from ..icons import Icons
 
 
 class SolarWidget(BaseWidget):
-    """PV-Erzeugung.
+    """PV production.
 
-        ☀ 3.2kW    Anlage produziert (Hintergrundinfo)
-        (nichts)   nachts bzw. unter min_power
+        ☀ 3.2kW    producing (background info)
+        (nothing)  at night or below min_power
 
-    Erzeugung ist nie dringend — das Widget füllt freie Plätze,
-    verdrängt aber nichts Wichtiges.
+    Production is never urgent — the widget fills free slots but
+    never displaces anything important.
     """
 
     def __init__(

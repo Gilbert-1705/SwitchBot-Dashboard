@@ -6,10 +6,9 @@ from .item import DashboardItem
 class DashboardRenderer:
     """Collects, prioritizes and renders dashboard items.
 
-    Priority Engine: Aus allen sichtbaren Items werden die
-    ``max_items`` wichtigsten (höchste importance) ausgewählt und
-    anschließend in ihrer konfigurierten Reihenfolge (priority)
-    angezeigt.
+    Priority engine: from all visible items the ``max_items`` most
+    important ones (highest importance) are selected and then shown
+    in their configured order (priority).
     """
 
     def __init__(self, max_items: int = MAX_ITEMS):
@@ -22,7 +21,7 @@ class DashboardRenderer:
             self.items.append(item)
 
     def select(self) -> list[DashboardItem]:
-        """Wählt die wichtigsten Items aus."""
+        """Selects the most important items."""
 
         visible = [
             item

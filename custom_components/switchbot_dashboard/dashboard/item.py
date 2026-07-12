@@ -3,17 +3,17 @@ from dataclasses import dataclass
 
 @dataclass(slots=True)
 class DashboardItem:
-    """Ein renderbares Dashboard-Element.
+    """A renderable dashboard element.
 
-    priority   -> Anzeigereihenfolge (kleiner = weiter vorne)
-    importance -> Wie wichtig ist die Information JETZT?
-                  Das Dashboard zeigt nur die wichtigsten Items.
+    priority   -> display order (lower = further left)
+    importance -> how important is the information RIGHT NOW?
+                  The dashboard only shows the most important items.
 
-    Importance-Skala:
-        100     Warnung, sofort handeln (z.B. abgeschlossen, aber offen)
-        70-90   heute relevant (Müll heute, Geburtstag, Tür offen)
-        40-60   demnächst relevant (Termin in 2 Tagen, Fenster offen)
-        10-30   Hintergrundinformation (Stromverbrauch, alles zu)
+    Importance scale:
+        100     warning, act immediately (e.g. locked but open)
+        70-90   relevant today (waste today, birthday, door open)
+        40-60   relevant soon (event in 2 days, window open)
+        10-30   background info (power draw, everything closed)
     """
 
     icon: str

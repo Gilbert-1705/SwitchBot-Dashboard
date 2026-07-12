@@ -1,13 +1,13 @@
-"""Tests für Sprint 4: Textkürzung, Anwesenheit, Tank-Widget.
+"""Tests for sprint 4: text shortening, presence, fuel widget.
 
-Ausführen (vom Repo-Root):
+Run (from the repo root):
 
     python3 custom_components/switchbot_dashboard/tests/test_sprint4.py
 """
 
 import unittest
 
-import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
+import helpers  # noqa: F401  (stubs HA/aiohttp, sets sys.path)
 from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.icons import Icons
@@ -47,11 +47,11 @@ class TextTest(unittest.TestCase):
         self.assertEqual(cap_bytes("abcdef", 3), "abc")
 
     def test_cap_bytes_does_not_split_multibyte_chars(self):
-        # 🎂 belegt 4 Bytes: bei Limit 5 darf kein kaputtes
-        # Halbzeichen entstehen
+        # 🎂 takes 4 bytes: a limit of 5 must not produce a
+        # broken half character
         result = cap_bytes("a🎂b", 5)
         self.assertEqual(result, "a🎂")
-        result.encode("utf-8")  # muss valides UTF-8 bleiben
+        result.encode("utf-8")  # must stay valid UTF-8
 
     def test_cap_bytes_realistic_dashboard_line(self):
         line = "🌡 21°C ☀   ○ Offen   🗑 Rest Heute   🎂 Oma   ⛽ 1.64"
@@ -75,7 +75,7 @@ class WindowShorteningTest(unittest.TestCase):
 
 
 class WindowStatesTest(unittest.TestCase):
-    """Homematic-Zustände: Offen, Geschlossen, Gekippt, unknown."""
+    """Homematic states: Offen, Geschlossen, Gekippt, unknown."""
 
     ENTITIES = {"a": "Wohnen", "b": "Essen"}
 
@@ -111,7 +111,7 @@ class WindowStatesTest(unittest.TestCase):
 
 
 class WindowStateModeTest(unittest.TestCase):
-    """mode='state': Zustand statt Raumnamen (Balkontüren)."""
+    """mode='state': state instead of room names (balcony doors)."""
 
     ENTITIES = {"a": "Balkon 1", "b": "Balkon 2"}
 

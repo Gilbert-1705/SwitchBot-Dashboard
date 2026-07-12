@@ -8,21 +8,21 @@ CONF_MAX_ITEMS = "max_items"
 CONF_AUTO_REFRESH = "auto_refresh"
 CONF_DRY_RUN = "dry_run"
 
-# Lokale Preview-Entity: zeigt die aktuell gerenderte Displayzeile
+# Local preview entity: shows the currently rendered display line
 PREVIEW_ENTITY_ID = "sensor.switchbot_dashboard"
 
 API_URL = "https://api.switch-bot.com/v1.1/devices/{device_id}/commands"
 
-# Maximale Anzahl gleichzeitig angezeigter Widgets
+# Maximum number of widgets shown at the same time
 MAX_ITEMS = 5
 
-# Sicherheitsgrenze pro Widget-Text (Display bricht pixelbasiert um)
+# Safety cap per widget text (display wraps pixel-based)
 MAX_VALUE_LENGTH = 14
 
-# Hartes API-Limit: Payloads über ~300 Bytes (UTF-8) lehnt die
-# SwitchBot-API mit statusCode 190 ab
+# Hard API limit: the SwitchBot API rejects payloads over
+# ~300 bytes (UTF-8) with statusCode 190
 MAX_PAYLOAD_BYTES = 300
 
-# Trenner zwischen Widgets - drei Leerzeichen nutzt die
-# SwitchBot-Firmware als bevorzugte Umbruchstelle
+# Separator between widgets - the SwitchBot firmware uses three
+# spaces as its preferred line-break position
 SEPARATOR = "   "

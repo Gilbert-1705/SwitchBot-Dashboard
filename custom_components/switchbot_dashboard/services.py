@@ -22,7 +22,7 @@ async def async_send_text(call: ServiceCall):
 
 
 async def async_refresh(call: ServiceCall):
-    """Erzwingt einen sofortigen Refresh (umgeht das Rate-Limit)."""
+    """Forces an immediate refresh (bypasses the rate limit)."""
 
     data = call.hass.data[DOMAIN]
     updater = data.get("updater")
@@ -31,7 +31,7 @@ async def async_refresh(call: ServiceCall):
         await updater.async_refresh(force=True)
         return
 
-    # Ohne Updater (auto_refresh: false): direkt rendern und senden
+    # Without an updater (auto_refresh: false): render and send directly
     await async_preview(call)
 
 

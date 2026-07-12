@@ -1,13 +1,13 @@
-"""Tests für die Energie-Widgets: solar, battery, ev.
+"""Tests for the energy widgets: solar, battery, ev.
 
-Ausführen (vom Repo-Root):
+Run (from the repo root):
 
     python3 custom_components/switchbot_dashboard/tests/test_energy.py
 """
 
 import unittest
 
-import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
+import helpers  # noqa: F401  (stubs HA/aiohttp, sets sys.path)
 from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.widgets.battery import (

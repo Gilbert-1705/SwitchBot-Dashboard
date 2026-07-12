@@ -1,8 +1,7 @@
-"""UI-Setup: Token, Secret und Device-ID über die Oberfläche.
+"""UI setup: token, secret and device ID via the interface.
 
-Die Widgets werden weiterhin über YAML konfiguriert
-(siehe docs/configuration.md) — der Config Flow ersetzt nur die
-Zugangsdaten-Konfiguration.
+Widgets are still configured via YAML (see docs/configuration.md) —
+the config flow only replaces the credentials configuration.
 """
 
 import voluptuous as vol

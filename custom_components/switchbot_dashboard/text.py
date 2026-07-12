@@ -1,15 +1,15 @@
-"""Text-Hilfsfunktionen für das schmale E-Paper-Display.
+"""Text helpers for the narrow e-paper display.
 
-Das Display bricht die gesendete Zeile selbst an Leerzeichen um
-(pixelbasiert). Lange Widget-Texte verdrängen deshalb andere
-Widgets — jedes Widget kürzt seinen Text so kompakt wie möglich.
+The display wraps the transmitted line itself at spaces
+(pixel-based). Long widget texts displace other widgets, so every
+widget keeps its text as compact as possible.
 """
 
 ELLIPSIS = "…"
 
 
 def shorten(value: str, max_length: int) -> str:
-    """Kürzt einen Text hart auf max_length inkl. Ellipse."""
+    """Hard-truncates a text to max_length including the ellipsis."""
 
     if max_length <= 0:
         return value
@@ -21,10 +21,10 @@ def shorten(value: str, max_length: int) -> str:
 
 
 def cap_bytes(value: str, max_bytes: int) -> str:
-    """Kürzt einen Text auf max_bytes (UTF-8), ohne Zeichen zu zerschneiden.
+    """Truncates a text to max_bytes (UTF-8) without splitting characters.
 
-    Die SwitchBot-API lehnt Payloads über ~300 Bytes mit
-    statusCode 190 ("invalid params") ab. Emojis belegen 4 Bytes.
+    The SwitchBot API rejects payloads over ~300 bytes with
+    statusCode 190 ("invalid params"). Emojis take 4 bytes.
     """
 
     encoded = value.encode("utf-8")
@@ -32,7 +32,7 @@ def cap_bytes(value: str, max_bytes: int) -> str:
     if len(encoded) <= max_bytes:
         return value
 
-    # An Zeichengrenze abschneiden
+    # Cut at a character boundary
     truncated = encoded[:max_bytes]
 
     while truncated:
@@ -45,7 +45,7 @@ def cap_bytes(value: str, max_bytes: int) -> str:
 
 
 def join_names(names: list[str], max_names: int = 2) -> str:
-    """Verbindet Namen kompakt: 'A', 'A+B', 'A+2'."""
+    """Joins names compactly: 'A', 'A+B', 'A+2'."""
 
     if not names:
         return ""

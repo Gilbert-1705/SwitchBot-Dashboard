@@ -45,7 +45,7 @@ class SwitchBotAPI:
 
     async def send_text(self, text):
 
-        # Hartes API-Limit: >300 Bytes UTF-8 -> statusCode 190
+        # Hard API limit: >300 bytes UTF-8 -> statusCode 190
         capped = cap_bytes(text, MAX_PAYLOAD_BYTES)
 
         if capped != text:
@@ -76,7 +76,7 @@ class SwitchBotAPI:
         return result
 
     def _log_result(self, result):
-        """Wertet den SwitchBot-Statuscode aus (100 = OK)."""
+        """Evaluates the SwitchBot status code (100 = OK)."""
 
         if not isinstance(result, dict):
             return

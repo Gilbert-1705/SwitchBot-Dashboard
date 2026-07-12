@@ -56,6 +56,38 @@
 - [x] Gemeinsame Test-Helpers (tests/helpers.py)
 - [x] enabled()/NAME entfernt, Lint-Aufräumen
 
+## v2.0 🚧 Priority Engine 2.0
+
+- [ ] Sprach-Cleanup: Code durchgehend Englisch, README.de.md
+- [ ] Importance-Bänder als offizielle Semantik:
+      0-20 Füller / 21-59 normal / 60+ immer / 100 Alarm
+- [ ] Zeitrampe: Wichtigkeit steigt mit Dauer (state.last_changed),
+      z.B. "WM Fertig": 30 → 60 → 100
+- [ ] Ruhemodus: ruhiger Tag zeigt weniger Items statt 5 voller Slots
+
+## v2.1 Smart Alerts
+
+- [ ] Regel-Widget für Zustandskombinationen
+      (Fenster offen + Regen, Tür offen + niemand zu Hause, ...)
+- [ ] Zeitbedingungen (Tür seit 10 min offen)
+- [ ] Alarmmodus: importance 100 verdrängt alles andere
+
+## v2.2 Gruppen & Tageskontext
+
+- [ ] Widget-Gruppen: nur das wichtigste Item pro Gruppe
+- [ ] Tageskontext: zeitabhängige Importance-Modifikatoren
+
+## v3.x Plattform
+
+- [ ] Plugin-System, Themes, Mehrsprachigkeit
+- [ ] Weitere Displaygrößen / E-Paper-Displays
+- [ ] Offizieller HACS-Store (brands-PR)
+
+## Bewusst nicht geplant
+
+Aktien, News, RSS, 7-Tage-Forecast, Server-Metriken als
+Daueranzeige — kontextlose Daten verwässern das Konzept.
+
 ## Backlog
 
 - [ ] Weitere Widgets nach Bedarf: Luftqualität, VPN/Serverstatus,

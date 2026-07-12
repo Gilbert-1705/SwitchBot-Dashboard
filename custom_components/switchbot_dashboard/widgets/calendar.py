@@ -3,20 +3,20 @@ from datetime import date
 from .base import BaseWidget, DashboardItem
 from ..text import shorten
 
-# Terminnamen kompakt halten, damit der Zusatz (Morgen/3T) passt
+# Keep event names compact so the suffix (Morgen/3T) still fits
 MAX_MESSAGE_LENGTH = 10
 
 
 class CalendarWidget(BaseWidget):
-    """Zeigt das nächste Ereignis eines Kalenders an.
+    """Shows the next event of a calendar.
 
-    Ein Widget pro Kalender (Geburtstage, Termine, Feiertage,
-    Urlaub). Angezeigt wird nur, wenn das Ereignis innerhalb der
-    konfigurierten Vorlaufzeit liegt:
+    One widget per calendar (birthdays, appointments, holidays,
+    vacation). Only shown when the event is within the configured
+    lookahead:
 
-        Heute   -> "Oma"
-        Morgen  -> "Oma Morgen"
-        X Tage  -> "Oma 3T"
+        today     -> "Oma"
+        tomorrow  -> "Oma Morgen"
+        X days    -> "Oma 3T"
     """
 
     def __init__(
@@ -78,7 +78,7 @@ class CalendarWidget(BaseWidget):
 
     @staticmethod
     def _parse_date(value: str) -> date | None:
-        """Parst '2026-07-15', '2026-07-15 09:00:00' und ISO-Formate."""
+        """Parses '2026-07-15', '2026-07-15 09:00:00' and ISO formats."""
 
         try:
             return date.fromisoformat(str(value)[:10])

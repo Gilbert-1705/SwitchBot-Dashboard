@@ -3,7 +3,7 @@ from ..config.entities import Entities
 from ..icons import Icons
 
 
-# (lock_state, tür_offen) -> (icon, text, importance)
+# (lock_state, door_open) -> (icon, text, importance)
 DOOR_STATES = {
     ("locked", False): (Icons.DOOR, "Zu", 20),
     ("locking", False): (Icons.DOOR, "Zu", 20),
