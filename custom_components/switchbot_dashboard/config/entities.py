@@ -23,3 +23,8 @@ class Entities:
 
     CAR_FUEL_LEVEL = "Tankfüllstand"
     FUEL_PRICE = "Spritpreis"
+
+    WASHER_RUNNING = "Waschmaschine läuft"
+    WASHER_DONE = "Waschmaschine fertig"
+    DRYER_RUNNING = "Trockner läuft"
+    DRYER_DONE = "Trockner fertig"

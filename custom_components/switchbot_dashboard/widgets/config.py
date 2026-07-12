@@ -1,6 +1,7 @@
 from ..config.entities import Entities
 from ..icons import Icons
 from .config_models import (
+    ApplianceWidgetConfig,
     CalendarWidgetConfig,
     EntityWidgetConfig,
     FuelWidgetConfig,
@@ -81,5 +82,21 @@ WIDGETS = [
         max_price=1.75,
         unit="%",
         priority=610,
+    ),
+    ApplianceWidgetConfig(
+        type="appliance",
+        name="WM",
+        running_entity=Entities.WASHER_RUNNING,
+        done_entity=Entities.WASHER_DONE,
+        icon=Icons.LAUNDRY,
+        priority=700,
+    ),
+    ApplianceWidgetConfig(
+        type="appliance",
+        name="TR",
+        running_entity=Entities.DRYER_RUNNING,
+        done_entity=Entities.DRYER_DONE,
+        icon=Icons.LAUNDRY,
+        priority=710,
     ),
 ]
