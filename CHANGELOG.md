@@ -99,3 +99,18 @@ and this project follows Semantic Versioning.
 - All widgets are fully parameterized (door, weather and waste accept
   entity options); widget manager builds widgets generically from
   config dataclass fields.
+
+
+## [0.5.0] - 2026-07-12
+
+### Added
+
+- Solar widget: PV production ("☀ 3.2kW"), hidden at night.
+- Battery widget (generic): PV storage, e-bike or any battery;
+  important when below threshold, optional always-on background info.
+- EV widget: state of charge + charging status ("🔌 EV 64% lädt"),
+  plug-in reminder when low and not charging.
+- GitHub Actions CI: test matrix (Python 3.11–3.13), critical ruff
+  checks, HACS validation.
+- hacs.json and manifest metadata (version, issue tracker) for HACS.
+- README installation guide (HACS + manual).

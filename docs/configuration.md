@@ -163,6 +163,41 @@ Renders `⛽ Tanken 1.65` (85), `⛽ 12%` (65), `⛽ 1.65` (40) or nothing.
 
 See [examples.md](examples.md) for the automations.
 
+### solar
+
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `entity` | **yes** | – | PV production sensor (W) |
+| `min_power` | no | 50 | Threshold (W) below which the widget hides |
+| `icon` | no | `☀` | Icon |
+
+Renders `☀ 3.2kW` (importance 15). Hidden at night.
+
+### battery
+
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `entity` | **yes** | – | Battery level sensor (%) |
+| `name` | no | – | Short label, e.g. `eBike`, `Speicher` |
+| `min_level` | no | 20 | Below this the battery becomes important (65) |
+| `show_always` | no | `false` | Show as background info (15) even when ok |
+| `icon` | no | `🔋` | Icon |
+
+One instance per battery — PV storage, e-bike, vacuum, …
+
+### ev
+
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `soc_entity` | **yes** | – | State-of-charge sensor (%) |
+| `charging_entity` | no | – | Charging sensor (`on`/`charging`) |
+| `name` | no | – | Short label, e.g. `EV` |
+| `min_level` | no | 20 | Reminder threshold when not charging |
+| `show_always` | no | `false` | Show as background info even when ok |
+| `icon` | no | `🔌` | Icon |
+
+Renders `🔌 EV 64% lädt` (30), `🔌 EV 12%` when low and unplugged (65).
+
 ## Custom widgets
 
 ```python

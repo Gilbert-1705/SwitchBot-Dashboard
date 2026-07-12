@@ -37,14 +37,15 @@
 - [x] Widget-Dokumentation (docs/configuration.md)
 - [x] max_items-Option
 
-## Sprint 6 🚧 Open Source & v1.0
+## Sprint 6 🚧 Open Source & v1.0 (v0.5.0)
 
-- [ ] GitHub Actions: Tests + Lint bei jedem Push
-- [ ] hacs.json + manifest.json-Version pflegen (HACS-Aufnahme)
+- [x] GitHub Actions: Tests + Lint + HACS-Validation bei jedem Push
+- [x] hacs.json + manifest.json (Version, issue_tracker)
+- [x] README: Installationsanleitung (HACS + manuell)
+- [x] Energie-Widgets: solar, battery (generisch, auch eBike), ev
 - [ ] Screenshots und GIFs vom echten Display (Jan)
 - [ ] Icon-Kompatibilität am Gerät dokumentieren (welche Emojis rendert die Firmware?)
 - [ ] Erstes GitHub-Release (Semver, Release Notes aus CHANGELOG)
-- [ ] README: Installationsanleitung (HACS + manuell)
 
 ## Backlog / Technische Schulden
 
