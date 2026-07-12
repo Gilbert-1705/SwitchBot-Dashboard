@@ -77,8 +77,9 @@ WIDGETS = [
         type="fuel",
         level_entity=Entities.CAR_FUEL_LEVEL,
         price_entity=Entities.FUEL_PRICE,
-        min_level=15.0,
+        min_level=20.0,
         max_price=1.75,
+        unit="%",
         priority=610,
     ),
 ]

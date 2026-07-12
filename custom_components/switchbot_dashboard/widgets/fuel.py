@@ -9,16 +9,19 @@ _LOGGER = logging.getLogger(__name__)
 class FuelWidget(BaseWidget):
     """Tankfüllstand mit Tankempfehlung.
 
-    Kombiniert Füllstand (Liter) und aktuellen Spritpreis (EUR/l)
-    mit zwei Schwellenwerten:
+    Kombiniert Füllstand und aktuellen Spritpreis (EUR/l) mit zwei
+    Schwellenwerten:
 
         min_level  -> ab wann der Füllstand relevant wird
         max_price  -> bis zu welchem Preis sich Tanken lohnt
 
+    Der Füllstand kann in Prozent (unit="%", Standard) oder in
+    Litern (unit="l") vorliegen; min_level nutzt dieselbe Einheit.
+
     Zustände:
 
         Füllstand niedrig UND Preis gut  -> "⛽ Tanken 1.65"  (wichtig)
-        Füllstand niedrig                -> "⛽ 12L"
+        Füllstand niedrig                -> "⛽ 15%"
         Preis gut, Tank halb leer        -> "⛽ 1.65"          (Hinweis)
         sonst                            -> ausgeblendet
     """
@@ -30,8 +33,9 @@ class FuelWidget(BaseWidget):
         hass,
         level_entity: str,
         price_entity: str,
-        min_level: float = 15.0,
+        min_level: float = 20.0,
         max_price: float = 1.75,
+        unit: str = "%",
         priority: int = 610,
     ):
         super().__init__(hass)
@@ -40,6 +44,7 @@ class FuelWidget(BaseWidget):
         self.price_entity = price_entity
         self.min_level = min_level
         self.max_price = max_price
+        self.unit = "%" if unit == "%" else "L"
         self.priority = priority
 
     def render(self):
@@ -58,7 +63,7 @@ class FuelWidget(BaseWidget):
             importance = 85
 
         elif level_low:
-            value = f"{level:.0f}L"
+            value = f"{level:.0f}{self.unit}"
             importance = 65
 
         elif price_good and level is not None and level <= self.min_level * 2:

@@ -60,8 +60,9 @@ and this project follows Semantic Versioning.
 
 - Presence widget: shows who is home ("⌂ Jan+Anna"), an empty house
   ("⌂ Leer") is ranked more important than an occupied one.
-- Fuel widget: tank level in liters plus refuel recommendation based on
-  configurable level and price thresholds ("⛽ Tanken 1.65").
+- Fuel widget: tank level in percent or liters (configurable `unit`) plus
+  refuel recommendation based on configurable level and price thresholds
+  ("⛽ Tanken 1.65").
 - Text helpers (`shorten`, `join_names`) for the narrow e-paper display.
 
 ### Changed

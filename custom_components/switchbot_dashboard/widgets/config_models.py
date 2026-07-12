@@ -39,7 +39,9 @@ class PresenceWidgetConfig(WidgetConfig):
 class FuelWidgetConfig(WidgetConfig):
     level_entity: str = ""
     price_entity: str = ""
-    # Füllstand (l), ab dem Tanken relevant wird
-    min_level: float = 15.0
+    # Füllstand, ab dem Tanken relevant wird (in `unit`)
+    min_level: float = 20.0
     # Preis (EUR/l), bis zu dem sich Tanken lohnt
     max_price: float = 1.75
+    # Einheit des Füllstandsensors: "%" oder "l"
+    unit: str = "%"
