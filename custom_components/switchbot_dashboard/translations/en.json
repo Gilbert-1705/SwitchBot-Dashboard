@@ -1,0 +1,18 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "SwitchBot Dashboard",
+        "description": "Enter your SwitchBot OpenAPI credentials (app: Profile → Settings → tap app version 10x → Developer Options).",
+        "data": {
+          "token": "Token",
+          "secret": "Secret",
+          "device_id": "Device ID of the Weather Station"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This Weather Station is already configured."
+    }
+  }
+}

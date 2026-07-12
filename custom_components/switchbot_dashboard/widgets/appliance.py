@@ -20,7 +20,6 @@ class ApplianceWidget(BaseWidget):
     Dashboard oder Display-Button (Matter). Siehe docs/examples.md.
     """
 
-
     def __init__(
         self,
         hass,

@@ -26,7 +26,6 @@ class FuelWidget(BaseWidget):
         sonst                            -> ausgeblendet
     """
 
-
     def __init__(
         self,
         hass,

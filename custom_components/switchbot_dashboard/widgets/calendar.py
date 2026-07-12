@@ -19,7 +19,6 @@ class CalendarWidget(BaseWidget):
         X Tage  -> "Oma 3T"
     """
 
-
     def __init__(
         self,
         hass,

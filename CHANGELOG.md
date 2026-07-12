@@ -130,3 +130,24 @@ the five most relevant pieces of information for this moment.
 - YAML configuration with validation and helpful error messages
 - Public API for custom widgets and formatters
 - 81 unit tests, CI, HACS-ready
+
+
+## [1.1.0] - 2026-07-12
+
+### Added
+
+- Event-driven auto refresh: the dashboard watches all configured
+  entities and updates the display on its own — with 5 s debounce,
+  change detection (only send when the rendered line differs) and a
+  60 s rate limit per SwitchBot recommendation. Periodic refresh every
+  15 minutes catches date rollovers. Disable with `auto_refresh: false`.
+- `refresh` service now forces an immediate update (bypasses the
+  rate limit).
+- Config flow: credentials (token, secret, device ID) can be set up
+  via the UI incl. German and English translations; widgets stay
+  in YAML.
+
+### Changed
+
+- Shared test helpers (`tests/helpers.py`) replace per-file stubs.
+- Removed unused `BaseWidget.enabled()`/`NAME`; lint cleanup.

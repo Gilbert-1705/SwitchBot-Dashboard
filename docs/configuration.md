@@ -7,12 +7,17 @@ Widgets can be configured in two ways:
 
 ## Full example
 
+The credentials can alternatively be configured via the UI
+(Settings → Devices & Services → Add Integration → SwitchBot Dashboard);
+the `widgets:` block stays in YAML either way.
+
 ```yaml
 switchbot_dashboard:
   token: !secret switchbot_token
   secret: !secret switchbot_secret
   device_id: !secret switchbot_device_id
   max_items: 5          # optional, Anzahl gleichzeitig sichtbarer Widgets
+  auto_refresh: true    # optional, event-getriebener Auto-Refresh
 
   widgets:
     - type: weather
@@ -69,6 +74,18 @@ switchbot_dashboard:
       icon: "🧺"
       priority: 700
 ```
+
+## Auto refresh
+
+With `auto_refresh: true` (default) the dashboard watches every
+configured entity and updates the display automatically: state
+changes are debounced for 5 s, the display is only contacted when the
+rendered line actually changed, and API calls are rate-limited to one
+per minute (SwitchBot recommendation). A periodic refresh every
+15 minutes catches date rollovers (waste, calendar). The
+`switchbot_dashboard.refresh` service forces an immediate update and
+bypasses the rate limit; `preview` renders and sends once without the
+updater.
 
 Configuration errors are reported in the Home Assistant log with widget position, type and field, e.g. `Widget 3 (window): unknown option 'entitys'. Available: entities, mode, priority`.
 
