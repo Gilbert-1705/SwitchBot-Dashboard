@@ -15,7 +15,7 @@ Anders als klassische Dashboards, die dauerhaft alle Sensoren anzeigen, zeigt da
 Und an einem ruhigen Tag:
 
 ```
-🌡 21°C ☀   P 280W   ●   🚪 Zu
+🌡 21°C ☀   ●   🚪 Zu
 ```
 
 ## Funktionsweise

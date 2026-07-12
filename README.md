@@ -13,7 +13,7 @@ Unlike classic dashboards that permanently show every available sensor, SwitchBo
 And on a quiet day:
 
 ```
-🌡 21°C ☀   P 280W   ●   🚪 Zu
+🌡 21°C ☀   ●   🚪 Zu
 ```
 
 ## Status
