@@ -3,6 +3,8 @@ from ..icons import Icons
 from .config_models import (
     CalendarWidgetConfig,
     EntityWidgetConfig,
+    FuelWidgetConfig,
+    PresenceWidgetConfig,
     WidgetConfig,
     WindowWidgetConfig,
 )
@@ -62,5 +64,21 @@ WIDGETS = [
         icon=Icons.VACATION,
         days=3,
         priority=530,
+    ),
+    PresenceWidgetConfig(
+        type="presence",
+        entities={
+            Entities.PERSON_1: "Jan",
+            Entities.PERSON_2: "Anna",
+        },
+        priority=600,
+    ),
+    FuelWidgetConfig(
+        type="fuel",
+        level_entity=Entities.CAR_FUEL_LEVEL,
+        price_entity=Entities.FUEL_PRICE,
+        min_level=15.0,
+        max_price=1.75,
+        priority=610,
     ),
 ]

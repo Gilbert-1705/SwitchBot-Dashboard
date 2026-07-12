@@ -26,3 +26,6 @@ class Icons:
     CALENDAR = "📅"
     HOLIDAY = "★"
     VACATION = "✈"
+
+    HOME = "⌂"
+    FUEL = "⛽"

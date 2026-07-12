@@ -27,3 +27,19 @@ class CalendarWidgetConfig(WidgetConfig):
     icon: str = ""
     # Vorlaufzeit in Tagen, ab der ein Termin angezeigt wird
     days: int = 3
+
+
+@dataclass(slots=True)
+class PresenceWidgetConfig(WidgetConfig):
+    # person-Entity -> Anzeigename
+    entities: dict[str, str] | None = None
+
+
+@dataclass(slots=True)
+class FuelWidgetConfig(WidgetConfig):
+    level_entity: str = ""
+    price_entity: str = ""
+    # Füllstand (l), ab dem Tanken relevant wird
+    min_level: float = 15.0
+    # Preis (EUR/l), bis zu dem sich Tanken lohnt
+    max_price: float = 1.75
