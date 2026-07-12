@@ -31,3 +31,6 @@ class Icons:
     FUEL = "⛽"
 
     LAUNDRY = "🧺"
+
+    BATTERY = "🔋"
+    PLUG = "🔌"

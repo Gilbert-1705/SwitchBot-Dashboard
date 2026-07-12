@@ -110,6 +110,17 @@ def _coerce(prefix: str, key: str, value, field_type):
             )
         return value
 
+    if type_name in ("<class 'bool'>", "bool"):
+        if isinstance(value, bool):
+            return value
+        if str(value).lower() in ("true", "yes", "on", "1"):
+            return True
+        if str(value).lower() in ("false", "no", "off", "0"):
+            return False
+        raise ConfigError(
+            f"{prefix}: '{key}' must be true or false (got '{value}')"
+        )
+
     if type_name in ("<class 'int'>", "int"):
         try:
             return int(value)
