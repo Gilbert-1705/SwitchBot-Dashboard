@@ -17,7 +17,6 @@ class PresenceWidget(BaseWidget):
     Check: alles zu?), Anwesenheit ist Hintergrundinfo.
     """
 
-    requires_config = True
 
     def __init__(
         self,

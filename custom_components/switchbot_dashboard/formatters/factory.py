@@ -4,14 +4,31 @@ from .number import NumberFormatter
 
 
 class FormatterFactory:
+    """Erzeugt Formatter anhand ihres Namens.
 
-    @staticmethod
-    def create(name: str):
+    Eigene Formatter lassen sich registrieren:
 
-        if name == "power":
-            return PowerFormatter()
+        FormatterFactory.register("euro", EuroFormatter)
 
-        if name == "number":
-            return NumberFormatter()
+    Danach ist ``formatter: euro`` in der Konfiguration nutzbar.
+    """
 
-        return BaseFormatter()
+    _formatters: dict[str, type] = {
+        "power": PowerFormatter,
+        "number": NumberFormatter,
+    }
+
+    @classmethod
+    def register(cls, name: str, formatter_cls: type):
+        cls._formatters[name] = formatter_cls
+
+    @classmethod
+    def names(cls) -> list[str]:
+        return sorted(cls._formatters)
+
+    @classmethod
+    def create(cls, name: str) -> BaseFormatter:
+
+        formatter_cls = cls._formatters.get(name, BaseFormatter)
+
+        return formatter_cls()

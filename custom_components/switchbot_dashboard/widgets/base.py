@@ -2,7 +2,6 @@ from ..dashboard.item import DashboardItem
 
 class BaseWidget:
     """Base class for all dashboard widgets."""
-    requires_config = False
     
     NAME = "base"
 

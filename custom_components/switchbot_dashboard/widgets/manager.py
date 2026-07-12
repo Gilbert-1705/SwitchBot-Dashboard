@@ -1,142 +1,59 @@
-from .appliance import ApplianceWidget
-from .calendar import CalendarWidget
+import logging
+from dataclasses import fields as dataclass_fields
+
 from .config import WIDGETS
-from .config_models import (
-    ApplianceWidgetConfig,
-    CalendarWidgetConfig,
-    EntityWidgetConfig,
-    FuelWidgetConfig,
-    PresenceWidgetConfig,
-    WidgetConfig,
-    WindowWidgetConfig,
-)
-from .door import DoorWidget
-from .entity import EntityWidget
-from .fuel import FuelWidget
-from .presence import PresenceWidget
-from .weather import WeatherWidget
-from .window import WindowWidget
-from .waste import WasteWidget
+from .registry import get_registration
 
-
-WIDGET_TYPES = {
-    "weather": WeatherWidget,
-    "entity": EntityWidget,
-    "door": DoorWidget,
-    "window": WindowWidget,
-    "waste": WasteWidget,
-    "calendar": CalendarWidget,
-    "presence": PresenceWidget,
-    "fuel": FuelWidget,
-    "appliance": ApplianceWidget,
-}
+_LOGGER = logging.getLogger(__name__)
 
 
 class WidgetManager:
+    """Baut Widgets aus (Python- oder YAML-) Konfigurationen.
 
-    def __init__(self, hass):
+    Die Config-Dataclasses spiegeln die Konstruktor-Parameter der
+    Widgets: jedes Feld (außer ``type``) wird als Keyword-Argument
+    durchgereicht. Neue Widget-Typen brauchen deshalb keinen
+    Manager-Code, nur einen Eintrag in der Registry.
+    """
+
+    def __init__(self, hass, configs=None):
         self.hass = hass
+        self.configs = configs if configs is not None else WIDGETS
 
     def widgets(self):
 
         widgets = []
 
-        for cfg in WIDGETS:
+        for cfg in self.configs:
 
-            widget_cls = WIDGET_TYPES.get(cfg.type)
+            registration = get_registration(cfg.type)
 
-            if widget_cls is None:
+            if registration is None:
+                _LOGGER.warning("Unknown widget type: %s", cfg.type)
                 continue
 
-            # Widgets ohne Konfiguration
-            if not widget_cls.requires_config:
-                widgets.append(widget_cls(self.hass))
-                continue
-
-            # Fenster-Widget
-            if isinstance(cfg, WindowWidgetConfig):
-                widgets.append(
-                    widget_cls(
-                        hass=self.hass,
-                        entities=cfg.entities,
-                        mode=cfg.mode,
-                        priority=cfg.priority,
-                    )
-                )
-                continue
-
-            # Anwesenheits-Widget
-            if isinstance(cfg, PresenceWidgetConfig):
-                widgets.append(
-                    widget_cls(
-                        hass=self.hass,
-                        entities=cfg.entities,
-                        priority=cfg.priority,
-                    )
-                )
-                continue
-
-            # Haushaltsgeräte-Widget
-            if isinstance(cfg, ApplianceWidgetConfig):
-                widgets.append(
-                    widget_cls(
-                        hass=self.hass,
-                        name=cfg.name,
-                        running_entity=cfg.running_entity,
-                        done_entity=cfg.done_entity,
-                        icon=cfg.icon,
-                        priority=cfg.priority,
-                    )
-                )
-                continue
-
-            # Tank-Widget
-            if isinstance(cfg, FuelWidgetConfig):
-                widgets.append(
-                    widget_cls(
-                        hass=self.hass,
-                        level_entity=cfg.level_entity,
-                        price_entity=cfg.price_entity,
-                        min_level=cfg.min_level,
-                        max_price=cfg.max_price,
-                        unit=cfg.unit,
-                        priority=cfg.priority,
-                    )
-                )
-                continue
-
-            # Kalender-Widget
-            if isinstance(cfg, CalendarWidgetConfig):
-                widgets.append(
-                    widget_cls(
-                        hass=self.hass,
-                        entity=cfg.entity,
-                        icon=cfg.icon,
-                        days=cfg.days,
-                        priority=cfg.priority,
-                    )
-                )
-                continue
-
-            # Normales Entity-Widget
-            if isinstance(cfg, EntityWidgetConfig):
-                widgets.append(
-                    widget_cls(
-                        hass=self.hass,
-                        entity=cfg.entity,
-                        icon=cfg.icon,
-                        formatter=cfg.formatter,
-                        priority=cfg.priority,
-                        importance=cfg.importance,
-                    )
-                )
-                continue
-
-            raise TypeError(
-                f"Unsupported widget config: {type(cfg).__name__}"
-            )
+            widgets.append(self._build(registration.widget_cls, cfg))
 
         return sorted(
             widgets,
             key=lambda widget: widget.priority,
         )
+
+    def _build(self, widget_cls, cfg):
+
+        kwargs = {}
+
+        for field in dataclass_fields(cfg):
+
+            if field.name == "type":
+                continue
+
+            value = getattr(cfg, field.name)
+
+            # None/leer heißt: Default des Widgets verwenden
+            if value is None or value == "":
+                continue
+
+            kwargs[field.name] = value
+
+        return widget_cls(hass=self.hass, **kwargs)

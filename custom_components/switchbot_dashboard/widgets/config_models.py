@@ -8,6 +8,26 @@ class WidgetConfig:
 
 
 @dataclass(slots=True)
+class WeatherWidgetConfig(WidgetConfig):
+    temperature_entity: str = ""
+    trend_entity: str = ""
+    icon: str = ""
+
+
+@dataclass(slots=True)
+class DoorWidgetConfig(WidgetConfig):
+    lock_entity: str = ""
+    contact_entity: str = ""
+
+
+@dataclass(slots=True)
+class WasteWidgetConfig(WidgetConfig):
+    entity: str = ""
+    # Vorlaufzeit in Tagen
+    days: int = 3
+
+
+@dataclass(slots=True)
 class EntityWidgetConfig(WidgetConfig):
     entity: str = ""
     icon: str = ""

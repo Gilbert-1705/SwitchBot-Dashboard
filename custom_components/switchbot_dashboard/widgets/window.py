@@ -24,7 +24,6 @@ class WindowWidget(BaseWidget):
     und wird deshalb nur als Hintergrundinfo gewichtet.
     """
 
-    requires_config = True
 
     def __init__(
         self,

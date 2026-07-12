@@ -17,15 +17,21 @@ WASTE_TYPES = {
 
 class WasteWidget(BaseWidget):
 
-    requires_config = False
-
-    def __init__(self, hass):
+    def __init__(
+        self,
+        hass,
+        entity: str = Entities.WASTE,
+        days: int = 3,
+        priority: int = 400,
+    ):
         super().__init__(hass)
-        self.priority = 400
+        self.entity = entity
+        self.days = days
+        self.priority = priority
 
     def render(self):
 
-        state = self.hass.states.get(Entities.WASTE)
+        state = self.hass.states.get(self.entity)
 
         if state is None:
             return None
@@ -54,7 +60,7 @@ class WasteWidget(BaseWidget):
 
         days = (next_date - today).days
 
-        if days > 3:
+        if days > self.days:
             return None
 
         parts = [
