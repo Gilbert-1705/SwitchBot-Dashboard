@@ -1,12 +1,16 @@
 import base64
 import hashlib
 import hmac
+import logging
 import time
 import uuid
 
 from aiohttp import ClientSession
 
-from .const import API_URL
+from .const import API_URL, MAX_PAYLOAD_BYTES
+from .text import cap_bytes
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class SwitchBotAPI:
@@ -41,9 +45,19 @@ class SwitchBotAPI:
 
     async def send_text(self, text):
 
+        # Hartes API-Limit: >300 Bytes UTF-8 -> statusCode 190
+        capped = cap_bytes(text, MAX_PAYLOAD_BYTES)
+
+        if capped != text:
+            _LOGGER.warning(
+                "Payload exceeds %d bytes, truncated: %s",
+                MAX_PAYLOAD_BYTES,
+                capped,
+            )
+
         payload = {
             "command": "customPage",
-            "parameter": text,
+            "parameter": capped,
             "commandType": "command",
         }
 
@@ -55,4 +69,34 @@ class SwitchBotAPI:
                 json=payload,
             ) as response:
 
-                return await response.json()
+                result = await response.json()
+
+        self._log_result(result)
+
+        return result
+
+    def _log_result(self, result):
+        """Wertet den SwitchBot-Statuscode aus (100 = OK)."""
+
+        if not isinstance(result, dict):
+            return
+
+        status = result.get("statusCode")
+
+        if status == 100 or status is None:
+            return
+
+        message = result.get("message", "")
+
+        if status == 190:
+            _LOGGER.error(
+                "SwitchBot API rejected the payload (statusCode 190, "
+                "'%s') - text too long (>300 bytes UTF-8)",
+                message,
+            )
+        else:
+            _LOGGER.warning(
+                "SwitchBot API returned statusCode %s: %s",
+                status,
+                message,
+            )

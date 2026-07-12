@@ -164,3 +164,10 @@ the five most relevant pieces of information for this moment.
 - `dry_run` option: render and publish the preview entity only, never
   call the SwitchBot API. Development mode without device and rate
   limit.
+- API hardening based on official custom-page docs: outgoing payloads
+  are capped at 300 bytes UTF-8 (without splitting characters), and
+  SwitchBot status codes are evaluated and logged (190 = payload too
+  long, 100 = OK).
+- docs: official display constraints (byte limit, no line breaks,
+  simple emojis, empty string clears the page, custom page must be
+  selected on the device).

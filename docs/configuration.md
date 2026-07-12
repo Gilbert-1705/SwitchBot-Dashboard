@@ -100,6 +100,25 @@ With `dry_run: true` the SwitchBot API is never called: the dashboard
 only updates the preview entity. Ideal for development — no device,
 no rate limit, full priority-engine behavior.
 
+## Display constraints (official)
+
+Per SwitchBot's custom-page documentation:
+
+- Payload limit is ~**300 bytes UTF-8** (emojis take 4 bytes). The
+  integration caps outgoing text automatically and logs when the API
+  rejects a payload (`statusCode 190`).
+- **Line breaks are not supported** (`\n`, `<br>` are ignored) — the
+  firmware wraps at spaces, which is why widgets are joined with
+  triple spaces.
+- **Simple emojis only**: skin-tone modifiers and ZWJ combinations may
+  not render. Recommended set includes ✅❌📅🌤🏠💧⚡📬🐱🎂📊💪.
+  All icons live in `icons.py` and are easy to swap.
+- Sending an **empty string clears** the custom page (the dashboard
+  does this when no widget has anything to show).
+- The custom page is **not the default screen** — swipe to it on the
+  device once; refreshes can take a few seconds.
+- API rate: max one call per minute (enforced by the updater).
+
 Configuration errors are reported in the Home Assistant log with widget position, type and field, e.g. `Widget 3 (window): unknown option 'entitys'. Available: entities, mode, priority`.
 
 ## Widget reference
