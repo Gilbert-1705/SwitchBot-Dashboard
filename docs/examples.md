@@ -39,6 +39,21 @@ automation:
 The widget itself understands `run`, `pause` and `stop` directly
 (shown as "läuft", "Pause", hidden).
 
+Optional: clear a stale flag automatically when a new cycle starts
+(the widget already prefers "läuft" over "Fertig" on its own):
+
+```yaml
+  - alias: "Waschmaschine: Flag bei Neustart löschen"
+    trigger:
+      - platform: state
+        entity_id: sensor.waschmaschine_status
+        to: "run"
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.waschmaschine_fertig
+```
+
 ### 3. Reset the flag ("Wäsche geholt")
 
 Any trigger works: a dashboard button, the SwitchBot app — or one of

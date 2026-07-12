@@ -41,22 +41,23 @@ class ApplianceWidget(BaseWidget):
 
     def render(self):
 
-        if self._state(self.done_entity) in RUNNING_STATES:
-            return DashboardItem(
-                icon=self.icon,
-                value=f"{self.name} Fertig",
-                priority=self.priority,
-                importance=80,
-            )
-
         running = self._state(self.running_entity)
 
+        # Läuft die Maschine wieder, ist der alte Reminder obsolet
         if running in RUNNING_STATES:
             return DashboardItem(
                 icon=self.icon,
                 value=f"{self.name} läuft",
                 priority=self.priority,
                 importance=15,
+            )
+
+        if self._state(self.done_entity) in RUNNING_STATES:
+            return DashboardItem(
+                icon=self.icon,
+                value=f"{self.name} Fertig",
+                priority=self.priority,
+                importance=80,
             )
 
         if running in PAUSED_STATES:

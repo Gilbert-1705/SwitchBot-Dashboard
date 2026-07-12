@@ -72,9 +72,13 @@ class ApplianceWidgetTest(unittest.TestCase):
         self.assertEqual(item.value, "WM läuft")
         self.assertEqual(item.importance, 15)
 
-    def test_done_wins_over_running(self):
-        # Trockner fertig, Waschmaschine läuft noch: Flag zählt
-        item = self._render("on", "on")
+    def test_new_cycle_overrides_stale_done_flag(self):
+        # Läuft die Maschine wieder, ist der alte Reminder obsolet
+        item = self._render("run", "on")
+        self.assertEqual(item.value, "WM läuft")
+
+    def test_done_shown_after_cycle_ends(self):
+        item = self._render("stop", "on")
         self.assertEqual(item.value, "WM Fertig")
 
     def test_idle_and_emptied_is_hidden(self):
