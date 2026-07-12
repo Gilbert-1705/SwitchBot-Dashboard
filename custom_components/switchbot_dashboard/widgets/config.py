@@ -14,10 +14,6 @@ WIDGETS = [
         formatter="power",
         priority=200,
     ),
-    WidgetConfig(
-        type="door",
-        priority=300,
-    ),
     WindowWidgetConfig(
         type="window",
         entities=[
@@ -25,6 +21,10 @@ WIDGETS = [
             Entities.WINDOW_2,
         ],
         priority=250,
+    ),
+    WidgetConfig(
+        type="door",
+        priority=300,
     ),
     WidgetConfig(
         type="waste",

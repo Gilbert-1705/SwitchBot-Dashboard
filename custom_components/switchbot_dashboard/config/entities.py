@@ -5,7 +5,8 @@ class Entities:
 
     POWER = "Stromsensor"
 
-    DOOR = "SmartLock"
+    DOOR_LOCK = "Türschloß"
+    DOOR_CONTACT = "Türsensor"
 
     WINDOW_1 = "Balkontür 1"
     WINDOW_2 = "BAlkontür 2"

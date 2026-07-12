@@ -19,3 +19,5 @@ class Icons:
     WARNING = "!"
 
     WASTE = "🗑"
+
+    DOOR = "🚪"

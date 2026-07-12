@@ -3,15 +3,24 @@ from ..config.entities import Entities
 from ..icons import Icons
 
 
-STATE_ICONS = {
-    "locked": Icons.CLOSED,
-    "locking": Icons.CLOSED,
-    "unlocked": Icons.OPEN,
-    "unlocking": Icons.OPEN,
+DOOR_STATES = {
+    ("locked", False): (Icons.DOOR, "Zu"),
+    ("locking", False): (Icons.DOOR, "Zu"),
+
+    ("unlocked", False): (Icons.DOOR, "Auf"),
+    ("unlocking", False): (Icons.DOOR, "Auf"),
+
+    ("unlocked", True): (Icons.DOOR, "Offen"),
+    ("unlocking", True): (Icons.DOOR, "Offen"),
+
+    ("locked", True): (Icons.WARNING, "Offen"),
+    ("locking", True): (Icons.WARNING, "Offen"),
 }
 
 
 class DoorWidget(BaseWidget):
+
+    requires_config = False
 
     def __init__(self, hass):
         super().__init__(hass)
@@ -19,18 +28,28 @@ class DoorWidget(BaseWidget):
 
     def render(self):
 
-        state = self.hass.states.get(Entities.DOOR)
+        lock = self.hass.states.get(Entities.DOOR_LOCK)
+        contact = self.hass.states.get(Entities.DOOR_CONTACT)
 
-        if state is None or state.state in ("unknown", "unavailable"):
+        if lock is None or contact is None:
             return None
 
-        icon = STATE_ICONS.get(
-            state.state,
-            Icons.CLOSED,
+        if (
+            lock.state in ("unknown", "unavailable")
+            or contact.state in ("unknown", "unavailable")
+        ):
+            return None
+
+        lock_state = lock.state
+        door_open = contact.state == "on"
+
+        icon, value = DOOR_STATES.get(
+            (lock_state, door_open),
+            (Icons.WARNING, "?"),
         )
 
         return DashboardItem(
             icon=icon,
-            value="",
+            value=value,
             priority=self.priority,
         )
