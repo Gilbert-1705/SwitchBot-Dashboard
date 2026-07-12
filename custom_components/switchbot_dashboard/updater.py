@@ -27,7 +27,7 @@ from homeassistant.helpers.event import (
     async_track_time_interval,
 )
 
-from .render import render_dashboard
+from .render import publish_preview, render_dashboard
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -74,6 +74,7 @@ class DashboardUpdater:
         debounce: float = DEBOUNCE_SECONDS,
         min_interval: float = MIN_SEND_INTERVAL,
         interval: float = PERIODIC_REFRESH,
+        dry_run: bool = False,
     ):
         self.hass = hass
         self.api = api
@@ -82,6 +83,9 @@ class DashboardUpdater:
         self.debounce = debounce
         self.min_interval = min_interval
         self.interval = interval
+        # dry_run: nur die lokale Preview-Entity aktualisieren,
+        # nie die SwitchBot-API aufrufen (Entwicklung)
+        self.dry_run = dry_run
 
         self._last_text: str | None = None
         self._last_send: float = 0.0
@@ -174,17 +178,25 @@ class DashboardUpdater:
 
         if not self.should_send(text, force=force):
             _LOGGER.debug("Dashboard unchanged, skipping send")
+            publish_preview(self.hass, text, sent=False)
             return
 
         wait = self.seconds_until_allowed()
 
         if wait > 0 and not force:
+            publish_preview(self.hass, text, sent=False)
             self._schedule_retry(wait)
             return
 
         self._cancel_timers()
         self._last_text = text
         self._last_send = time.monotonic()
+
+        publish_preview(self.hass, text, sent=not self.dry_run)
+
+        if self.dry_run:
+            _LOGGER.debug("Dry run, not sending: %s", text)
+            return
 
         _LOGGER.debug("Sending dashboard: %s", text)
         await self.api.send_text(text)

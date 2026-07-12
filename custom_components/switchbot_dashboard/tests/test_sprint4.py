@@ -11,7 +11,11 @@ import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
 from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.icons import Icons
-from custom_components.switchbot_dashboard.text import join_names, shorten
+from custom_components.switchbot_dashboard.text import (
+    cap_bytes,
+    join_names,
+    shorten,
+)
 from custom_components.switchbot_dashboard.widgets.fuel import FuelWidget
 from custom_components.switchbot_dashboard.widgets.presence import (
     PresenceWidget,
@@ -35,6 +39,24 @@ class TextTest(unittest.TestCase):
             join_names(["Wohnen", "Essen", "Küche"]),
             "Wohnen+2",
         )
+
+    def test_cap_bytes_short_text_unchanged(self):
+        self.assertEqual(cap_bytes("Hallo", 300), "Hallo")
+
+    def test_cap_bytes_truncates_at_limit(self):
+        self.assertEqual(cap_bytes("abcdef", 3), "abc")
+
+    def test_cap_bytes_does_not_split_multibyte_chars(self):
+        # 🎂 belegt 4 Bytes: bei Limit 5 darf kein kaputtes
+        # Halbzeichen entstehen
+        result = cap_bytes("a🎂b", 5)
+        self.assertEqual(result, "a🎂")
+        result.encode("utf-8")  # muss valides UTF-8 bleiben
+
+    def test_cap_bytes_realistic_dashboard_line(self):
+        line = "🌡 21°C ☀   ○ Offen   🗑 Rest Heute   🎂 Oma   ⛽ 1.64"
+        self.assertEqual(cap_bytes(line, 300), line)
+        self.assertLess(len(line.encode("utf-8")), 300)
 
 
 class WindowShorteningTest(unittest.TestCase):

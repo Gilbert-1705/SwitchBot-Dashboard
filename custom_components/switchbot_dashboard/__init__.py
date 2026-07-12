@@ -10,6 +10,7 @@ from .const import (
     CONF_SECRET,
     CONF_DEVICE_ID,
     CONF_AUTO_REFRESH,
+    CONF_DRY_RUN,
     CONF_MAX_ITEMS,
     CONF_WIDGETS,
     MAX_ITEMS,
@@ -48,6 +49,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
         widgets=widgets,
         max_items=conf.get(CONF_MAX_ITEMS, MAX_ITEMS),
         auto_refresh=conf.get(CONF_AUTO_REFRESH, True),
+        dry_run=conf.get(CONF_DRY_RUN, False),
     )
 
 
@@ -64,6 +66,7 @@ async def async_setup_entry(hass: HomeAssistant, entry):
         widgets=data.get(CONF_WIDGETS),
         max_items=data.get(CONF_MAX_ITEMS, MAX_ITEMS),
         auto_refresh=True,
+        dry_run=data.get(CONF_DRY_RUN, False),
     )
 
 
@@ -87,6 +90,7 @@ async def _async_setup_integration(
     widgets,
     max_items: int,
     auto_refresh: bool,
+    dry_run: bool = False,
 ):
 
     api = SwitchBotAPI(token, secret, device_id)
@@ -95,6 +99,14 @@ async def _async_setup_integration(
     hass.data[DOMAIN]["api"] = api
     hass.data[DOMAIN][CONF_WIDGETS] = widgets
     hass.data[DOMAIN][CONF_MAX_ITEMS] = max_items
+    hass.data[DOMAIN][CONF_DRY_RUN] = dry_run
+
+    if dry_run:
+        _LOGGER.warning(
+            "Dry run enabled: dashboard is only published to %s, "
+            "nothing is sent to the device",
+            "sensor.switchbot_dashboard",
+        )
 
     await async_register_services(hass)
 
@@ -104,6 +116,7 @@ async def _async_setup_integration(
             api=api,
             configs=widgets,
             max_items=max_items,
+            dry_run=dry_run,
         )
         hass.data[DOMAIN]["updater"] = updater
         await updater.async_start()

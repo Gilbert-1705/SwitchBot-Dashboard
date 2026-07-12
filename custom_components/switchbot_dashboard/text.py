@@ -20,6 +20,30 @@ def shorten(value: str, max_length: int) -> str:
     return value[: max_length - 1].rstrip() + ELLIPSIS
 
 
+def cap_bytes(value: str, max_bytes: int) -> str:
+    """Kürzt einen Text auf max_bytes (UTF-8), ohne Zeichen zu zerschneiden.
+
+    Die SwitchBot-API lehnt Payloads über ~300 Bytes mit
+    statusCode 190 ("invalid params") ab. Emojis belegen 4 Bytes.
+    """
+
+    encoded = value.encode("utf-8")
+
+    if len(encoded) <= max_bytes:
+        return value
+
+    # An Zeichengrenze abschneiden
+    truncated = encoded[:max_bytes]
+
+    while truncated:
+        try:
+            return truncated.decode("utf-8")
+        except UnicodeDecodeError:
+            truncated = truncated[:-1]
+
+    return ""
+
+
 def join_names(names: list[str], max_names: int = 2) -> str:
     """Verbindet Namen kompakt: 'A', 'A+B', 'A+2'."""
 

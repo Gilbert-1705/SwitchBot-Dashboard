@@ -63,6 +63,13 @@ class FakeState:
 class FakeHass:
 
     def __init__(self, states=None):
+        # per async_set gesetzte States (z.B. Preview-Entity)
+        self.set_states: dict = {}
+
+        def async_set(entity_id, state, attributes=None):
+            self.set_states[entity_id] = (state, attributes or {})
+
         self.states = types.SimpleNamespace(
-            get=(states or {}).get
+            get=(states or {}).get,
+            async_set=async_set,
         )

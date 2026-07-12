@@ -1,7 +1,13 @@
 from homeassistant.core import HomeAssistant, ServiceCall
 
-from .const import CONF_MAX_ITEMS, CONF_WIDGETS, DOMAIN, MAX_ITEMS
-from .render import render_dashboard
+from .const import (
+    CONF_DRY_RUN,
+    CONF_MAX_ITEMS,
+    CONF_WIDGETS,
+    DOMAIN,
+    MAX_ITEMS,
+)
+from .render import publish_preview, render_dashboard
 
 
 async def async_send_text(call: ServiceCall):
@@ -38,6 +44,13 @@ async def async_preview(call: ServiceCall):
         configs=data.get(CONF_WIDGETS),
         max_items=data.get(CONF_MAX_ITEMS, MAX_ITEMS),
     )
+
+    dry_run = data.get(CONF_DRY_RUN, False)
+
+    publish_preview(call.hass, text, sent=not dry_run)
+
+    if dry_run:
+        return
 
     await data["api"].send_text(text)
 
