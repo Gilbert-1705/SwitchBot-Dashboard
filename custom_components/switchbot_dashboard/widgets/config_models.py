@@ -12,6 +12,7 @@ class EntityWidgetConfig(WidgetConfig):
     entity: str = ""
     icon: str = ""
     formatter: str = ""
+    importance: int = 10
 
 
 @dataclass(slots=True)
