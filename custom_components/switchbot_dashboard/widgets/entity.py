@@ -1,14 +1,18 @@
+import logging
+
 from homeassistant.core import HomeAssistant
 from homeassistant.core import State
 
 from .base import BaseWidget, DashboardItem
 from ..formatters.factory import FormatterFactory
 
+_LOGGER = logging.getLogger(__name__)
+
 
 class EntityWidget(BaseWidget):
     """Widget that renders the state of a Home Assistant entity."""
     requires_config = True
-    
+
     def __init__(
         self,
         hass: HomeAssistant,
@@ -16,12 +20,14 @@ class EntityWidget(BaseWidget):
         icon: str,
         formatter: str = "",
         priority: int = 100,
+        importance: int = 10,
     ):
         super().__init__(hass)
 
         self.entity = entity
         self.icon = icon
         self.priority = priority
+        self.importance = importance
         self.formatter = FormatterFactory.create(formatter)
 
     def get_state(self) -> State | None:
@@ -32,13 +38,11 @@ class EntityWidget(BaseWidget):
         state = self.get_state()
 
         if state is None:
-            print(f"{self.entity}: state is None")
+            _LOGGER.debug("%s: state is None", self.entity)
             return False
 
-        print(f"{self.entity}: state='{state.state}'")
-
         if state.state in ("unknown", "unavailable", None):
-            print(f"{self.entity}: unavailable")
+            _LOGGER.debug("%s: unavailable", self.entity)
             return False
 
         return True
@@ -55,10 +59,11 @@ class EntityWidget(BaseWidget):
 
         value = self.format_value(state)
 
-        print(f"Rendering {self.entity}: {value}")
+        _LOGGER.debug("Rendering %s: %s", self.entity, value)
 
         return DashboardItem(
             icon=self.icon,
             value=value,
             priority=self.priority,
+            importance=self.importance,
         )

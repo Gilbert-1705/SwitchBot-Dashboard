@@ -19,6 +19,8 @@ class WeatherWidget(EntityWidget):
             entity=Entities.WEATHER_TEMPERATURE,
             icon=Icons.TEMP,
             priority=100,
+            # Wetter gehört immer aufs Dashboard
+            importance=90,
         )
 
     def format_value(self, state):

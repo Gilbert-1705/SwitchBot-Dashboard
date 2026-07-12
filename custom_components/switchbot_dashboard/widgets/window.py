@@ -39,10 +39,12 @@ class WindowWidget(BaseWidget):
                 icon="",
                 value=Icons.CLOSED,
                 priority=self.priority,
+                importance=15,
             )
 
         return DashboardItem(
             icon=Icons.OPEN,
             value="+".join(open_rooms),
             priority=self.priority,
+            importance=65,
         )

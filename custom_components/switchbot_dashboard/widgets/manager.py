@@ -77,6 +77,7 @@ class WidgetManager:
                         icon=cfg.icon,
                         formatter=cfg.formatter,
                         priority=cfg.priority,
+                        importance=cfg.importance,
                     )
                 )
                 continue

@@ -66,10 +66,13 @@ class WasteWidget(BaseWidget):
 
         if days == 0:
             value = f"{waste_text} Heute"
+            importance = 85
         elif days == 1:
             value = f"{waste_text} Morgen"
+            importance = 75
         else:
             value = f"{waste_text} {days}T"
+            importance = 50
 
         _LOGGER.debug(
             "Next waste: %s (%s days) -> %s",
@@ -82,4 +85,5 @@ class WasteWidget(BaseWidget):
             icon=Icons.WASTE,
             value=value,
             priority=self.priority,
+            importance=importance,
         )
