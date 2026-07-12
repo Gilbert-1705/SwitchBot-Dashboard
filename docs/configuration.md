@@ -18,6 +18,7 @@ switchbot_dashboard:
   device_id: !secret switchbot_device_id
   max_items: 5          # optional, Anzahl gleichzeitig sichtbarer Widgets
   auto_refresh: true    # optional, event-getriebener Auto-Refresh
+  dry_run: false        # optional, true = nur lokale Preview, kein API-Call
 
   widgets:
     - type: weather
@@ -86,6 +87,18 @@ per minute (SwitchBot recommendation). A periodic refresh every
 `switchbot_dashboard.refresh` service forces an immediate update and
 bypasses the rate limit; `preview` renders and sends once without the
 updater.
+
+## Local preview (development)
+
+The integration mirrors every rendered line to a local entity,
+`sensor.switchbot_dashboard` — state is the display text, attributes
+show `sent_to_device` and `rendered_at`. Add it to any Lovelace card
+or watch it in Developer Tools → States to iterate on widgets without
+looking at the e-paper.
+
+With `dry_run: true` the SwitchBot API is never called: the dashboard
+only updates the preview entity. Ideal for development — no device,
+no rate limit, full priority-engine behavior.
 
 Configuration errors are reported in the Home Assistant log with widget position, type and field, e.g. `Widget 3 (window): unknown option 'entitys'. Available: entities, mode, priority`.
 

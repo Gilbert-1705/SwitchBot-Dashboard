@@ -151,3 +151,16 @@ the five most relevant pieces of information for this moment.
 
 - Shared test helpers (`tests/helpers.py`) replace per-file stubs.
 - Removed unused `BaseWidget.enabled()`/`NAME`; lint cleanup.
+
+
+## [1.2.0] - 2026-07-12
+
+### Added
+
+- Local preview entity `sensor.switchbot_dashboard`: mirrors every
+  rendered display line in Home Assistant (attributes:
+  `sent_to_device`, `rendered_at`) — for development, dashboards and
+  history without looking at the e-paper.
+- `dry_run` option: render and publish the preview entity only, never
+  call the SwitchBot API. Development mode without device and rate
+  limit.

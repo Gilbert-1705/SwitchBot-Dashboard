@@ -161,5 +161,67 @@ class UpdaterTest(unittest.TestCase):
         self.assertEqual(api.sent, ["P 380W", "P 500W"])
 
 
+class PreviewEntityTest(unittest.TestCase):
+    """Lokale Preview-Entity sensor.switchbot_dashboard."""
+
+    PREVIEW = "sensor.switchbot_dashboard"
+
+    def _updater(self, hass, api, dry_run=False):
+        return DashboardUpdater(
+            hass,
+            api=api,
+            configs=[
+                EntityWidgetConfig(
+                    type="entity", entity="s", icon="P",
+                    formatter="power",
+                ),
+            ],
+            max_items=5,
+            min_interval=0,
+            dry_run=dry_run,
+        )
+
+    def test_preview_entity_mirrors_display(self):
+
+        api = FakeAPI()
+        hass = FakeHass({"s": FakeState("380")})
+
+        asyncio.run(self._updater(hass, api).async_refresh())
+
+        state, attrs = hass.set_states[self.PREVIEW]
+        self.assertEqual(state, "P 380W")
+        self.assertTrue(attrs["sent_to_device"])
+
+    def test_preview_updates_even_when_send_skipped(self):
+
+        api = FakeAPI()
+        hass = FakeHass({"s": FakeState("380")})
+        updater = self._updater(hass, api)
+
+        asyncio.run(updater.async_refresh())
+        hass.set_states.clear()
+        asyncio.run(updater.async_refresh())  # unverändert -> kein Send
+
+        state, attrs = hass.set_states[self.PREVIEW]
+        self.assertEqual(state, "P 380W")
+        self.assertFalse(attrs["sent_to_device"])
+
+    def test_dry_run_never_calls_api(self):
+
+        api = FakeAPI()
+        state = FakeState("380")
+        hass = FakeHass({"s": state})
+        updater = self._updater(hass, api, dry_run=True)
+
+        asyncio.run(updater.async_refresh())
+        state.state = "500"
+        asyncio.run(updater.async_refresh(force=True))
+
+        self.assertEqual(api.sent, [])
+        preview_state, attrs = hass.set_states[self.PREVIEW]
+        self.assertEqual(preview_state, "P 500W")
+        self.assertFalse(attrs["sent_to_device"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -6,6 +6,10 @@ CONF_DEVICE_ID = "device_id"
 CONF_WIDGETS = "widgets"
 CONF_MAX_ITEMS = "max_items"
 CONF_AUTO_REFRESH = "auto_refresh"
+CONF_DRY_RUN = "dry_run"
+
+# Lokale Preview-Entity: zeigt die aktuell gerenderte Displayzeile
+PREVIEW_ENTITY_ID = "sensor.switchbot_dashboard"
 
 API_URL = "https://api.switch-bot.com/v1.1/devices/{device_id}/commands"
 
