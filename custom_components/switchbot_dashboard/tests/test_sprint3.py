@@ -5,31 +5,11 @@ Ausführen (vom Repo-Root):
     python3 custom_components/switchbot_dashboard/tests/test_sprint3.py
 """
 
-import sys
-import types
 import unittest
 from datetime import date, timedelta
-from pathlib import Path
 
-# Repo-Root auf den Pfad legen, damit der Test direkt ausführbar ist
-sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-
-# Home-Assistant- und aiohttp-Abhängigkeiten stubben, damit die
-# Tests ohne installierte Home-Assistant-Umgebung laufen.
-if "homeassistant" not in sys.modules:
-    ha = types.ModuleType("homeassistant")
-    ha_core = types.ModuleType("homeassistant.core")
-    ha_core.HomeAssistant = object
-    ha_core.State = object
-    ha_core.ServiceCall = object
-    ha.core = ha_core
-    sys.modules["homeassistant"] = ha
-    sys.modules["homeassistant.core"] = ha_core
-
-if "aiohttp" not in sys.modules:
-    aiohttp = types.ModuleType("aiohttp")
-    aiohttp.ClientSession = object
-    sys.modules["aiohttp"] = aiohttp
+import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
+from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.config.entities import Entities
 from custom_components.switchbot_dashboard.dashboard.item import DashboardItem
@@ -42,28 +22,6 @@ from custom_components.switchbot_dashboard.widgets.calendar import (
 )
 from custom_components.switchbot_dashboard.widgets.door import DoorWidget
 from custom_components.switchbot_dashboard.widgets.window import WindowWidget
-
-
-class FakeState:
-
-    def __init__(self, state, attributes=None):
-        self.state = state
-        self.attributes = attributes or {}
-
-
-class FakeStates:
-
-    def __init__(self, states):
-        self._states = states
-
-    def get(self, entity_id):
-        return self._states.get(entity_id)
-
-
-class FakeHass:
-
-    def __init__(self, states):
-        self.states = FakeStates(states)
 
 
 class DoorWidgetTest(unittest.TestCase):

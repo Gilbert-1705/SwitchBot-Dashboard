@@ -5,46 +5,16 @@ Ausführen (vom Repo-Root):
     python3 custom_components/switchbot_dashboard/tests/test_energy.py
 """
 
-import sys
-import types
 import unittest
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-
-if "homeassistant" not in sys.modules:
-    ha = types.ModuleType("homeassistant")
-    ha_core = types.ModuleType("homeassistant.core")
-    ha_core.HomeAssistant = object
-    ha_core.State = object
-    ha_core.ServiceCall = object
-    ha.core = ha_core
-    sys.modules["homeassistant"] = ha
-    sys.modules["homeassistant.core"] = ha_core
-
-if "aiohttp" not in sys.modules:
-    aiohttp = types.ModuleType("aiohttp")
-    aiohttp.ClientSession = object
-    sys.modules["aiohttp"] = aiohttp
+import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
+from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.widgets.battery import (
     BatteryWidget,
 )
 from custom_components.switchbot_dashboard.widgets.ev import EvWidget
 from custom_components.switchbot_dashboard.widgets.solar import SolarWidget
-
-
-class FakeState:
-
-    def __init__(self, state):
-        self.state = state
-        self.attributes = {}
-
-
-class FakeHass:
-
-    def __init__(self, states):
-        self.states = types.SimpleNamespace(get=states.get)
 
 
 class SolarWidgetTest(unittest.TestCase):

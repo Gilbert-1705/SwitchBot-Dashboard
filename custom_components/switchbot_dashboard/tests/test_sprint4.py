@@ -5,27 +5,10 @@ Ausführen (vom Repo-Root):
     python3 custom_components/switchbot_dashboard/tests/test_sprint4.py
 """
 
-import sys
-import types
 import unittest
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-
-if "homeassistant" not in sys.modules:
-    ha = types.ModuleType("homeassistant")
-    ha_core = types.ModuleType("homeassistant.core")
-    ha_core.HomeAssistant = object
-    ha_core.State = object
-    ha_core.ServiceCall = object
-    ha.core = ha_core
-    sys.modules["homeassistant"] = ha
-    sys.modules["homeassistant.core"] = ha_core
-
-if "aiohttp" not in sys.modules:
-    aiohttp = types.ModuleType("aiohttp")
-    aiohttp.ClientSession = object
-    sys.modules["aiohttp"] = aiohttp
+import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
+from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.icons import Icons
 from custom_components.switchbot_dashboard.text import join_names, shorten
@@ -34,19 +17,6 @@ from custom_components.switchbot_dashboard.widgets.presence import (
     PresenceWidget,
 )
 from custom_components.switchbot_dashboard.widgets.window import WindowWidget
-
-
-class FakeState:
-
-    def __init__(self, state, attributes=None):
-        self.state = state
-        self.attributes = attributes or {}
-
-
-class FakeHass:
-
-    def __init__(self, states):
-        self.states = types.SimpleNamespace(get=states.get)
 
 
 class TextTest(unittest.TestCase):

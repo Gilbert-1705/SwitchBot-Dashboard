@@ -47,16 +47,21 @@
 - [ ] Icon-Kompatibilität am Gerät dokumentieren (welche Emojis rendert die Firmware?)
 - [ ] Erstes GitHub-Release (Semver, Release Notes aus CHANGELOG)
 
-## Backlog / Technische Schulden
+## v1.1 ✅ Backlog-Abbau
 
-- [ ] refresh-Service implementieren: event-driven Refresh mit
-      State-Listener, Debounce und Rate-Limit (max. 1 Call/min)
-- [ ] Config Flow (UI-Setup statt YAML für token/secret/device_id)
-- [ ] Gemeinsame Test-Helpers (FakeHass/FakeState) nach tests/helpers.py
-- [ ] enabled() / visible nutzen oder entfernen
-- [ ] Weitere Widgets: Batterie, Luftqualität, VPN/Serverstatus,
-      Strompreis, PV, Wallbox
-- [ ] Doppelte Leerzeilen nach Docstrings aufräumen (Lint)
+- [x] Event-driven Refresh: State-Listener, 5s Debounce, 60s Rate-Limit,
+      Änderungserkennung, periodischer Refresh (Datumswechsel)
+- [x] refresh-Service erzwingt sofortiges Update
+- [x] Config Flow (UI-Setup für token/secret/device_id, de/en)
+- [x] Gemeinsame Test-Helpers (tests/helpers.py)
+- [x] enabled()/NAME entfernt, Lint-Aufräumen
+
+## Backlog
+
+- [ ] Weitere Widgets nach Bedarf: Luftqualität, VPN/Serverstatus,
+      Strompreis, Wallbox
+- [ ] Options Flow (max_items/auto_refresh in der UI ändern)
+- [ ] Refresh am Gerät testen (Debounce/Rate-Limit-Verhalten live)
 
 ## Vision v1.0
 

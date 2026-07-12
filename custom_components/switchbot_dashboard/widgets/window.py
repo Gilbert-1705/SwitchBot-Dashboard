@@ -24,7 +24,6 @@ class WindowWidget(BaseWidget):
     und wird deshalb nur als Hintergrundinfo gewichtet.
     """
 
-
     def __init__(
         self,
         hass,
