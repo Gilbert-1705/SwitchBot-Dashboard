@@ -26,7 +26,6 @@ class FuelWidget(BaseWidget):
         sonst                            -> ausgeblendet
     """
 
-    requires_config = True
 
     def __init__(
         self,

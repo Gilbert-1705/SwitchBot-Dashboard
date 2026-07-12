@@ -11,17 +11,24 @@ TREND_ICONS = {
 
 class WeatherWidget(EntityWidget):
 
-    requires_config = False
-
-    def __init__(self, hass):
+    def __init__(
+        self,
+        hass,
+        temperature_entity: str = Entities.WEATHER_TEMPERATURE,
+        trend_entity: str = Entities.WEATHER_TREND,
+        icon: str = Icons.TEMP,
+        priority: int = 100,
+        # Wetter gehört immer aufs Dashboard
+        importance: int = 90,
+    ):
         super().__init__(
             hass=hass,
-            entity=Entities.WEATHER_TEMPERATURE,
-            icon=Icons.TEMP,
-            priority=100,
-            # Wetter gehört immer aufs Dashboard
-            importance=90,
+            entity=temperature_entity,
+            icon=icon,
+            priority=priority,
+            importance=importance,
         )
+        self.trend_entity = trend_entity
 
     def format_value(self, state):
 
@@ -31,7 +38,7 @@ class WeatherWidget(EntityWidget):
             return "?"
 
         trend = self.hass.states.get(
-            Entities.WEATHER_TREND
+            self.trend_entity
         )
 
         icon = ""

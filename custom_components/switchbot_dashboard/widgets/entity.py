@@ -11,7 +11,6 @@ _LOGGER = logging.getLogger(__name__)
 
 class EntityWidget(BaseWidget):
     """Widget that renders the state of a Home Assistant entity."""
-    requires_config = True
 
     def __init__(
         self,

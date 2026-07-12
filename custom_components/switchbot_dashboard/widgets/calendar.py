@@ -19,7 +19,6 @@ class CalendarWidget(BaseWidget):
         X Tage  -> "Oma 3T"
     """
 
-    requires_config = True
 
     def __init__(
         self,

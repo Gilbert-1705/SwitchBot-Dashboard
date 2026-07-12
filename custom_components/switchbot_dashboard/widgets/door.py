@@ -21,16 +21,22 @@ DOOR_STATES = {
 
 class DoorWidget(BaseWidget):
 
-    requires_config = False
-
-    def __init__(self, hass):
+    def __init__(
+        self,
+        hass,
+        lock_entity: str = Entities.DOOR_LOCK,
+        contact_entity: str = Entities.DOOR_CONTACT,
+        priority: int = 300,
+    ):
         super().__init__(hass)
-        self.priority = 300
+        self.lock_entity = lock_entity
+        self.contact_entity = contact_entity
+        self.priority = priority
 
     def render(self):
 
-        lock = self.hass.states.get(Entities.DOOR_LOCK)
-        contact = self.hass.states.get(Entities.DOOR_CONTACT)
+        lock = self.hass.states.get(self.lock_entity)
+        contact = self.hass.states.get(self.contact_entity)
 
         if lock is None or contact is None:
             return None
