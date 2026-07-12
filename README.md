@@ -18,7 +18,7 @@ And on a quiet day:
 
 ## Status
 
-🚧 In development (v0.3.0) — Sprint 4 of 6, see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v1.0.0) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
