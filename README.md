@@ -41,6 +41,7 @@ The priority engine collects all visible items, keeps the five most important on
 | Calendar | `🎂 Oma`, `📅 Zahnarzt 2T` | Birthdays, appointments, holidays, vacation |
 | Presence | `⌂ Jan+Anna` / `⌂ Leer` | Who is home; an empty house ranks higher |
 | Fuel | `⛽ Tanken 1.65` | Tank level (% or liters) + refuel recommendation based on level and price thresholds |
+| Appliance | `🧺 WM Fertig` | Washer/dryer finished, until manually reset (see [examples](docs/examples.md)) |
 
 ## Configuration
 

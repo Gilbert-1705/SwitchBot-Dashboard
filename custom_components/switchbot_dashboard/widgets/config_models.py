@@ -36,6 +36,16 @@ class PresenceWidgetConfig(WidgetConfig):
 
 
 @dataclass(slots=True)
+class ApplianceWidgetConfig(WidgetConfig):
+    # Kurzname fürs Display, z.B. "WM" oder "TR"
+    name: str = ""
+    running_entity: str = ""
+    # input_boolean: an = fertig, aber noch nicht geleert
+    done_entity: str = ""
+    icon: str = ""
+
+
+@dataclass(slots=True)
 class FuelWidgetConfig(WidgetConfig):
     level_entity: str = ""
     price_entity: str = ""

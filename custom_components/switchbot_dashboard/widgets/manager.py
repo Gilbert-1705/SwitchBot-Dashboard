@@ -1,6 +1,8 @@
+from .appliance import ApplianceWidget
 from .calendar import CalendarWidget
 from .config import WIDGETS
 from .config_models import (
+    ApplianceWidgetConfig,
     CalendarWidgetConfig,
     EntityWidgetConfig,
     FuelWidgetConfig,
@@ -26,6 +28,7 @@ WIDGET_TYPES = {
     "calendar": CalendarWidget,
     "presence": PresenceWidget,
     "fuel": FuelWidget,
+    "appliance": ApplianceWidget,
 }
 
 
@@ -56,6 +59,20 @@ class WidgetManager:
                     widget_cls(
                         hass=self.hass,
                         entities=cfg.entities,
+                        priority=cfg.priority,
+                    )
+                )
+                continue
+
+            # Haushaltsgeräte-Widget
+            if isinstance(cfg, ApplianceWidgetConfig):
+                widgets.append(
+                    widget_cls(
+                        hass=self.hass,
+                        name=cfg.name,
+                        running_entity=cfg.running_entity,
+                        done_entity=cfg.done_entity,
+                        icon=cfg.icon,
                         priority=cfg.priority,
                     )
                 )

@@ -64,6 +64,10 @@ and this project follows Semantic Versioning.
   refuel recommendation based on configurable level and price thresholds
   ("⛽ Tanken 1.65").
 - Text helpers (`shorten`, `join_names`) for the narrow e-paper display.
+- Appliance widget for washer/dryer: "🧺 WM Fertig" until manually reset
+  via an input_boolean (resettable through the Weather Station's Matter
+  buttons); "🧺 WM läuft" as background info. Example automations in
+  docs/examples.md.
 
 ### Changed
 

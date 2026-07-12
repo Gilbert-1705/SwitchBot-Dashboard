@@ -29,3 +29,5 @@ class Icons:
 
     HOME = "⌂"
     FUEL = "⛽"
+
+    LAUNDRY = "🧺"
