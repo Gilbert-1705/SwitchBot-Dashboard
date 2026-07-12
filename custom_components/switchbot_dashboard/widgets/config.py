@@ -25,9 +25,12 @@ WIDGETS = [
     WindowWidgetConfig(
         type="window",
         entities={
-            Entities.WINDOW_1: "Wohnen",
-            Entities.WINDOW_2: "Essen",
+            Entities.WINDOW_1: "Balkon 1",
+            Entities.WINDOW_2: "Balkon 2",
         },
+        # Beide Türen gehören zum selben Balkon - nur der Zustand
+        # zählt: "○ Offen", "○ Gekippt", "○ Offen+Gekippt"
+        mode="state",
         priority=250,
     ),
     WidgetConfig(
