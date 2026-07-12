@@ -1,4 +1,5 @@
-from ..const import MAX_ITEMS
+from ..const import MAX_ITEMS, MAX_VALUE_LENGTH, SEPARATOR
+from ..text import shorten
 from .item import DashboardItem
 
 
@@ -42,7 +43,7 @@ class DashboardRenderer:
 
     def render(self):
 
-        return "   ".join(
-            f"{item.icon} {item.value}".strip()
+        return SEPARATOR.join(
+            f"{item.icon} {shorten(item.value, MAX_VALUE_LENGTH)}".strip()
             for item in self.select()
         )
