@@ -36,7 +36,7 @@ The priority engine collects all visible items, keeps the five most important on
 | Weather | `🌡 21°C ☀` | Temperature + trend |
 | Entity | `P 380W` | Any entity with a formatter (power, number, …) |
 | Door | `🚪 Zu` / `! Offen` | Smart lock + contact sensor combined: Zu, Auf, Offen, Warnung |
-| Window | `○ Wohnen+Essen` | Open rooms by name, `●` when everything is closed |
+| Window | `○ Wohnen+Essen` / `○ Gekippt` | Open rooms by name (`mode="rooms"`) or compact state only (`mode="state"`), `●` when everything is closed |
 | Waste | `🗑 Rest Morgen` | Next waste collection within 3 days |
 | Calendar | `🎂 Oma`, `📅 Zahnarzt 2T` | Birthdays, appointments, holidays, vacation |
 | Presence | `⌂ Jan+Anna` / `⌂ Leer` | Who is home; an empty house ranks higher |
