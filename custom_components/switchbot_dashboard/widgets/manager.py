@@ -53,8 +53,20 @@ class WidgetManager:
                 widgets.append(widget_cls(self.hass))
                 continue
 
-            # Fenster- und Anwesenheits-Widget
-            if isinstance(cfg, (WindowWidgetConfig, PresenceWidgetConfig)):
+            # Fenster-Widget
+            if isinstance(cfg, WindowWidgetConfig):
+                widgets.append(
+                    widget_cls(
+                        hass=self.hass,
+                        entities=cfg.entities,
+                        mode=cfg.mode,
+                        priority=cfg.priority,
+                    )
+                )
+                continue
+
+            # Anwesenheits-Widget
+            if isinstance(cfg, PresenceWidgetConfig):
                 widgets.append(
                     widget_cls(
                         hass=self.hass,

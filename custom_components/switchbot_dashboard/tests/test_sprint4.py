@@ -118,6 +118,44 @@ class WindowStatesTest(unittest.TestCase):
         self.assertEqual(item.value, "●")
 
 
+class WindowStateModeTest(unittest.TestCase):
+    """mode='state': Zustand statt Raumnamen (Balkontüren)."""
+
+    ENTITIES = {"a": "Balkon 1", "b": "Balkon 2"}
+
+    def _render(self, a, b):
+        hass = FakeHass({
+            "a": FakeState(a),
+            "b": FakeState(b),
+        })
+        return WindowWidget(
+            hass, entities=self.ENTITIES, mode="state"
+        ).render()
+
+    def test_all_closed(self):
+        item = self._render("Geschlossen", "Geschlossen")
+        self.assertEqual(item.value, "●")
+
+    def test_open_shows_state_not_names(self):
+        item = self._render("Offen", "Geschlossen")
+        self.assertEqual(item.value, "Offen")
+        self.assertEqual(item.importance, 65)
+
+    def test_both_open_still_short(self):
+        item = self._render("Offen", "Offen")
+        self.assertEqual(item.value, "Offen")
+
+    def test_tilted_is_background_info(self):
+        item = self._render("Gekippt", "Gekippt")
+        self.assertEqual(item.value, "Gekippt")
+        self.assertEqual(item.importance, 25)
+
+    def test_mixed_states(self):
+        item = self._render("Offen", "Gekippt")
+        self.assertEqual(item.value, "Offen+Gekippt")
+        self.assertEqual(item.importance, 65)
+
+
 class PresenceWidgetTest(unittest.TestCase):
 
     ENTITIES = {"p1": "Jan", "p2": "Anna"}

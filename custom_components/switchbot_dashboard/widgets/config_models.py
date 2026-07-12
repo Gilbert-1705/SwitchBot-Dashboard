@@ -19,6 +19,9 @@ class EntityWidgetConfig(WidgetConfig):
 class WindowWidgetConfig(WidgetConfig):
     # entity_id -> Raumname
     entities: dict[str, str] | None = None
+    # "rooms": Raumnamen anzeigen, "state": nur Zustand
+    # (Offen/Gekippt) - kompakt, für zusammengehörende Sensoren
+    mode: str = "rooms"
 
 
 @dataclass(slots=True)
