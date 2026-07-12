@@ -171,3 +171,28 @@ the five most relevant pieces of information for this moment.
 - docs: official display constraints (byte limit, no line breaks,
   simple emojis, empty string clears the page, custom page must be
   selected on the device).
+
+
+## [2.0.0] - 2026-07-12
+
+Priority Engine 2.0. 🧠
+
+### Added
+
+- Official importance bands: 0-20 filler / 21-59 normal / 60+ always
+  shown / 100 alarm (constants in const.py, documented semantics for
+  widget authors).
+- Quiet mode: filler items never push the display beyond
+  `quiet_max_items` (default 3) - a calm day shows a calm display
+  instead of five slots of background noise.
+- Time-based importance (`ramp.time_based_importance`): information
+  gets more urgent over time based on `state.last_changed`. The
+  appliance done reminder ramps 30 → 60 (1 h) → 100 (3 h).
+- German README (README.de.md).
+
+### Changed
+
+- All code comments and docstrings are English now; user-facing
+  display strings stay German.
+- Appliance done reminder starts as a side note (30) instead of a
+  fixed 80 and grows louder the longer the laundry waits.

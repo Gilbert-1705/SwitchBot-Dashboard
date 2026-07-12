@@ -56,14 +56,14 @@
 - [x] Gemeinsame Test-Helpers (tests/helpers.py)
 - [x] enabled()/NAME entfernt, Lint-Aufräumen
 
-## v2.0 🚧 Priority Engine 2.0
+## v2.0 ✅ Priority Engine 2.0
 
-- [ ] Sprach-Cleanup: Code durchgehend Englisch, README.de.md
-- [ ] Importance-Bänder als offizielle Semantik:
+- [x] Sprach-Cleanup: Code durchgehend Englisch, README.de.md
+- [x] Importance-Bänder als offizielle Semantik:
       0-20 Füller / 21-59 normal / 60+ immer / 100 Alarm
-- [ ] Zeitrampe: Wichtigkeit steigt mit Dauer (state.last_changed),
-      z.B. "WM Fertig": 30 → 60 → 100
-- [ ] Ruhemodus: ruhiger Tag zeigt weniger Items statt 5 voller Slots
+- [x] Zeitrampe: Wichtigkeit steigt mit Dauer (state.last_changed),
+      "WM Fertig": 30 → 60 (1h) → 100 (3h)
+- [x] Ruhemodus: quiet_max_items (Standard 3), Füller verdrängen nichts
 
 ## v2.1 Smart Alerts
 

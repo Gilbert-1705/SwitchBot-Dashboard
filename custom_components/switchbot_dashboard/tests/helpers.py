@@ -54,9 +54,10 @@ if "aiohttp" not in sys.modules:
 
 class FakeState:
 
-    def __init__(self, state, attributes=None):
+    def __init__(self, state, attributes=None, last_changed=None):
         self.state = state
         self.attributes = attributes or {}
+        self.last_changed = last_changed
 
 
 class FakeHass:

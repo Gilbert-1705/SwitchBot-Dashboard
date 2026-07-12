@@ -27,6 +27,7 @@ from homeassistant.helpers.event import (
     async_track_time_interval,
 )
 
+from .const import QUIET_MAX_ITEMS
 from .render import publish_preview, render_dashboard
 
 _LOGGER = logging.getLogger(__name__)
@@ -75,6 +76,7 @@ class DashboardUpdater:
         min_interval: float = MIN_SEND_INTERVAL,
         interval: float = PERIODIC_REFRESH,
         dry_run: bool = False,
+        quiet_max_items: int = QUIET_MAX_ITEMS,
     ):
         self.hass = hass
         self.api = api
@@ -83,6 +85,7 @@ class DashboardUpdater:
         self.debounce = debounce
         self.min_interval = min_interval
         self.interval = interval
+        self.quiet_max_items = quiet_max_items
         # dry_run: only update the local preview entity, never
         # call the SwitchBot API (development)
         self.dry_run = dry_run
@@ -173,7 +176,10 @@ class DashboardUpdater:
     async def async_refresh(self, force: bool = False):
 
         text = render_dashboard(
-            self.hass, self.configs, self.max_items
+            self.hass,
+            self.configs,
+            self.max_items,
+            self.quiet_max_items,
         )
 
         if not self.should_send(text, force=force):

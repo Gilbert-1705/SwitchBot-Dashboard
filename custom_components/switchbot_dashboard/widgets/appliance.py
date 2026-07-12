@@ -1,9 +1,14 @@
 from .base import BaseWidget, DashboardItem
+from ..ramp import time_based_importance
 
 # States are compared case-insensitively; appliance sensors
 # report e.g. "run", "pause", "stop"
 RUNNING_STATES = ("on", "true", "running", "run")
 PAUSED_STATES = ("pause", "paused")
+
+# The done reminder gets more urgent the longer the laundry waits:
+# side note right away, prominent after 1 h, top priority after 3 h
+DONE_RAMP = ((0, 30), (3600, 60), (10800, 100))
 
 
 class ApplianceWidget(BaseWidget):
@@ -50,12 +55,18 @@ class ApplianceWidget(BaseWidget):
                 importance=15,
             )
 
-        if self._state(self.done_entity) in RUNNING_STATES:
+        done = self.hass.states.get(self.done_entity)
+
+        if done is not None and str(done.state).lower() in RUNNING_STATES:
             return DashboardItem(
                 icon=self.icon,
                 value=f"{self.name} Fertig",
                 priority=self.priority,
-                importance=80,
+                # The longer the laundry waits, the louder the reminder
+                importance=time_based_importance(
+                    getattr(done, "last_changed", None),
+                    DONE_RAMP,
+                ),
             )
 
         if running in PAUSED_STATES:

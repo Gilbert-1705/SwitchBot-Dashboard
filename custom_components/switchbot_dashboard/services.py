@@ -3,9 +3,11 @@ from homeassistant.core import HomeAssistant, ServiceCall
 from .const import (
     CONF_DRY_RUN,
     CONF_MAX_ITEMS,
+    CONF_QUIET_MAX_ITEMS,
     CONF_WIDGETS,
     DOMAIN,
     MAX_ITEMS,
+    QUIET_MAX_ITEMS,
 )
 from .render import publish_preview, render_dashboard
 
@@ -43,6 +45,7 @@ async def async_preview(call: ServiceCall):
         call.hass,
         configs=data.get(CONF_WIDGETS),
         max_items=data.get(CONF_MAX_ITEMS, MAX_ITEMS),
+        quiet_max_items=data.get(CONF_QUIET_MAX_ITEMS, QUIET_MAX_ITEMS),
     )
 
     dry_run = data.get(CONF_DRY_RUN, False)

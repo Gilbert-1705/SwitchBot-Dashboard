@@ -2,15 +2,23 @@
 
 from datetime import datetime
 
-from .const import MAX_ITEMS, PREVIEW_ENTITY_ID
+from .const import MAX_ITEMS, PREVIEW_ENTITY_ID, QUIET_MAX_ITEMS
 from .dashboard import DashboardRenderer
 from .widgets.manager import WidgetManager
 
 
-def render_dashboard(hass, configs=None, max_items: int = MAX_ITEMS) -> str:
+def render_dashboard(
+    hass,
+    configs=None,
+    max_items: int = MAX_ITEMS,
+    quiet_max_items: int = QUIET_MAX_ITEMS,
+) -> str:
     """Renders all widgets into one display line."""
 
-    renderer = DashboardRenderer(max_items=max_items)
+    renderer = DashboardRenderer(
+        max_items=max_items,
+        quiet_max_items=quiet_max_items,
+    )
     manager = WidgetManager(hass, configs=configs)
 
     for widget in manager.widgets():

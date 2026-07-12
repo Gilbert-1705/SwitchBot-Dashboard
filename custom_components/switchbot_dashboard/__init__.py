@@ -12,8 +12,10 @@ from .const import (
     CONF_AUTO_REFRESH,
     CONF_DRY_RUN,
     CONF_MAX_ITEMS,
+    CONF_QUIET_MAX_ITEMS,
     CONF_WIDGETS,
     MAX_ITEMS,
+    QUIET_MAX_ITEMS,
 )
 from .services import async_register_services
 from .updater import DashboardUpdater
@@ -50,6 +52,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
         max_items=conf.get(CONF_MAX_ITEMS, MAX_ITEMS),
         auto_refresh=conf.get(CONF_AUTO_REFRESH, True),
         dry_run=conf.get(CONF_DRY_RUN, False),
+        quiet_max_items=conf.get(CONF_QUIET_MAX_ITEMS, QUIET_MAX_ITEMS),
     )
 
 
@@ -91,6 +94,7 @@ async def _async_setup_integration(
     max_items: int,
     auto_refresh: bool,
     dry_run: bool = False,
+    quiet_max_items: int = QUIET_MAX_ITEMS,
 ):
 
     api = SwitchBotAPI(token, secret, device_id)
@@ -99,6 +103,7 @@ async def _async_setup_integration(
     hass.data[DOMAIN]["api"] = api
     hass.data[DOMAIN][CONF_WIDGETS] = widgets
     hass.data[DOMAIN][CONF_MAX_ITEMS] = max_items
+    hass.data[DOMAIN][CONF_QUIET_MAX_ITEMS] = quiet_max_items
     hass.data[DOMAIN][CONF_DRY_RUN] = dry_run
 
     if dry_run:
@@ -117,6 +122,7 @@ async def _async_setup_integration(
             configs=widgets,
             max_items=max_items,
             dry_run=dry_run,
+            quiet_max_items=quiet_max_items,
         )
         hass.data[DOMAIN]["updater"] = updater
         await updater.async_start()

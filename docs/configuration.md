@@ -19,6 +19,7 @@ switchbot_dashboard:
   max_items: 5          # optional, Anzahl gleichzeitig sichtbarer Widgets
   auto_refresh: true    # optional, event-getriebener Auto-Refresh
   dry_run: false        # optional, true = nur lokale Preview, kein API-Call
+  quiet_max_items: 3    # optional, max. Items an ruhigen Tagen
 
   widgets:
     - type: weather
