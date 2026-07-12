@@ -82,6 +82,42 @@ class WindowShorteningTest(unittest.TestCase):
         self.assertEqual(widget.render().value, "Wohnen+2")
 
 
+class WindowStatesTest(unittest.TestCase):
+    """Homematic-Zustände: Offen, Geschlossen, Gekippt, unknown."""
+
+    ENTITIES = {"a": "Wohnen", "b": "Essen"}
+
+    def _render(self, a, b):
+        hass = FakeHass({
+            "a": FakeState(a),
+            "b": FakeState(b),
+        })
+        return WindowWidget(hass, entities=self.ENTITIES).render()
+
+    def test_german_states_all_closed(self):
+        item = self._render("Geschlossen", "Geschlossen")
+        self.assertEqual(item.value, "●")
+
+    def test_offen_is_open(self):
+        item = self._render("Offen", "Geschlossen")
+        self.assertEqual(item.value, "Wohnen")
+        self.assertEqual(item.importance, 65)
+
+    def test_gekippt_shows_but_less_important(self):
+        item = self._render("Gekippt", "Geschlossen")
+        self.assertEqual(item.value, "Wohnen")
+        self.assertEqual(item.importance, 40)
+
+    def test_open_beats_tilted_importance(self):
+        item = self._render("Gekippt", "Offen")
+        self.assertEqual(item.value, "Essen+Wohnen")
+        self.assertEqual(item.importance, 65)
+
+    def test_unknown_is_skipped(self):
+        item = self._render("unknown", "Geschlossen")
+        self.assertEqual(item.value, "●")
+
+
 class PresenceWidgetTest(unittest.TestCase):
 
     ENTITIES = {"p1": "Jan", "p2": "Anna"}

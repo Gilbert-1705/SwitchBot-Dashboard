@@ -80,6 +80,18 @@ class ApplianceWidgetTest(unittest.TestCase):
     def test_idle_and_emptied_is_hidden(self):
         self.assertIsNone(self._render("off", "off"))
 
+    def test_run_state_shows_laeuft(self):
+        item = self._render("run", "off")
+        self.assertEqual(item.value, "WM läuft")
+
+    def test_pause_state_shows_pause(self):
+        item = self._render("pause", "off")
+        self.assertEqual(item.value, "WM Pause")
+        self.assertEqual(item.importance, 15)
+
+    def test_stop_state_is_hidden(self):
+        self.assertIsNone(self._render("stop", "off"))
+
     def test_missing_entities_hidden(self):
         hass = FakeHass({})
         widget = ApplianceWidget(

@@ -2,7 +2,11 @@ from .base import BaseWidget, DashboardItem
 from ..icons import Icons
 from ..text import join_names
 
-OPEN_STATES = ("on", "open", "true")
+# Zustände werden case-insensitive verglichen (z.B. Homematic:
+# "Offen", "Geschlossen", "Gekippt")
+OPEN_STATES = ("on", "open", "true", "offen")
+TILTED_STATES = ("tilted", "gekippt")
+SKIP_STATES = ("unknown", "unavailable", "none")
 
 
 class WindowWidget(BaseWidget):
@@ -24,6 +28,7 @@ class WindowWidget(BaseWidget):
     def render(self):
 
         open_rooms = []
+        tilted_rooms = []
 
         for entity, name in self.entities.items():
 
@@ -32,10 +37,17 @@ class WindowWidget(BaseWidget):
             if state is None:
                 continue
 
-            if state.state in OPEN_STATES:
-                open_rooms.append(name)
+            value = str(state.state).lower()
 
-        if not open_rooms:
+            if value in SKIP_STATES:
+                continue
+
+            if value in OPEN_STATES:
+                open_rooms.append(name)
+            elif value in TILTED_STATES:
+                tilted_rooms.append(name)
+
+        if not open_rooms and not tilted_rooms:
             return DashboardItem(
                 icon="",
                 value=Icons.CLOSED,
@@ -43,10 +55,14 @@ class WindowWidget(BaseWidget):
                 importance=15,
             )
 
+        # Gekippte Fenster zählen als offen, sind aber weniger
+        # dringend, solange nichts ganz offen steht
+        importance = 65 if open_rooms else 40
+
         return DashboardItem(
             icon=Icons.OPEN,
             # "Wohnen", "Wohnen+Essen", ab drei Räumen "Wohnen+2"
-            value=join_names(open_rooms),
+            value=join_names(open_rooms + tilted_rooms),
             priority=self.priority,
-            importance=65,
+            importance=importance,
         )
