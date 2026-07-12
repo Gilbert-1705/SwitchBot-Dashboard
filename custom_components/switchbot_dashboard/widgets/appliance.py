@@ -7,8 +7,9 @@ RUNNING_STATES = ("on", "true", "running", "run")
 PAUSED_STATES = ("pause", "paused")
 
 # The done reminder gets more urgent the longer the laundry waits:
-# side note right away, prominent after 1 h, top priority after 3 h
-DONE_RAMP = ((0, 30), (3600, 60), (10800, 100))
+# side note right away, prominent after 1 h, always shown after 3 h.
+# Capped at 95: waiting laundry is loud, but never an alarm
+DONE_RAMP = ((0, 30), (3600, 60), (10800, 95))
 
 
 class ApplianceWidget(BaseWidget):

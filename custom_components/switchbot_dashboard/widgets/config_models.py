@@ -59,6 +59,16 @@ class PresenceWidgetConfig(WidgetConfig):
 
 
 @dataclass(slots=True)
+class AlertWidgetConfig(WidgetConfig):
+    # display text, e.g. "Regen rein"
+    name: str = ""
+    icon: str = ""
+    importance: int = 100
+    # list of condition mappings, see widgets/alert.py
+    conditions: list | None = None
+
+
+@dataclass(slots=True)
 class SolarWidgetConfig(WidgetConfig):
     entity: str = ""
     icon: str = ""

@@ -18,7 +18,7 @@ And on a quiet day:
 
 ## Status
 
-✅ Stable (v2.0.0) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.1.0) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
@@ -45,6 +45,7 @@ The priority engine collects all visible items, keeps the five most important on
 | Solar | `☀ 3.2kW` | PV production, hidden at night |
 | Battery | `🔋 eBike 15%` | Any battery (PV storage, e-bike, …), important when low |
 | EV | `🔌 64% lädt` | EV state of charge + charging status, reminder when low and unplugged |
+| Alert | `! Regen rein` | Smart alerts: rules across multiple entities ("window open + rain > 70%"), triggers alarm mode |
 
 ## Installation
 

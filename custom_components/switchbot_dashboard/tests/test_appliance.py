@@ -125,7 +125,8 @@ class TimeRampTest(unittest.TestCase):
             icon=Icons.LAUNDRY,
         ).render()
         self.assertEqual(item.value, "WM Fertig")
-        self.assertEqual(item.importance, 100)
+        # capped at 95: loud, but never alarm mode
+        self.assertEqual(item.importance, 95)
 
 
 class QuietModeTest(unittest.TestCase):

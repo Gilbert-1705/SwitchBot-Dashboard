@@ -65,12 +65,12 @@
       "WM Fertig": 30 → 60 (1h) → 100 (3h)
 - [x] Ruhemodus: quiet_max_items (Standard 3), Füller verdrängen nichts
 
-## v2.1 Smart Alerts
+## v2.1 ✅ Smart Alerts
 
-- [ ] Regel-Widget für Zustandskombinationen
-      (Fenster offen + Regen, Tür offen + niemand zu Hause, ...)
-- [ ] Zeitbedingungen (Tür seit 10 min offen)
-- [ ] Alarmmodus: importance 100 verdrängt alles andere
+- [x] Alert-Widget für Zustandskombinationen
+      (state/not_state/above/below, AND-verknüpft)
+- [x] Zeitbedingungen (duration: Tür seit 10 min offen)
+- [x] Alarmmodus: importance 100 verdrängt Normal- und Füller-Items
 
 ## v2.2 Gruppen & Tageskontext
 

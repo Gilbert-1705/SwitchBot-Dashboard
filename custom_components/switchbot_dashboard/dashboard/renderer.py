@@ -1,4 +1,6 @@
 from ..const import (
+    IMPORTANCE_ALARM,
+    IMPORTANCE_ALWAYS,
     IMPORTANCE_FILLER,
     MAX_ITEMS,
     MAX_VALUE_LENGTH,
@@ -20,6 +22,10 @@ class DashboardRenderer:
     push the display beyond ``quiet_max_items``. On a busy day they
     are displaced anyway; on a calm day the display stays calm
     instead of filling every slot with background info.
+
+    Alarm mode: as soon as any item reaches IMPORTANCE_ALARM (100),
+    only alarms and always-band items (>= 60) are shown - normal
+    items and fillers are displaced so the warning stands out.
     """
 
     def __init__(
@@ -44,6 +50,20 @@ class DashboardRenderer:
             key=lambda item: item.importance,
             reverse=True,
         )
+
+        # Alarm mode: a warning displaces everything non-essential
+        if any(
+            item.importance >= IMPORTANCE_ALARM for item in visible
+        ):
+            alarm_view = [
+                item for item in visible
+                if item.importance >= IMPORTANCE_ALWAYS
+            ][: self.max_items]
+
+            return sorted(
+                alarm_view,
+                key=lambda item: item.priority,
+            )
 
         relevant = [
             item for item in visible

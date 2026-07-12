@@ -23,6 +23,11 @@ CHOICES = {
     "unit": ("%", "l"),
 }
 
+# Allowed keys inside an alert condition (see widgets/alert.py)
+CONDITION_KEYS = (
+    "entity", "state", "not_state", "above", "below", "duration",
+)
+
 
 def build_widget_configs(raw: list) -> list:
     """Builds the config dataclasses from the YAML list."""
@@ -88,6 +93,9 @@ def _build_one(index: int, item):
 
 def _coerce(prefix: str, key: str, value, field_type):
 
+    if key == "conditions":
+        return _validate_conditions(prefix, value)
+
     choices = CHOICES.get(key)
 
     if choices is not None and value not in choices:
@@ -142,5 +150,48 @@ def _coerce(prefix: str, key: str, value, field_type):
                 f"{prefix}: '{key}' must be a string (got '{value}')"
             )
         return value
+
+    return value
+
+
+def _validate_conditions(prefix: str, value):
+
+    if not isinstance(value, list) or not value:
+        raise ConfigError(
+            f"{prefix}: 'conditions' must be a non-empty list"
+        )
+
+    for index, condition in enumerate(value, start=1):
+
+        where = f"{prefix}, condition {index}"
+
+        if not isinstance(condition, dict):
+            raise ConfigError(f"{where}: expected a mapping")
+
+        for key in condition:
+            if key not in CONDITION_KEYS:
+                raise ConfigError(
+                    f"{where}: unknown option '{key}'. "
+                    f"Available: {', '.join(CONDITION_KEYS)}"
+                )
+
+        if "entity" not in condition:
+            raise ConfigError(f"{where}: missing 'entity'")
+
+        if len(condition) < 2:
+            raise ConfigError(
+                f"{where}: needs at least one criterion "
+                "(state, not_state, above, below, duration)"
+            )
+
+        for key in ("above", "below", "duration"):
+            if key in condition:
+                try:
+                    float(condition[key])
+                except (ValueError, TypeError):
+                    raise ConfigError(
+                        f"{where}: '{key}' must be a number "
+                        f"(got '{condition[key]}')"
+                    )
 
     return value

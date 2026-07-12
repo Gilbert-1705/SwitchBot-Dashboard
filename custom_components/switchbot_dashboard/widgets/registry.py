@@ -14,10 +14,12 @@ YAML). See docs/configuration.md.
 
 from dataclasses import dataclass
 
+from .alert import AlertWidget
 from .appliance import ApplianceWidget
 from .battery import BatteryWidget
 from .calendar import CalendarWidget
 from .config_models import (
+    AlertWidgetConfig,
     ApplianceWidgetConfig,
     BatteryWidgetConfig,
     CalendarWidgetConfig,
@@ -116,4 +118,8 @@ register_widget_type(
 register_widget_type(
     "ev", EvWidget, EvWidgetConfig,
     required=("soc_entity",),
+)
+register_widget_type(
+    "alert", AlertWidget, AlertWidgetConfig,
+    required=("name", "conditions"),
 )

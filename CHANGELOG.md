@@ -196,3 +196,23 @@ Priority Engine 2.0. 🧠
   display strings stay German.
 - Appliance done reminder starts as a side note (30) instead of a
   fixed 80 and grows louder the longer the laundry waits.
+
+
+## [2.1.0] - 2026-07-12
+
+Smart Alerts. ⚠️
+
+### Added
+
+- Alert widget: rules across multiple entities that Home Assistant
+  never combines on its own — "window open + rain probability > 70%",
+  "door open for 10 minutes + nobody home". Conditions: state,
+  not_state, above, below, duration (AND-combined; OR via multiple
+  alerts). Validated like every widget, with per-condition errors.
+- Alarm mode: any item at importance 100 displaces normal items and
+  fillers; only alarms and always-band items (>= 60) stay visible.
+
+### Changed
+
+- Appliance done ramp caps at 95 instead of 100: waiting laundry is
+  loud but never triggers alarm mode.

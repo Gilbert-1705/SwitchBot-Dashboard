@@ -248,6 +248,47 @@ One instance per battery — PV storage, e-bike, vacuum, …
 
 Renders `🔌 EV 64% lädt` (30), `🔌 EV 12%` when low and unplugged (65).
 
+### alert
+
+Smart alerts combine states that Home Assistant knows but never
+brings together. All conditions must hold (AND); build OR by
+configuring several alerts.
+
+```yaml
+- type: alert
+  name: Regen rein
+  conditions:
+    - entity: binary_sensor.fenster_wohnen
+      state: Offen
+    - entity: sensor.regen_wahrscheinlichkeit
+      above: 70
+
+- type: alert
+  name: Tür offen!
+  conditions:
+    - entity: binary_sensor.haustuer
+      state: "on"
+      duration: 600        # seconds in this state
+    - entity: person.jan
+      not_state: home
+```
+
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `name` | **yes** | – | Display text |
+| `conditions` | **yes** | – | List of conditions (see below) |
+| `icon` | no | `!` | Icon |
+| `importance` | no | 100 | 100 triggers alarm mode |
+
+Condition keys: `entity` (required) plus at least one of `state`
+(string or list, case-insensitive), `not_state`, `above`, `below`,
+`duration` (seconds in the current state). Unknown or unavailable
+entities make a condition false — alerts never fire on missing data.
+
+**Alarm mode:** as soon as any item reaches importance 100, only
+alarms and always-band items (≥ 60) are displayed; everything else
+is displaced so the warning stands out.
+
 ## Custom widgets
 
 ```python
