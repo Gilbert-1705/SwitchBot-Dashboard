@@ -16,4 +16,13 @@ class EntityWidgetConfig(WidgetConfig):
 
 @dataclass(slots=True)
 class WindowWidgetConfig(WidgetConfig):
-    entities: list[str] | None = None
+    # entity_id -> Raumname
+    entities: dict[str, str] | None = None
+
+
+@dataclass(slots=True)
+class CalendarWidgetConfig(WidgetConfig):
+    entity: str = ""
+    icon: str = ""
+    # Vorlaufzeit in Tagen, ab der ein Termin angezeigt wird
+    days: int = 3

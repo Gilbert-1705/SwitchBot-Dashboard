@@ -16,10 +16,10 @@ WIDGETS = [
     ),
     WindowWidgetConfig(
         type="window",
-        entities=[
-            Entities.WINDOW_1,
-            Entities.WINDOW_2,
-        ],
+        entities={
+            Entities.WINDOW_1: "Wohnen",
+            Entities.WINDOW_2: "Essen",
+        },
         priority=250,
     ),
     WidgetConfig(

@@ -1,4 +1,7 @@
 from .base import BaseWidget, DashboardItem
+from ..icons import Icons
+
+OPEN_STATES = ("on", "open", "true")
 
 
 class WindowWidget(BaseWidget):
@@ -8,39 +11,38 @@ class WindowWidget(BaseWidget):
     def __init__(
         self,
         hass,
-        entities: list[str],
+        entities: dict[str, str],
         priority: int = 250,
     ):
         super().__init__(hass)
 
+        # entity_id -> Raumname, z.B. {"binary_sensor.wohnen": "Wohnen"}
         self.entities = entities
         self.priority = priority
 
     def render(self):
 
-        open_windows = 0
+        open_rooms = []
 
-        for entity in self.entities:
+        for entity, name in self.entities.items():
 
             state = self.hass.states.get(entity)
 
             if state is None:
                 continue
 
-            if state.state in (
-                "on",
-                "open",
-                "true",
-            ):
-                open_windows += 1
+            if state.state in OPEN_STATES:
+                open_rooms.append(name)
 
-        if open_windows == 0:
-            value = "●"
-        else:
-            value = f"○{open_windows}"
+        if not open_rooms:
+            return DashboardItem(
+                icon="",
+                value=Icons.CLOSED,
+                priority=self.priority,
+            )
 
         return DashboardItem(
-            icon="",
-            value=value,
+            icon=Icons.OPEN,
+            value="+".join(open_rooms),
             priority=self.priority,
         )
