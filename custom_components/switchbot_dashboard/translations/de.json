@@ -1,0 +1,18 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "SwitchBot Dashboard",
+        "description": "SwitchBot-OpenAPI-Zugangsdaten eingeben (App: Profil → Einstellungen → 10x auf App-Version tippen → Entwickleroptionen).",
+        "data": {
+          "token": "Token",
+          "secret": "Secret",
+          "device_id": "Geräte-ID der Wetterstation"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Diese Wetterstation ist bereits konfiguriert."
+    }
+  }
+}
