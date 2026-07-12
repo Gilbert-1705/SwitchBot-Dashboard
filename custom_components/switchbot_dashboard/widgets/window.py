@@ -1,5 +1,6 @@
 from .base import BaseWidget, DashboardItem
 from ..icons import Icons
+from ..text import join_names
 
 OPEN_STATES = ("on", "open", "true")
 
@@ -44,7 +45,8 @@ class WindowWidget(BaseWidget):
 
         return DashboardItem(
             icon=Icons.OPEN,
-            value="+".join(open_rooms),
+            # "Wohnen", "Wohnen+Essen", ab drei Räumen "Wohnen+2"
+            value=join_names(open_rooms),
             priority=self.priority,
             importance=65,
         )

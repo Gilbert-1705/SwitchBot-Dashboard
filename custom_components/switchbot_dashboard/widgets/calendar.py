@@ -1,6 +1,10 @@
 from datetime import date
 
 from .base import BaseWidget, DashboardItem
+from ..text import shorten
+
+# Terminnamen kompakt halten, damit der Zusatz (Morgen/3T) passt
+MAX_MESSAGE_LENGTH = 10
 
 
 class CalendarWidget(BaseWidget):
@@ -54,6 +58,8 @@ class CalendarWidget(BaseWidget):
 
         if days_until < 0 or days_until > self.days:
             return None
+
+        message = shorten(message, MAX_MESSAGE_LENGTH)
 
         if days_until == 0:
             value = message
