@@ -42,6 +42,15 @@ The priority engine collects all visible items, keeps the five most important on
 | Presence | `⌂ Jan+Anna` / `⌂ Leer` | Who is home; an empty house ranks higher |
 | Fuel | `⛽ Tanken 1.65` | Tank level (% or liters) + refuel recommendation based on level and price thresholds |
 | Appliance | `🧺 WM Fertig` | Washer/dryer finished, until manually reset (see [examples](docs/examples.md)) |
+| Solar | `☀ 3.2kW` | PV production, hidden at night |
+| Battery | `🔋 eBike 15%` | Any battery (PV storage, e-bike, …), important when low |
+| EV | `🔌 64% lädt` | EV state of charge + charging status, reminder when low and unplugged |
+
+## Installation
+
+**HACS (recommended):** HACS → Integrations → ⋮ → Custom repositories → add `https://github.com/Gilbert-1705/SwitchBot-Dashboard` as *Integration*, then install and restart Home Assistant.
+
+**Manual:** Copy `custom_components/switchbot_dashboard` into your Home Assistant `config/custom_components/` folder and restart.
 
 ## Configuration
 

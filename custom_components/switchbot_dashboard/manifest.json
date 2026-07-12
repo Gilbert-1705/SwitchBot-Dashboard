@@ -1,8 +1,9 @@
 {
   "domain": "switchbot_dashboard",
   "name": "SwitchBot Dashboard",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "documentation": "https://github.com/Gilbert-1705/SwitchBot-Dashboard",
+  "issue_tracker": "https://github.com/Gilbert-1705/SwitchBot-Dashboard/issues",
   "requirements": [],
   "codeowners": [
     "@Gilbert-1705"
