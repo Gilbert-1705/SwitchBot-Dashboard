@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run tests
+        run: |
+          set -e
+          for test in custom_components/switchbot_dashboard/tests/test_*.py; do
+            echo "== $test"
+            python3 "$test"
+          done
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      # Nur kritische Fehler (Syntax, undefinierte Namen) blocken
+      - name: Ruff (critical)
+        run: ruff check custom_components --select E9,F63,F7,F82
+
+  hacs:
+    runs-on: ubuntu-latest
+    # Nicht blockierend: hacs/action meldet aktuell auch bei validen
+    # Dateien Fehler (hacs/integration#5252); brands erfordert einen
+    # separaten PR im home-assistant/brands-Repo
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: HACS validation
+        uses: hacs/action@main
+        with:
+          category: integration
+          ignore: brands
