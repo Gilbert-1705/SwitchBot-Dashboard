@@ -12,3 +12,8 @@ class Entities:
     WINDOW_2 = "BAlkontür 2"
 
     WASTE = "Müllsensor"
+
+    CALENDAR_BIRTHDAYS = "Geburtstagskalender"
+    CALENDAR_APPOINTMENTS = "Terminkalender"
+    CALENDAR_HOLIDAYS = "Feiertagskalender"
+    CALENDAR_VACATION = "Urlaubskalender"

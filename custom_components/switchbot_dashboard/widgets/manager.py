@@ -1,5 +1,7 @@
+from .calendar import CalendarWidget
 from .config import WIDGETS
 from .config_models import (
+    CalendarWidgetConfig,
     EntityWidgetConfig,
     WidgetConfig,
     WindowWidgetConfig,
@@ -17,6 +19,7 @@ WIDGET_TYPES = {
     "door": DoorWidget,
     "window": WindowWidget,
     "waste": WasteWidget,
+    "calendar": CalendarWidget,
 }
 
 
@@ -47,6 +50,19 @@ class WidgetManager:
                     widget_cls(
                         hass=self.hass,
                         entities=cfg.entities,
+                        priority=cfg.priority,
+                    )
+                )
+                continue
+
+            # Kalender-Widget
+            if isinstance(cfg, CalendarWidgetConfig):
+                widgets.append(
+                    widget_cls(
+                        hass=self.hass,
+                        entity=cfg.entity,
+                        icon=cfg.icon,
+                        days=cfg.days,
                         priority=cfg.priority,
                     )
                 )
