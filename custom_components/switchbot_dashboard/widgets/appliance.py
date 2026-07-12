@@ -1,6 +1,9 @@
 from .base import BaseWidget, DashboardItem
 
-ON_STATES = ("on", "true", "running")
+# Zustände werden case-insensitive verglichen; Gerätesensoren
+# liefern z.B. "run", "pause", "stop"
+RUNNING_STATES = ("on", "true", "running", "run")
+PAUSED_STATES = ("pause", "paused")
 
 
 class ApplianceWidget(BaseWidget):
@@ -8,6 +11,7 @@ class ApplianceWidget(BaseWidget):
 
         🧺 WM Fertig    Gerät ist durchgelaufen, noch nicht geleert
         🧺 WM läuft     Gerät läuft gerade (Hintergrundinfo)
+        🧺 WM Pause     Gerät pausiert (Hintergrundinfo)
         (nichts)        Gerät ist aus und geleert
 
     Da der Türstatus nicht abfragbar ist, ist das Fertig-Flag ein
@@ -37,7 +41,7 @@ class ApplianceWidget(BaseWidget):
 
     def render(self):
 
-        if self._is_on(self.done_entity):
+        if self._state(self.done_entity) in RUNNING_STATES:
             return DashboardItem(
                 icon=self.icon,
                 value=f"{self.name} Fertig",
@@ -45,7 +49,9 @@ class ApplianceWidget(BaseWidget):
                 importance=80,
             )
 
-        if self._is_on(self.running_entity):
+        running = self._state(self.running_entity)
+
+        if running in RUNNING_STATES:
             return DashboardItem(
                 icon=self.icon,
                 value=f"{self.name} läuft",
@@ -53,13 +59,21 @@ class ApplianceWidget(BaseWidget):
                 importance=15,
             )
 
+        if running in PAUSED_STATES:
+            return DashboardItem(
+                icon=self.icon,
+                value=f"{self.name} Pause",
+                priority=self.priority,
+                importance=15,
+            )
+
         return None
 
-    def _is_on(self, entity: str) -> bool:
+    def _state(self, entity: str) -> str:
 
         state = self.hass.states.get(entity)
 
         if state is None:
-            return False
+            return ""
 
-        return state.state in ON_STATES
+        return str(state.state).lower()

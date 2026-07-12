@@ -26,15 +26,18 @@ automation:
   - alias: "Waschmaschine: fertig markieren"
     trigger:
       - platform: state
-        entity_id: binary_sensor.waschmaschine_laeuft
-        from: "on"
-        to: "off"
-        for: "00:02:00"   # Entprellen (Schleudern-Pausen)
+        entity_id: sensor.waschmaschine_status
+        from: "run"        # "pause" löst bewusst nicht aus
+        to: "stop"
+        for: "00:02:00"    # Entprellen
     action:
       - service: input_boolean.turn_on
         target:
           entity_id: input_boolean.waschmaschine_fertig
 ```
+
+The widget itself understands `run`, `pause` and `stop` directly
+(shown as "läuft", "Pause", hidden).
 
 ### 3. Reset the flag ("Wäsche geholt")
 
