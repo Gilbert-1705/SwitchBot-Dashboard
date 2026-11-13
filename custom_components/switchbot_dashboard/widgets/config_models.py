@@ -131,3 +131,8 @@ class FuelWidgetConfig(WidgetConfig):
     max_price: float = 1.75
     # unit of the level sensor: "%" or "l"
     unit: str = "%"
+    # optional reference price (e.g. lowest price of the last 7 days);
+    # replaces the fixed max_price while it has a value
+    max_price_entity: str = ""
+    # allowed surcharge on the reference price (EUR/l)
+    price_margin: float = 0.0

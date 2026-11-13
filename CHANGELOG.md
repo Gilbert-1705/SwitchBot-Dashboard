@@ -302,3 +302,15 @@ Both found in the first minutes of real operation:
 - A pending debounce timer is no longer restarted by further state
   changes. A sensor reporting more often than the debounce time could
   have postponed the refresh indefinitely.
+
+
+## [2.4.0] - 2026-11-13
+
+### Added
+
+- Fuel widget: dynamic price threshold. `max_price_entity` points at a
+  reference sensor (e.g. a statistics helper with the lowest price of
+  the last 7 days) and `price_margin` adds a surcharge - "good" then
+  means "at most 3 cents above the recent low" instead of a fixed
+  price that is outdated after a few weeks. The fixed `max_price`
+  remains the fallback while the reference has no value.

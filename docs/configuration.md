@@ -223,8 +223,17 @@ Renders `⌂ Jan+Anna` (importance 15) or `⌂ Leer` (45).
 | `min_level` | no | 20 | Level threshold (in `unit`) |
 | `max_price` | no | 1.75 | Price threshold |
 | `unit` | no | `%` | `%` or `l` |
+| `max_price_entity` | no | – | Reference price sensor; replaces `max_price` while it has a value |
+| `price_margin` | no | 0 | Allowed surcharge on the reference price (EUR/l) |
 
 Renders `⛽ Tanken 1.65` (85), `⛽ 12%` (65), `⛽ 1.65` (40) or nothing.
+
+A fixed `max_price` ages badly: fuel prices swing by tens of cents
+within a day and the level drifts over weeks. Point `max_price_entity`
+at a statistics helper instead (Settings → Helpers → Statistics, source:
+the price sensor, characteristic: minimum, max age: 7 days) and set
+`price_margin: 0.03` - "good" then means "at most 3 cents above the
+lowest price of the last 7 days".
 
 ### appliance
 

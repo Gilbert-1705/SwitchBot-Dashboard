@@ -242,6 +242,81 @@ class FuelWidgetTest(unittest.TestCase):
         self.assertEqual(widget.render().value, "10%")
 
 
+class DynamicFuelThresholdTest(unittest.TestCase):
+    """max_price_entity: the threshold follows a reference sensor."""
+
+    def _render(self, level, price, reference, margin=0.03):
+        states = {
+            "tank": FakeState(level),
+            "preis": FakeState(price),
+        }
+        if reference is not None:
+            states["tief"] = FakeState(reference)
+
+        return FuelWidget(
+            FakeHass(states),
+            level_entity="tank",
+            price_entity="preis",
+            min_level=20.0,
+            max_price=1.75,
+            max_price_entity="tief",
+            price_margin=margin,
+        ).render()
+
+    def test_price_within_margin_of_reference_is_good(self):
+        # real values: 7-day low 1.979, price 1.989, tank 12 %
+        item = self._render("12", "1.989", "1.979")
+        self.assertEqual(item.value, "Tanken 1.99")
+        self.assertEqual(item.importance, 85)
+
+    def test_price_exactly_at_threshold_is_good(self):
+        # 1.979 + 0.03 must not fail on float rounding
+        item = self._render("12", "2.009", "1.979")
+        self.assertEqual(item.value, "Tanken 2.01")
+
+    def test_price_above_margin_is_not_good(self):
+        item = self._render("12", "2.289", "1.979")
+        self.assertEqual(item.value, "12%")
+
+    def test_fixed_max_price_is_ignored_while_reference_exists(self):
+        # 1.989 is far above the fixed 1.75 but good by reference
+        item = self._render("12", "1.989", "1.979")
+        self.assertTrue(item.value.startswith("Tanken"))
+
+    def test_falls_back_to_fixed_price_without_reference_value(self):
+        for reference in (None, "unknown", "unavailable"):
+            item = self._render("12", "1.989", reference)
+            self.assertEqual(item.value, "12%", reference)
+
+    def test_fallback_still_recommends_below_fixed_price(self):
+        item = self._render("12", "1.70", "unknown")
+        self.assertEqual(item.value, "Tanken 1.70")
+
+    def test_hint_for_half_empty_tank_at_good_price(self):
+        # real values today: tank 26 %, price 1.989, low 1.979
+        item = self._render("26", "1.989", "1.979")
+        self.assertEqual(item.value, "1.99")
+        self.assertEqual(item.importance, 40)
+
+    def test_reference_entity_is_watched_by_the_updater(self):
+        from custom_components.switchbot_dashboard.config.schema import (
+            build_widget_configs,
+        )
+        from custom_components.switchbot_dashboard.updater import (
+            collect_entities,
+        )
+
+        configs = build_widget_configs([{
+            "type": "fuel",
+            "level_entity": "sensor.tank",
+            "price_entity": "sensor.preis",
+            "max_price_entity": "sensor.tief",
+            "price_margin": 0.03,
+        }])
+        self.assertEqual(configs[0].price_margin, 0.03)
+        self.assertIn("sensor.tief", collect_entities(configs))
+
+
 class RendererShorteningTest(unittest.TestCase):
 
     def test_render_caps_value_length(self):
