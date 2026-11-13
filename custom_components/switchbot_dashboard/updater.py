@@ -114,6 +114,18 @@ class DashboardUpdater:
         self._cancel_retry = None
         self._unsubs = []
 
+    def adopt_state(self, previous: "DashboardUpdater"):
+        """Takes over what a replaced updater last sent.
+
+        After a configuration reload the display still shows the old
+        line. Without this, the new updater would transmit an
+        unchanged dashboard again and ignore the rate limit.
+        """
+
+        self._last_text = previous._last_text
+        self._last_send = previous._last_send
+        self._last_preview = previous._last_preview
+
     # -- Lifecycle ------------------------------------------------
 
     async def async_start(self):

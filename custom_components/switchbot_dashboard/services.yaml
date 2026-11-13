@@ -10,8 +10,15 @@ send_text:
 
 refresh:
   name: Refresh Dashboard
-  description: Refresh the dashboard.
-  
+  description: Renders the dashboard and sends it right away, bypassing the rate limit.
+
 preview:
   name: Preview Dashboard
-  description: Preview a dashboard layout.
+  description: Renders the dashboard once and sends it, independent of the automatic refresh.
+
+reload:
+  name: Reload Configuration
+  description: >-
+    Reads the switchbot_dashboard block of configuration.yaml again and
+    applies it without restarting Home Assistant. An invalid
+    configuration is reported in the log and the running one is kept.

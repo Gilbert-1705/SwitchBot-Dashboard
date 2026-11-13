@@ -36,16 +36,45 @@ if "homeassistant" not in sys.modules:
         lambda hass, action, interval: (lambda: None)
     )
 
+    ha_reload = types.ModuleType("homeassistant.helpers.reload")
+
+    async def _no_yaml_config(hass, integration_name):
+        return None
+
+    ha_reload.async_integration_yaml_config = _no_yaml_config
+
+    ha_storage = types.ModuleType("homeassistant.helpers.storage")
+
+    class _Store:
+        """In-memory stand-in for homeassistant.helpers.storage.Store."""
+
+        saved: dict = {}
+
+        def __init__(self, hass, version, key):
+            self.key = key
+
+        async def async_load(self):
+            return _Store.saved.get(self.key)
+
+        def async_delay_save(self, data_func, delay):
+            _Store.saved[self.key] = dict(data_func())
+
+    ha_storage.Store = _Store
+
     ha.core = ha_core
     ha.const = ha_const
     ha.helpers = ha_helpers
     ha_helpers.event = ha_event
+    ha_helpers.reload = ha_reload
+    ha_helpers.storage = ha_storage
 
     sys.modules["homeassistant"] = ha
     sys.modules["homeassistant.core"] = ha_core
     sys.modules["homeassistant.const"] = ha_const
     sys.modules["homeassistant.helpers"] = ha_helpers
     sys.modules["homeassistant.helpers.event"] = ha_event
+    sys.modules["homeassistant.helpers.reload"] = ha_reload
+    sys.modules["homeassistant.helpers.storage"] = ha_storage
 
 if "aiohttp" not in sys.modules:
     aiohttp = types.ModuleType("aiohttp")

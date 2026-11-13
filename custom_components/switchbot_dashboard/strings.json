@@ -14,5 +14,20 @@
     "abort": {
       "already_configured": "This Weather Station is already configured."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Display options",
+        "description": "Applied immediately, no restart needed. Widgets are configured in configuration.yaml.",
+        "data": {
+          "max_items": "Maximum number of widgets shown",
+          "quiet_max_items": "Maximum on a quiet day",
+          "auto_refresh": "Update the display automatically",
+          "dry_run": "Dry run (do not send to the device)",
+          "language": "Language of the display texts"
+        }
+      }
+    }
   }
 }
