@@ -4,6 +4,7 @@ import re
 from .base import BaseWidget, DashboardItem
 from ..icons import Icons
 from ..ramp import time_based_importance
+from ..tracker import state_since
 
 # States are compared case-insensitively. Covers simple sensors
 # ("run", "pause", "stop") as well as the WashData integration
@@ -86,20 +87,26 @@ class ApplianceWidget(BaseWidget):
         status = self.hass.states.get(self.running_entity)
         running = self._lower(status)
 
+        done = None
+        if self.done_entity:
+            done = self.hass.states.get(self.done_entity)
+
+        # Reported on every render, whatever the state: the tracker
+        # must see each transition to know when a period began
+        status_since = state_since(self.hass, self.running_entity, status)
+        done_since = state_since(self.hass, self.done_entity, done)
+
         # A new cycle makes the old done reminder obsolete
         if running in RUNNING_STATES:
             return self._item(self._running_detail(), ACTIVE_IMPORTANCE)
 
         # Manual done flag (input_boolean)
-        if self.done_entity:
-            done = self.hass.states.get(self.done_entity)
-
-            if self._lower(done) in FLAG_ON_STATES:
-                return self._done_item(done)
+        if self._lower(done) in FLAG_ON_STATES:
+            return self._done_item(done_since)
 
         # The status entity itself reports "finished, not emptied"
         if running in DONE_STATES:
-            return self._done_item(status)
+            return self._done_item(status_since)
 
         if running in FAILED_STATES:
             return self._item("Abbruch", 65)
@@ -123,15 +130,12 @@ class ApplianceWidget(BaseWidget):
             importance=importance,
         )
 
-    def _done_item(self, state) -> DashboardItem:
+    def _done_item(self, since) -> DashboardItem:
 
         # The longer it waits, the louder the reminder
         return self._item(
             "Fertig",
-            time_based_importance(
-                getattr(state, "last_changed", None),
-                DONE_RAMP,
-            ),
+            time_based_importance(since, DONE_RAMP),
         )
 
     def _running_detail(self) -> str:

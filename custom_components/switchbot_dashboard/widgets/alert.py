@@ -31,6 +31,7 @@ from datetime import datetime, timezone
 from .base import BaseWidget, DashboardItem
 from ..const import IMPORTANCE_ALARM
 from ..icons import Icons
+from ..tracker import state_since
 
 SKIP_STATES = ("unknown", "unavailable", "none")
 
@@ -59,8 +60,21 @@ class AlertWidget(BaseWidget):
         if not self.conditions:
             return None
 
-        for condition in self.conditions:
-            if not self._holds(condition):
+        # Durations are measured by the tracker, which has to see
+        # the entity on every render - also when an earlier
+        # condition already fails
+        since = {
+            index: state_since(
+                self.hass,
+                condition.get("entity"),
+                self.hass.states.get(condition.get("entity")),
+            )
+            for index, condition in enumerate(self.conditions)
+            if "duration" in condition
+        }
+
+        for index, condition in enumerate(self.conditions):
+            if not self._holds(condition, since.get(index)):
                 return None
 
         return DashboardItem(
@@ -70,7 +84,7 @@ class AlertWidget(BaseWidget):
             importance=self.importance,
         )
 
-    def _holds(self, condition: dict) -> bool:
+    def _holds(self, condition: dict, since=None) -> bool:
 
         state = self.hass.states.get(condition.get("entity"))
 
@@ -101,11 +115,10 @@ class AlertWidget(BaseWidget):
                 return False
 
         if "duration" in condition:
-            last_changed = getattr(state, "last_changed", None)
-            if last_changed is None:
+            if since is None:
                 return False
             elapsed = (
-                datetime.now(timezone.utc) - last_changed
+                datetime.now(timezone.utc) - since
             ).total_seconds()
             if elapsed < float(condition["duration"]):
                 return False

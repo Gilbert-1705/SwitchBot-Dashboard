@@ -64,6 +64,9 @@ class FakeState:
 class FakeHass:
 
     def __init__(self, states=None):
+        # like hass.data: shared storage of integrations
+        self.data: dict = {}
+
         # states set via async_set (e.g. the preview entity)
         self.set_states: dict = {}
 
