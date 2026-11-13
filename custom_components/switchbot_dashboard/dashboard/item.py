@@ -3,17 +3,21 @@ from dataclasses import dataclass
 
 @dataclass(slots=True)
 class DashboardItem:
-    """Ein renderbares Dashboard-Element.
+    """A renderable dashboard element.
 
-    priority   -> Anzeigereihenfolge (kleiner = weiter vorne)
-    importance -> Wie wichtig ist die Information JETZT?
-                  Das Dashboard zeigt nur die wichtigsten Items.
+    priority   -> display order (lower = further left)
+    importance -> how important is the information RIGHT NOW?
+                  The dashboard only shows the most important items.
 
-    Importance-Skala:
-        100     Warnung, sofort handeln (z.B. abgeschlossen, aber offen)
-        70-90   heute relevant (Müll heute, Geburtstag, Tür offen)
-        40-60   demnächst relevant (Termin in 2 Tagen, Fenster offen)
-        10-30   Hintergrundinformation (Stromverbrauch, alles zu)
+    Importance bands (constants in const.py):
+        100     alarm, displaces everything non-essential
+        60-99   always shown (within max_items)
+        21-59   normal, competes for slots
+        0-20    background info, quiet days only
+
+    group -> items sharing a group compete: only the most
+    important item of a group is displayed (e.g. door, window and
+    alarm of the "haus" group render as one line).
     """
 
     icon: str
@@ -24,3 +28,5 @@ class DashboardItem:
     importance: int = 0
 
     visible: bool = True
+
+    group: str = ""

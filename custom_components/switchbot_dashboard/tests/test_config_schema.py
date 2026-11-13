@@ -1,13 +1,13 @@
-"""Tests für YAML-Konfiguration, Validierung und Registry.
+"""Tests for YAML configuration, validation and registry.
 
-Ausführen (vom Repo-Root):
+Run (from the repo root):
 
     python3 custom_components/switchbot_dashboard/tests/test_config_schema.py
 """
 
 import unittest
 
-import helpers  # noqa: F401  (stubbt HA/aiohttp, setzt sys.path)
+import helpers  # noqa: F401  (stubs HA/aiohttp, sets sys.path)
 from helpers import FakeHass, FakeState
 
 from custom_components.switchbot_dashboard.config.schema import (
@@ -78,7 +78,7 @@ class BuildConfigsTest(unittest.TestCase):
         self.assertEqual(configs[1].priority, 200)
         self.assertEqual(configs[2].mode, "state")
         self.assertEqual(configs[4].days, 2)
-        # Zahlen werden koerziert, auch aus Strings
+        # numbers are coerced, even from strings
         self.assertEqual(configs[7].max_price, 1.75)
 
     def test_unknown_type_lists_available(self):
@@ -145,7 +145,7 @@ class BuildConfigsTest(unittest.TestCase):
 
 
 class CustomWidgetTest(unittest.TestCase):
-    """Eigene Widgets: Registry + Manager + Validierung."""
+    """Custom widgets: registry + manager + validation."""
 
     def test_custom_widget_roundtrip(self):
 

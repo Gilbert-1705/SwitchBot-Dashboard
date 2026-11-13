@@ -17,10 +17,10 @@ ICONS = [
     # Netzwerk
     "📶", "⇅",
 
-    # Müll
+    # Waste
     "♻", "🗑",
 
-    # Türen/Fenster
+    # Doors/windows
     "🚪", "🪟",
 
     # Pfeile

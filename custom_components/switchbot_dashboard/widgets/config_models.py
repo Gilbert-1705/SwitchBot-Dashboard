@@ -5,6 +5,12 @@ from dataclasses import dataclass
 class WidgetConfig:
     type: str
     priority: int = 100
+    # widgets sharing a group render at most one item (the most
+    # important one), e.g. door + window + alarm as group "haus"
+    group: str = ""
+    # day context: time windows that raise/lower importance,
+    # e.g. [{"between": ["06:00", "09:00"], "add": 20}]
+    boost: list | None = None
 
 
 @dataclass(slots=True)
@@ -23,7 +29,7 @@ class DoorWidgetConfig(WidgetConfig):
 @dataclass(slots=True)
 class WasteWidgetConfig(WidgetConfig):
     entity: str = ""
-    # Vorlaufzeit in Tagen
+    # lookahead in days
     days: int = 3
 
 
@@ -37,10 +43,10 @@ class EntityWidgetConfig(WidgetConfig):
 
 @dataclass(slots=True)
 class WindowWidgetConfig(WidgetConfig):
-    # entity_id -> Raumname
+    # entity_id -> room name
     entities: dict[str, str] | None = None
-    # "rooms": Raumnamen anzeigen, "state": nur Zustand
-    # (Offen/Gekippt) - kompakt, für zusammengehörende Sensoren
+    # "rooms": show room names, "state": state only
+    # (Offen/Gekippt) - compact, for sensors that belong together
     mode: str = "rooms"
 
 
@@ -48,33 +54,43 @@ class WindowWidgetConfig(WidgetConfig):
 class CalendarWidgetConfig(WidgetConfig):
     entity: str = ""
     icon: str = ""
-    # Vorlaufzeit in Tagen, ab der ein Termin angezeigt wird
+    # lookahead in days for showing an event
     days: int = 3
 
 
 @dataclass(slots=True)
 class PresenceWidgetConfig(WidgetConfig):
-    # person-Entity -> Anzeigename
+    # person entity -> display name
     entities: dict[str, str] | None = None
+
+
+@dataclass(slots=True)
+class AlertWidgetConfig(WidgetConfig):
+    # display text, e.g. "Regen rein"
+    name: str = ""
+    icon: str = ""
+    importance: int = 100
+    # list of condition mappings, see widgets/alert.py
+    conditions: list | None = None
 
 
 @dataclass(slots=True)
 class SolarWidgetConfig(WidgetConfig):
     entity: str = ""
     icon: str = ""
-    # Erzeugung (W), ab der das Widget erscheint
+    # production (W) above which the widget appears
     min_power: float = 50.0
 
 
 @dataclass(slots=True)
 class BatteryWidgetConfig(WidgetConfig):
     entity: str = ""
-    # Kurzname, z.B. "eBike" oder "Speicher"
+    # short label, e.g. "eBike" or "Speicher"
     name: str = ""
     icon: str = ""
-    # Ladestand (%), ab dem der Akku wichtig wird
+    # level (%) below which the battery becomes important
     min_level: float = 20.0
-    # auch bei gutem Ladestand als Hintergrundinfo zeigen
+    # show as background info even when the level is fine
     show_always: bool = False
 
 
@@ -90,11 +106,18 @@ class EvWidgetConfig(WidgetConfig):
 
 @dataclass(slots=True)
 class ApplianceWidgetConfig(WidgetConfig):
-    # Kurzname fürs Display, z.B. "WM" oder "TR"
+    # short label for the display, e.g. "WM" or "TR"
     name: str = ""
+    # status entity: simple run/pause/stop sensor or a WashData
+    # state sensor (running/clean/delay_wait/...)
     running_entity: str = ""
-    # input_boolean: an = fertig, aber noch nicht geleert
+    # optional input_boolean: on = finished but not emptied yet
+    # (not needed when the status entity reports that itself)
     done_entity: str = ""
+    # optional: remaining time in minutes
+    remaining_entity: str = ""
+    # optional: current phase, shown while running
+    phase_entity: str = ""
     icon: str = ""
 
 
@@ -102,9 +125,9 @@ class ApplianceWidgetConfig(WidgetConfig):
 class FuelWidgetConfig(WidgetConfig):
     level_entity: str = ""
     price_entity: str = ""
-    # Füllstand, ab dem Tanken relevant wird (in `unit`)
+    # level below which refueling becomes relevant (in `unit`)
     min_level: float = 20.0
-    # Preis (EUR/l), bis zu dem sich Tanken lohnt
+    # price (EUR/l) up to which refueling is worth it
     max_price: float = 1.75
-    # Einheit des Füllstandsensors: "%" oder "l"
+    # unit of the level sensor: "%" or "l"
     unit: str = "%"

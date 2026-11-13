@@ -28,18 +28,22 @@ WidgetManager ──> Widgets ──> DashboardItem ──> DashboardRenderer �
 - **Formatters** (`formatters/`) turn raw states into display strings, created via `FormatterFactory`.
 - **SwitchBotAPI** (`api.py`) signs requests and sends the rendered line to the device (`customPage` command).
 
-## Priority Engine
+## Priority Engine 2.0
 
-Every widget reports how important its information is *right now*:
+Every widget reports how important its information is *right now*. Since v2.0 the importance bands are official semantics (constants in `const.py`):
 
-| importance | meaning | examples |
+| band | meaning | examples |
 |---|---|---|
-| 100 | warning, act immediately | door locked but open |
-| 70–90 | relevant today | waste today, birthday, door open, weather |
-| 40–60 | relevant soon | appointment in 2 days, open window, empty house |
-| 10–30 | background info | power draw, everything closed, who is home |
+| 100 (`IMPORTANCE_ALARM`) | warning, act immediately | door locked but open, laundry waiting 3 h |
+| 60–99 (`IMPORTANCE_ALWAYS`) | always shown (within `max_items`) | weather, waste today, birthday |
+| 21–59 | normal, competes for slots | appointment in 2 days, fresh done reminder |
+| 0–20 (`IMPORTANCE_FILLER`) | background info, quiet days only | power draw, everything closed |
 
-The renderer keeps the `MAX_ITEMS` (5) most important visible items and displays them ordered by `priority`. Widgets that return `None` (nothing relevant, sensor unavailable) never occupy a slot.
+The renderer keeps the `max_items` (5) most important visible items and displays them ordered by `priority`. Widgets that return `None` (nothing relevant, sensor unavailable) never occupy a slot.
+
+**Quiet mode:** filler items (≤ 20) never push the display beyond `quiet_max_items` (3). On a busy day they are displaced anyway; on a calm day the display stays calm — `🌡 21°C ☀   ●   🚪 Zu` instead of five slots of noise.
+
+**Time-based importance:** information can get more urgent over time. `ramp.time_based_importance(last_changed, steps)` maps the elapsed time since a state change to an importance value — the appliance widget uses it for the done reminder (30 right away, 60 after 1 h, 100 after 3 h). The updater's periodic refresh re-renders every 15 minutes, so ramps take effect without state changes.
 
 ## Display constraints
 

@@ -28,8 +28,8 @@ WIDGETS = [
             Entities.WINDOW_1: "Balkon 1",
             Entities.WINDOW_2: "Balkon 2",
         },
-        # Beide Türen gehören zum selben Balkon - nur der Zustand
-        # zählt: "○ Offen", "○ Gekippt", "○ Offen+Gekippt"
+        # Both doors belong to the same balcony - only the state
+        # matters: "○ Offen", "○ Gekippt", "○ Offen+Gekippt"
         mode="state",
         priority=250,
     ),
@@ -101,5 +101,16 @@ WIDGETS = [
         done_entity=Entities.DRYER_DONE,
         icon=Icons.LAUNDRY,
         priority=710,
+    ),
+    # Dishwasher via WashData: the state sensor reports the done
+    # state itself, phase and remaining time come for free
+    ApplianceWidgetConfig(
+        type="appliance",
+        name="GS",
+        running_entity=Entities.DISHWASHER_STATE,
+        phase_entity=Entities.DISHWASHER_PHASE,
+        remaining_entity=Entities.DISHWASHER_REMAINING,
+        icon=Icons.DISHWASHER,
+        priority=720,
     ),
 ]

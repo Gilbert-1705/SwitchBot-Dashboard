@@ -18,7 +18,7 @@ class WeatherWidget(EntityWidget):
         trend_entity: str = Entities.WEATHER_TREND,
         icon: str = Icons.TEMP,
         priority: int = 100,
-        # Wetter gehört immer aufs Dashboard
+        # Weather always belongs on the dashboard
         importance: int = 90,
     ):
         super().__init__(

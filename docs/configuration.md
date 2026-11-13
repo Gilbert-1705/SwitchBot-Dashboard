@@ -19,6 +19,7 @@ switchbot_dashboard:
   max_items: 5          # optional, Anzahl gleichzeitig sichtbarer Widgets
   auto_refresh: true    # optional, event-getriebener Auto-Refresh
   dry_run: false        # optional, true = nur lokale Preview, kein API-Call
+  quiet_max_items: 3    # optional, max. Items an ruhigen Tagen
 
   widgets:
     - type: weather
@@ -123,7 +124,31 @@ Configuration errors are reported in the Home Assistant log with widget position
 
 ## Widget reference
 
-All widgets accept `priority` (display order, lower = further left).
+All widgets accept these base options:
+
+- `priority` — display order (lower = further left)
+- `group` — widgets sharing a group render at most one item, the
+  most important one. Example: door, window and an alert as group
+  `haus` show `⚠ Haus` instead of three separate lines.
+- `boost` — day context: time windows that raise or lower the
+  importance. Windows may wrap over midnight; multiple active
+  windows add up; boosts never reach alarm level (capped at 99).
+
+```yaml
+- type: waste
+  entity: sensor.muellkalender
+  boost:
+    - between: ["06:00", "09:00"]   # waste matters in the morning
+      add: 20
+
+- type: appliance
+  name: WM
+  running_entity: sensor.wm_status
+  done_entity: input_boolean.wm_fertig
+  boost:
+    - between: ["22:00", "06:00"]   # don't nag at night
+      add: -30
+```
 
 ### weather
 
@@ -205,12 +230,29 @@ Renders `⛽ Tanken 1.65` (85), `⛽ 12%` (65), `⛽ 1.65` (40) or nothing.
 
 | Option | Required | Default | Description |
 |---|---|---|---|
-| `name` | **yes** | – | Short label, e.g. `WM`, `TR` |
-| `running_entity` | **yes** | – | Status sensor (`run`/`pause`/`stop`) |
-| `done_entity` | **yes** | – | `input_boolean` reminder flag |
+| `name` | **yes** | – | Short label, e.g. `WM`, `TR`, `GS` |
+| `running_entity` | **yes** | – | Status sensor (see states below) |
+| `done_entity` | no | – | `input_boolean` reminder flag |
+| `remaining_entity` | no | – | Remaining time in minutes |
+| `phase_entity` | no | – | Current phase, shown while running |
 | `icon` | no | `🧺` | Icon |
 
-See [examples.md](examples.md) for the automations.
+Understood states (case-insensitive): running = `on`, `run`,
+`running`, `starting`, `ending`; paused = `pause`, `paused`,
+`user_paused`; waiting = `delay_wait`; done = `finished`, `clean`,
+`anti_wrinkle`; failed = `interrupted`, `force_stopped`. Everything
+else (`off`, `idle`, `stop`, ...) hides the widget.
+
+While running the widget shows the phase if known (`🍽 GS Trocknen`,
+a trailing temperature like "Reinigen 45" is stripped), otherwise
+the remaining time rounded up to 5-minute steps (`🍽 GS 45min`, so
+the e-paper does not refresh every minute), otherwise `läuft`.
+
+The done reminder (`Fertig`) ramps 30 → 60 (1 h) → 95 (3 h). It can
+come from the status entity itself (a done state such as WashData's
+`clean`) or from the manual `done_entity` flag — both work
+together. See [examples.md](examples.md) for the automations and the
+WashData setup.
 
 ### solar
 
@@ -246,6 +288,47 @@ One instance per battery — PV storage, e-bike, vacuum, …
 | `icon` | no | `🔌` | Icon |
 
 Renders `🔌 EV 64% lädt` (30), `🔌 EV 12%` when low and unplugged (65).
+
+### alert
+
+Smart alerts combine states that Home Assistant knows but never
+brings together. All conditions must hold (AND); build OR by
+configuring several alerts.
+
+```yaml
+- type: alert
+  name: Regen rein
+  conditions:
+    - entity: binary_sensor.fenster_wohnen
+      state: Offen
+    - entity: sensor.regen_wahrscheinlichkeit
+      above: 70
+
+- type: alert
+  name: Tür offen!
+  conditions:
+    - entity: binary_sensor.haustuer
+      state: "on"
+      duration: 600        # seconds in this state
+    - entity: person.jan
+      not_state: home
+```
+
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `name` | **yes** | – | Display text |
+| `conditions` | **yes** | – | List of conditions (see below) |
+| `icon` | no | `!` | Icon |
+| `importance` | no | 100 | 100 triggers alarm mode |
+
+Condition keys: `entity` (required) plus at least one of `state`
+(string or list, case-insensitive), `not_state`, `above`, `below`,
+`duration` (seconds in the current state). Unknown or unavailable
+entities make a condition false — alerts never fire on missing data.
+
+**Alarm mode:** as soon as any item reaches importance 100, only
+alarms and always-band items (≥ 60) are displayed; everything else
+is displaced so the warning stands out.
 
 ## Custom widgets
 

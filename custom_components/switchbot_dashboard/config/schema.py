@@ -1,12 +1,11 @@
-"""Validierung und Parsing der YAML-Widget-Konfiguration.
+"""Validation and parsing of the YAML widget configuration.
 
-Übersetzt die ``widgets:``-Liste aus configuration.yaml in die
-typisierten Config-Dataclasses. Die erlaubten Schlüssel und ihre
-Typen werden direkt aus den Dataclasses abgeleitet, Pflichtfelder
-kommen aus der Widget-Registry — eigene Widgets werden dadurch
-automatisch mitvalidiert.
+Translates the ``widgets:`` list from configuration.yaml into the
+typed config dataclasses. Allowed keys and their types are derived
+directly from the dataclasses, required fields come from the widget
+registry — custom widgets are validated automatically.
 
-Fehlermeldungen nennen immer Widget-Position, Typ und Feld.
+Error messages always name widget position, type and field.
 """
 
 from dataclasses import fields as dataclass_fields
@@ -15,18 +14,23 @@ from ..widgets.registry import get_registration, registered_types
 
 
 class ConfigError(Exception):
-    """Verständlicher Konfigurationsfehler."""
+    """Human-readable configuration error."""
 
 
-# Feldwerte mit eingeschränktem Wertebereich
+# Field values with a restricted set of choices
 CHOICES = {
     "mode": ("rooms", "state"),
     "unit": ("%", "l"),
 }
 
+# Allowed keys inside an alert condition (see widgets/alert.py)
+CONDITION_KEYS = (
+    "entity", "state", "not_state", "above", "below", "duration",
+)
+
 
 def build_widget_configs(raw: list) -> list:
-    """Baut aus der YAML-Liste die Config-Dataclasses."""
+    """Builds the config dataclasses from the YAML list."""
 
     configs = []
 
@@ -89,6 +93,12 @@ def _build_one(index: int, item):
 
 def _coerce(prefix: str, key: str, value, field_type):
 
+    if key == "conditions":
+        return _validate_conditions(prefix, value)
+
+    if key == "boost":
+        return _validate_boost(prefix, value)
+
     choices = CHOICES.get(key)
 
     if choices is not None and value not in choices:
@@ -143,5 +153,101 @@ def _coerce(prefix: str, key: str, value, field_type):
                 f"{prefix}: '{key}' must be a string (got '{value}')"
             )
         return value
+
+    return value
+
+
+def _validate_boost(prefix: str, value):
+
+    if not isinstance(value, list) or not value:
+        raise ConfigError(
+            f"{prefix}: 'boost' must be a non-empty list"
+        )
+
+    for index, window in enumerate(value, start=1):
+
+        where = f"{prefix}, boost {index}"
+
+        if not isinstance(window, dict):
+            raise ConfigError(f"{where}: expected a mapping")
+
+        for key in window:
+            if key not in ("between", "add"):
+                raise ConfigError(
+                    f"{where}: unknown option '{key}'. "
+                    "Available: between, add"
+                )
+
+        between = window.get("between")
+
+        if (
+            not isinstance(between, (list, tuple))
+            or len(between) != 2
+        ):
+            raise ConfigError(
+                f"{where}: 'between' must be a list of two times, "
+                "e.g. [\"06:00\", \"09:00\"]"
+            )
+
+        for moment in between:
+            try:
+                hours, minutes = str(moment).split(":")
+                if not (0 <= int(hours) <= 23 and 0 <= int(minutes) <= 59):
+                    raise ValueError
+            except ValueError:
+                raise ConfigError(
+                    f"{where}: invalid time '{moment}' (use HH:MM)"
+                )
+
+        try:
+            int(window.get("add"))
+        except (ValueError, TypeError):
+            raise ConfigError(
+                f"{where}: 'add' must be a number "
+                f"(got '{window.get('add')}')"
+            )
+
+    return value
+
+
+def _validate_conditions(prefix: str, value):
+
+    if not isinstance(value, list) or not value:
+        raise ConfigError(
+            f"{prefix}: 'conditions' must be a non-empty list"
+        )
+
+    for index, condition in enumerate(value, start=1):
+
+        where = f"{prefix}, condition {index}"
+
+        if not isinstance(condition, dict):
+            raise ConfigError(f"{where}: expected a mapping")
+
+        for key in condition:
+            if key not in CONDITION_KEYS:
+                raise ConfigError(
+                    f"{where}: unknown option '{key}'. "
+                    f"Available: {', '.join(CONDITION_KEYS)}"
+                )
+
+        if "entity" not in condition:
+            raise ConfigError(f"{where}: missing 'entity'")
+
+        if len(condition) < 2:
+            raise ConfigError(
+                f"{where}: needs at least one criterion "
+                "(state, not_state, above, below, duration)"
+            )
+
+        for key in ("above", "below", "duration"):
+            if key in condition:
+                try:
+                    float(condition[key])
+                except (ValueError, TypeError):
+                    raise ConfigError(
+                        f"{where}: '{key}' must be a number "
+                        f"(got '{condition[key]}')"
+                    )
 
     return value

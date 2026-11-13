@@ -171,3 +171,89 @@ the five most relevant pieces of information for this moment.
 - docs: official display constraints (byte limit, no line breaks,
   simple emojis, empty string clears the page, custom page must be
   selected on the device).
+
+
+## [2.0.0] - 2026-07-12
+
+Priority Engine 2.0. 🧠
+
+### Added
+
+- Official importance bands: 0-20 filler / 21-59 normal / 60+ always
+  shown / 100 alarm (constants in const.py, documented semantics for
+  widget authors).
+- Quiet mode: filler items never push the display beyond
+  `quiet_max_items` (default 3) - a calm day shows a calm display
+  instead of five slots of background noise.
+- Time-based importance (`ramp.time_based_importance`): information
+  gets more urgent over time based on `state.last_changed`. The
+  appliance done reminder ramps 30 → 60 (1 h) → 100 (3 h).
+- German README (README.de.md).
+
+### Changed
+
+- All code comments and docstrings are English now; user-facing
+  display strings stay German.
+- Appliance done reminder starts as a side note (30) instead of a
+  fixed 80 and grows louder the longer the laundry waits.
+
+
+## [2.1.0] - 2026-07-12
+
+Smart Alerts. ⚠️
+
+### Added
+
+- Alert widget: rules across multiple entities that Home Assistant
+  never combines on its own — "window open + rain probability > 70%",
+  "door open for 10 minutes + nobody home". Conditions: state,
+  not_state, above, below, duration (AND-combined; OR via multiple
+  alerts). Validated like every widget, with per-condition errors.
+- Alarm mode: any item at importance 100 displaces normal items and
+  fillers; only alarms and always-band items (>= 60) stay visible.
+
+### Changed
+
+- Appliance done ramp caps at 95 instead of 100: waiting laundry is
+  loud but never triggers alarm mode.
+
+
+## [2.2.0] - 2026-07-12
+
+Groups & day context. 🕰
+
+### Added
+
+- Widget groups: widgets sharing a `group` render at most one item -
+  the most important one. Door, window and an alert as group "haus"
+  show one line instead of three.
+- Day context via `boost`: per-widget time windows that raise or
+  lower importance ("waste matters in the morning", "don't nag at
+  night"). Windows may wrap over midnight, multiple windows add up,
+  boosts are capped below alarm level.
+- Both are base options on every widget (incl. custom widgets) and
+  fully validated.
+
+
+## [2.3.0] - 2026-11-13
+
+### Added
+
+- Appliance widget understands WashData-style status sensors:
+  `starting`/`running`/`ending`, `paused`/`user_paused`,
+  `delay_wait` ("wartet"), `interrupted`/`force_stopped` ("Abbruch",
+  importance 65) and the done states `finished`/`clean`/
+  `anti_wrinkle` - no manual done flag needed when the status entity
+  reports "finished, not emptied" itself.
+- `phase_entity`: shows the current phase while running
+  ("🍽 GS Trocknen"); trailing temperatures ("Reinigen 45") are
+  stripped.
+- `remaining_entity`: remaining time, rounded up to 5-minute steps
+  so the e-paper does not refresh every minute ("🍽 GS 45min").
+- Dishwasher icon; docs: WashData example.
+
+### Changed
+
+- `done_entity` is optional now; the manual flag and a done state of
+  the status entity work together.
+

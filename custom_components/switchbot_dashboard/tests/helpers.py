@@ -1,9 +1,8 @@
-"""Gemeinsame Test-Helpers.
+"""Shared test helpers.
 
-Stubbt Home Assistant und aiohttp, damit die Tests ohne
-HA-Installation laufen, und stellt Fakes bereit. Der Import hat
-Seiteneffekte (Stubs + sys.path) und muss VOR den Paket-Imports
-stehen:
+Stubs Home Assistant and aiohttp so the tests run without an HA
+installation, and provides fakes. Importing has side effects
+(stubs + sys.path) and must happen BEFORE the package imports:
 
     import helpers  # noqa: F401
     from helpers import FakeHass, FakeState
@@ -13,7 +12,7 @@ import sys
 import types
 from pathlib import Path
 
-# Repo-Root auf den Pfad legen
+# Put the repo root on the path
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 if "homeassistant" not in sys.modules:
@@ -55,15 +54,16 @@ if "aiohttp" not in sys.modules:
 
 class FakeState:
 
-    def __init__(self, state, attributes=None):
+    def __init__(self, state, attributes=None, last_changed=None):
         self.state = state
         self.attributes = attributes or {}
+        self.last_changed = last_changed
 
 
 class FakeHass:
 
     def __init__(self, states=None):
-        # per async_set gesetzte States (z.B. Preview-Entity)
+        # states set via async_set (e.g. the preview entity)
         self.set_states: dict = {}
 
         def async_set(entity_id, state, attributes=None):

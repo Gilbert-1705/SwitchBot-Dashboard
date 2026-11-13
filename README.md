@@ -13,12 +13,12 @@ Unlike classic dashboards that permanently show every available sensor, SwitchBo
 And on a quiet day:
 
 ```
-🌡 21°C ☀   P 280W   ●   🚪 Zu
+🌡 21°C ☀   ●   🚪 Zu
 ```
 
 ## Status
 
-✅ Stable (v1.2.0) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.3.0) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
@@ -41,10 +41,11 @@ The priority engine collects all visible items, keeps the five most important on
 | Calendar | `🎂 Oma`, `📅 Zahnarzt 2T` | Birthdays, appointments, holidays, vacation |
 | Presence | `⌂ Jan+Anna` / `⌂ Leer` | Who is home; an empty house ranks higher |
 | Fuel | `⛽ Tanken 1.65` | Tank level (% or liters) + refuel recommendation based on level and price thresholds |
-| Appliance | `🧺 WM Fertig` | Washer/dryer finished, until manually reset (see [examples](docs/examples.md)) |
+| Appliance | `🧺 WM Fertig` / `🍽 GS Trocknen` | Washer, dryer, dishwasher: phase or remaining time while running, done reminder that grows louder; works with simple sensors and WashData (see [examples](docs/examples.md)) |
 | Solar | `☀ 3.2kW` | PV production, hidden at night |
 | Battery | `🔋 eBike 15%` | Any battery (PV storage, e-bike, …), important when low |
 | EV | `🔌 64% lädt` | EV state of charge + charging status, reminder when low and unplugged |
+| Alert | `! Regen rein` | Smart alerts: rules across multiple entities ("window open + rain > 70%"), triggers alarm mode |
 
 ## Installation
 

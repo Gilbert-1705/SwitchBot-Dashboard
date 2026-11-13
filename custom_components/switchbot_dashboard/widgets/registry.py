@@ -1,6 +1,6 @@
-"""Widget-Registry: verbindet Widget-Typen mit Klassen und Configs.
+"""Widget registry: connects widget types to classes and configs.
 
-Eigene Widgets lassen sich von außen registrieren:
+Custom widgets can be registered from outside:
 
     from custom_components.switchbot_dashboard.widgets.registry import (
         register_widget_type,
@@ -8,16 +8,18 @@ Eigene Widgets lassen sich von außen registrieren:
 
     register_widget_type("mein_widget", MeinWidget, MeinWidgetConfig)
 
-Danach ist der Typ in der Konfiguration (Python und YAML) nutzbar.
-Siehe docs/configuration.md.
+Afterwards the type is usable in the configuration (Python and
+YAML). See docs/configuration.md.
 """
 
 from dataclasses import dataclass
 
+from .alert import AlertWidget
 from .appliance import ApplianceWidget
 from .battery import BatteryWidget
 from .calendar import CalendarWidget
 from .config_models import (
+    AlertWidgetConfig,
     ApplianceWidgetConfig,
     BatteryWidgetConfig,
     CalendarWidgetConfig,
@@ -47,7 +49,7 @@ from .window import WindowWidget
 class WidgetRegistration:
     widget_cls: type
     config_cls: type
-    # Pflichtfelder in der YAML-Konfiguration
+    # required fields in the YAML configuration
     required: tuple = ()
 
 
@@ -60,7 +62,7 @@ def register_widget_type(
     config_cls: type = WidgetConfig,
     required: tuple = (),
 ):
-    """Registriert einen (auch eigenen) Widget-Typ."""
+    """Registers a (possibly custom) widget type."""
 
     _REGISTRY[name] = WidgetRegistration(
         widget_cls=widget_cls,
@@ -77,7 +79,7 @@ def registered_types() -> list[str]:
     return sorted(_REGISTRY)
 
 
-# Eingebaute Widgets
+# Built-in widgets
 register_widget_type("weather", WeatherWidget, WeatherWidgetConfig)
 register_widget_type(
     "entity", EntityWidget, EntityWidgetConfig,
@@ -103,7 +105,7 @@ register_widget_type(
 )
 register_widget_type(
     "appliance", ApplianceWidget, ApplianceWidgetConfig,
-    required=("name", "running_entity", "done_entity"),
+    required=("name", "running_entity"),
 )
 register_widget_type(
     "solar", SolarWidget, SolarWidgetConfig,
@@ -116,4 +118,8 @@ register_widget_type(
 register_widget_type(
     "ev", EvWidget, EvWidgetConfig,
     required=("soc_entity",),
+)
+register_widget_type(
+    "alert", AlertWidget, AlertWidgetConfig,
+    required=("name", "conditions"),
 )

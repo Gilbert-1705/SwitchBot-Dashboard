@@ -56,6 +56,45 @@
 - [x] Gemeinsame Test-Helpers (tests/helpers.py)
 - [x] enabled()/NAME entfernt, Lint-Aufräumen
 
+## v2.0 ✅ Priority Engine 2.0
+
+- [x] Sprach-Cleanup: Code durchgehend Englisch, README.de.md
+- [x] Importance-Bänder als offizielle Semantik:
+      0-20 Füller / 21-59 normal / 60+ immer / 100 Alarm
+- [x] Zeitrampe: Wichtigkeit steigt mit Dauer (state.last_changed),
+      "WM Fertig": 30 → 60 (1h) → 100 (3h)
+- [x] Ruhemodus: quiet_max_items (Standard 3), Füller verdrängen nichts
+
+## v2.1 ✅ Smart Alerts
+
+- [x] Alert-Widget für Zustandskombinationen
+      (state/not_state/above/below, AND-verknüpft)
+- [x] Zeitbedingungen (duration: Tür seit 10 min offen)
+- [x] Alarmmodus: importance 100 verdrängt Normal- und Füller-Items
+
+## v2.2 ✅ Gruppen & Tageskontext
+
+- [x] Widget-Gruppen: group-Option, nur das wichtigste Item pro Gruppe
+- [x] Tageskontext: boost-Option (Zeitfenster + add, auch negativ,
+      über Mitternacht, gedeckelt unter Alarm-Level)
+
+## v2.3 ✅ WashData
+
+- [x] Appliance-Widget versteht WashData-Zustände (clean, delay_wait,
+      interrupted, ...), done_entity optional
+- [x] Phase (phase_entity) und Restzeit (remaining_entity, 5-min-Raster)
+
+## v3.x Plattform
+
+- [ ] Plugin-System, Themes, Mehrsprachigkeit
+- [ ] Weitere Displaygrößen / E-Paper-Displays
+- [ ] Offizieller HACS-Store (brands-PR)
+
+## Bewusst nicht geplant
+
+Aktien, News, RSS, 7-Tage-Forecast, Server-Metriken als
+Daueranzeige — kontextlose Daten verwässern das Konzept.
+
 ## Backlog
 
 - [ ] Weitere Widgets nach Bedarf: Luftqualität, VPN/Serverstatus,

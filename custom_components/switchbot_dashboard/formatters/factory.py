@@ -4,13 +4,13 @@ from .number import NumberFormatter
 
 
 class FormatterFactory:
-    """Erzeugt Formatter anhand ihres Namens.
+    """Creates formatters by name.
 
-    Eigene Formatter lassen sich registrieren:
+    Custom formatters can be registered:
 
         FormatterFactory.register("euro", EuroFormatter)
 
-    Danach ist ``formatter: euro`` in der Konfiguration nutzbar.
+    Afterwards ``formatter: euro`` is usable in the configuration.
     """
 
     _formatters: dict[str, type] = {

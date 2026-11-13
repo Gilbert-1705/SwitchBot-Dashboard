@@ -28,3 +28,7 @@ class Entities:
     WASHER_DONE = "Waschmaschine fertig"
     DRYER_RUNNING = "Trockner läuft"
     DRYER_DONE = "Trockner fertig"
+
+    DISHWASHER_STATE = "Geschirrspüler Zustand"
+    DISHWASHER_PHASE = "Geschirrspüler Phase"
+    DISHWASHER_REMAINING = "Geschirrspüler Restzeit"

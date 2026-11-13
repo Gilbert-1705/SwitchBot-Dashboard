@@ -2,7 +2,7 @@ from .base import BaseWidget, DashboardItem
 from ..icons import Icons
 from ..text import join_names
 
-# Zustände werden case-insensitive verglichen (z.B. Homematic:
+# States are compared case-insensitively (e.g. Homematic:
 # "Offen", "Geschlossen", "Gekippt")
 OPEN_STATES = ("on", "open", "true", "offen")
 TILTED_STATES = ("tilted", "gekippt")
@@ -10,18 +10,18 @@ SKIP_STATES = ("unknown", "unavailable", "none")
 
 
 class WindowWidget(BaseWidget):
-    """Fenster-/Balkontür-Widget mit zwei Anzeigemodi.
+    """Window/balcony-door widget with two display modes.
 
-    mode="rooms" (Standard): zeigt die Namen offener Räume
+    mode="rooms" (default): shows the names of open rooms
         ○ Wohnen        ○ Wohnen+Essen      ○ Wohnen+2
 
-    mode="state": zeigt nur den Zustand — für Fälle, in denen die
-    Sensoren zusammengehören (z.B. zwei Türen desselben Balkons)
-    und der Name egal ist. Kürzer, bricht auf dem Display nicht um.
+    mode="state": shows only the state — for sensors that belong
+    together (e.g. two doors of the same balcony) where the name
+    doesn't matter. Shorter, never wraps on the display.
         ○ Offen         ○ Gekippt           ○ Offen+Gekippt
 
-    Gekippt gilt als unkritisch (man darf gekippt aus dem Haus)
-    und wird deshalb nur als Hintergrundinfo gewichtet.
+    Tilted counts as uncritical (leaving the house with tilted
+    windows is fine), so it only ranks as background info.
     """
 
     def __init__(
@@ -33,7 +33,7 @@ class WindowWidget(BaseWidget):
     ):
         super().__init__(hass)
 
-        # entity_id -> Raumname, z.B. {"binary_sensor.wohnen": "Wohnen"}
+        # entity_id -> room name, e.g. {"binary_sensor.wohnen": "Wohnen"}
         self.entities = entities
         self.mode = mode
         self.priority = priority
@@ -71,13 +71,13 @@ class WindowWidget(BaseWidget):
         if self.mode == "state":
             return self._render_state(open_rooms, tilted_rooms)
 
-        # Gekippte Fenster zählen als offen, sind aber weniger
-        # dringend, solange nichts ganz offen steht
+        # Tilted windows count as open but are less urgent as long
+        # as nothing is fully open
         importance = 65 if open_rooms else 40
 
         return DashboardItem(
             icon=Icons.OPEN,
-            # "Wohnen", "Wohnen+Essen", ab drei Räumen "Wohnen+2"
+            # "Wohnen", "Wohnen+Essen", three or more -> "Wohnen+2"
             value=join_names(open_rooms + tilted_rooms),
             priority=self.priority,
             importance=importance,
@@ -92,7 +92,7 @@ class WindowWidget(BaseWidget):
             value = "Offen"
             importance = 65
         else:
-            # Nur gekippt: darf so bleiben, reine Hintergrundinfo
+            # Tilted only: fine to stay that way, pure background info
             value = "Gekippt"
             importance = 25
 

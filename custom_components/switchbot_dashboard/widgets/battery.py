@@ -3,13 +3,13 @@ from ..icons import Icons
 
 
 class BatteryWidget(BaseWidget):
-    """Generisches Akku-Widget: PV-Speicher, E-Bike, Staubsauger, ...
+    """Generic battery widget: PV storage, e-bike, vacuum, ...
 
-        🔋 eBike 15%    Akku niedrig -> laden (wichtig)
-        🔋 eBike 85%    mit show_always: Hintergrundinfo
-        (nichts)        Akku ok und show_always aus
+        🔋 eBike 15%    battery low -> charge (important)
+        🔋 eBike 85%    with show_always: background info
+        (nothing)       battery ok and show_always off
 
-    Konfiguration pro Akku eine Widget-Instanz mit eigenem Namen.
+    Configure one widget instance per battery with its own name.
     """
 
     def __init__(

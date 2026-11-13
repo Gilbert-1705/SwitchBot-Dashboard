@@ -6,15 +6,15 @@ HOME_STATES = ("home", "on")
 
 
 class PresenceWidget(BaseWidget):
-    """Zeigt, wer zu Hause ist.
+    """Shows who is home.
 
-        ⌂ Jan          eine Person
-        ⌂ Jan+Anna     zwei Personen
-        ⌂ Jan+2        ab drei Personen
-        ⌂ Leer         niemand zu Hause
+        ⌂ Jan          one person
+        ⌂ Jan+Anna     two persons
+        ⌂ Jan+2        three or more
+        ⌂ Leer         nobody home
 
-    Ein leeres Haus ist die wichtigere Information (Abschieds-
-    Check: alles zu?), Anwesenheit ist Hintergrundinfo.
+    An empty house is the more important information (leaving
+    check: everything closed?), presence is background info.
     """
 
     def __init__(
@@ -25,7 +25,7 @@ class PresenceWidget(BaseWidget):
     ):
         super().__init__(hass)
 
-        # person-Entity -> Anzeigename
+        # person entity -> display name
         self.entities = entities
         self.priority = priority
 
