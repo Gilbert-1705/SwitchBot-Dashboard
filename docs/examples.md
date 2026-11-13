@@ -154,3 +154,53 @@ and add `done_entity: input_boolean.geschirrspueler_fertig` to the
 widget. Reset the flag like the laundry reminder above (display
 button via Matter, app or dashboard). A new cycle overrides a stale
 flag automatically.
+
+## Virtual buttons as stand-ins for the display buttons
+
+The two physical buttons of the Weather Station only reach Home
+Assistant through a Matter-enabled SwitchBot hub. Until then (or
+instead), two `input_button` helpers act as stand-ins: every reset
+automation listens to a virtual button, and whatever ends up
+pressing it - a dashboard card, a wall switch, later the real
+display button - needs no further logic.
+
+```yaml
+input_button:
+  display_taste_1:
+    name: Display Taste 1
+  display_taste_2:
+    name: Display Taste 2
+
+automation:
+  - alias: "Display: Taste 1 – Wäsche ausgeräumt"
+    trigger:
+      - platform: state
+        entity_id: input_button.display_taste_1
+        not_from: unavailable
+        not_to: [unavailable, unknown]
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id:
+            - input_boolean.waschmaschine_fertig
+            - input_boolean.trockner_fertig
+
+  - alias: "Display: Taste 2 – Geschirrspüler ausgeräumt"
+    trigger:
+      - platform: state
+        entity_id: input_button.display_taste_2
+        not_from: unavailable
+        not_to: [unavailable, unknown]
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.geschirrspueler_fertig
+```
+
+Do not exclude `unknown` in `not_from`: a button that has never been
+pressed is `unknown`, and its very first press must count.
+
+Note on the reminder ramp: it is measured from the flag's
+`last_changed`, which Home Assistant re-stamps on every restart. After
+a restart a waiting reminder starts again at its lowest level.
+
