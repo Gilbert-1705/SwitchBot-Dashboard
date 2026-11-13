@@ -161,6 +161,34 @@ class UpdaterTest(unittest.TestCase):
         self.assertEqual(api.sent, ["P 380W", "P 500W"])
 
 
+class EventLoopSafetyTest(unittest.TestCase):
+    """Home Assistant threading rules that the stubs cannot enforce.
+
+    HA runs a plain (non-coroutine) listener in a worker thread
+    unless it is decorated with @callback. The state listener
+    schedules a timer, which is only allowed on the event loop.
+    """
+
+    def test_state_listener_is_declared_as_callback(self):
+        import inspect
+
+        source = inspect.getsource(DashboardUpdater)
+        index = source.index("def _on_state_change")
+        preceding = source[:index].rstrip().splitlines()[-1].strip()
+
+        self.assertEqual(preceding, "@callback")
+
+    def test_timer_targets_are_coroutines(self):
+        import inspect
+
+        for name in ("_on_debounce_done", "_on_interval", "_on_retry",
+                     "_on_started"):
+            self.assertTrue(
+                inspect.iscoroutinefunction(getattr(DashboardUpdater, name)),
+                name,
+            )
+
+
 class FailingAPI:
     """Refuses the first ``failures`` sends like a rate-limited API."""
 

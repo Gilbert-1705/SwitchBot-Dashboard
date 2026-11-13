@@ -274,3 +274,16 @@ Groups & day context. 🕰
   sensor values showed that "GS Klarspülen" lost its slot to fillers
   such as "door closed" on a quiet day and never appeared.
 
+
+## [2.3.2] - 2026-11-13
+
+### Fixed
+
+- The updater's state listener is a `@callback` now. Home Assistant
+  runs plain listener functions in a worker thread, where scheduling
+  the debounce timer is not allowed - auto refresh would have raised
+  on every state change instead of updating the display. Found by
+  reviewing the code against Home Assistant's threading rules before
+  the first real deployment; the stubbed tests could not catch it.
+- Without a YAML `widgets:` block the updater now watches the entities
+  of the Python fallback configuration instead of none.

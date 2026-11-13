@@ -21,6 +21,7 @@ from dataclasses import fields as dataclass_fields
 from datetime import timedelta
 
 from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
+from homeassistant.core import callback
 from homeassistant.helpers.event import (
     async_call_later,
     async_track_state_change_event,
@@ -29,6 +30,7 @@ from homeassistant.helpers.event import (
 
 from .const import QUIET_MAX_ITEMS
 from .render import publish_preview, render_dashboard
+from .widgets.config import WIDGETS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -115,7 +117,10 @@ class DashboardUpdater:
 
     async def async_start(self):
 
-        entities = sorted(collect_entities(self.configs))
+        # Without YAML widgets the Python fallback config is rendered,
+        # so its entities are the ones to watch
+        configs = self.configs if self.configs is not None else WIDGETS
+        entities = sorted(collect_entities(configs))
 
         if entities:
             self._unsubs.append(
@@ -155,7 +160,14 @@ class DashboardUpdater:
 
     # -- Trigger --------------------------------------------------
 
+    @callback
     def _on_state_change(self, event):
+        """Debounces state changes.
+
+        Must be a @callback: Home Assistant runs plain functions in a
+        worker thread, and timers may only be scheduled from the
+        event loop.
+        """
 
         if self._cancel_debounce is not None:
             self._cancel_debounce()

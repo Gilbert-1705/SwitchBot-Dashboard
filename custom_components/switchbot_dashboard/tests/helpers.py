@@ -21,6 +21,7 @@ if "homeassistant" not in sys.modules:
     ha_core.HomeAssistant = object
     ha_core.State = object
     ha_core.ServiceCall = object
+    ha_core.callback = lambda func: func
 
     ha_const = types.ModuleType("homeassistant.const")
     ha_const.EVENT_HOMEASSISTANT_STARTED = "homeassistant_started"

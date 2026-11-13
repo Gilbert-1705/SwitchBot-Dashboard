@@ -18,7 +18,7 @@ And on a quiet day:
 
 ## Status
 
-✅ Stable (v2.3.1) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.3.2) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
