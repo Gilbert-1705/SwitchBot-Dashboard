@@ -108,6 +108,7 @@ class DashboardUpdater:
         self.dry_run = dry_run
 
         self._last_text: str | None = None
+        self._last_preview: tuple | None = None
         self._last_send: float = 0.0
         self._cancel_debounce = None
         self._cancel_retry = None
@@ -167,10 +168,14 @@ class DashboardUpdater:
         Must be a @callback: Home Assistant runs plain functions in a
         worker thread, and timers may only be scheduled from the
         event loop.
+
+        A pending timer is left alone instead of being restarted:
+        a chatty sensor (a power meter reports every few seconds)
+        would otherwise postpone the refresh forever.
         """
 
         if self._cancel_debounce is not None:
-            self._cancel_debounce()
+            return
 
         self._cancel_debounce = async_call_later(
             self.hass, self.debounce, self._on_debounce_done
@@ -210,14 +215,15 @@ class DashboardUpdater:
         )
 
         if not self.should_send(text, force=force):
+            # Nothing new: the display and the preview entity
+            # already show this text
             _LOGGER.debug("Dashboard unchanged, skipping send")
-            publish_preview(self.hass, text, sent=False)
             return
 
         wait = self.seconds_until_allowed()
 
         if wait > 0 and not force:
-            publish_preview(self.hass, text, sent=False)
+            self._publish(text, sent=False)
             self._schedule_retry(wait)
             return
 
@@ -225,7 +231,7 @@ class DashboardUpdater:
         self._last_text = text
         self._last_send = time.monotonic()
 
-        publish_preview(self.hass, text, sent=not self.dry_run)
+        self._publish(text, sent=not self.dry_run)
 
         if self.dry_run:
             _LOGGER.debug("Dry run, not sending: %s", text)
@@ -239,8 +245,22 @@ class DashboardUpdater:
             # error). Forget it so the next refresh sends again, and
             # retry on our own instead of waiting for a state change.
             self._last_text = None
-            publish_preview(self.hass, text, sent=False)
+            self._publish(text, sent=False)
             self._schedule_retry(RETRY_AFTER_ERROR)
+
+    def _publish(self, text: str, sent: bool):
+        """Updates the preview entity, but only on a real change.
+
+        Renders happen every few seconds (any watched entity can
+        trigger one). Writing the entity each time would flood the
+        recorder with identical rows.
+        """
+
+        if self._last_preview == (text, sent):
+            return
+
+        self._last_preview = (text, sent)
+        publish_preview(self.hass, text, sent=sent)
 
     def _schedule_retry(self, wait: float):
 

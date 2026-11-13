@@ -1,7 +1,7 @@
 {
   "domain": "switchbot_dashboard",
   "name": "SwitchBot Dashboard",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "config_flow": true,
   "documentation": "https://github.com/Gilbert-1705/SwitchBot-Dashboard",
   "issue_tracker": "https://github.com/Gilbert-1705/SwitchBot-Dashboard/issues",

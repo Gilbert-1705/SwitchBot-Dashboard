@@ -287,3 +287,18 @@ Groups & day context. 🕰
   the first real deployment; the stubbed tests could not catch it.
 - Without a YAML `widgets:` block the updater now watches the entities
   of the Python fallback configuration instead of none.
+
+
+## [2.3.3] - 2026-11-13
+
+### Fixed
+
+Both found in the first minutes of real operation:
+
+- The preview entity is only written when the text or its sent state
+  changes. Any watched entity triggers a render every few seconds;
+  writing `sensor.switchbot_dashboard` each time produced an identical
+  recorder row per render (17 rows in 2.5 minutes).
+- A pending debounce timer is no longer restarted by further state
+  changes. A sensor reporting more often than the debounce time could
+  have postponed the refresh indefinitely.

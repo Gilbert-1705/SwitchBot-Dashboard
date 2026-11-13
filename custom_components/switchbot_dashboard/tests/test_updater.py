@@ -178,6 +178,27 @@ class EventLoopSafetyTest(unittest.TestCase):
 
         self.assertEqual(preceding, "@callback")
 
+    def test_pending_debounce_timer_is_not_restarted(self):
+        # A sensor that reports more often than the debounce time
+        # must not postpone the refresh forever
+        from custom_components.switchbot_dashboard import updater as mod
+
+        calls = []
+        original = mod.async_call_later
+        mod.async_call_later = (
+            lambda hass, delay, action: calls.append(delay) or (lambda: None)
+        )
+        try:
+            updater = DashboardUpdater(
+                FakeHass({}), api=FakeAPI(), configs=[], max_items=5
+            )
+            for _ in range(10):
+                updater._on_state_change(None)
+        finally:
+            mod.async_call_later = original
+
+        self.assertEqual(len(calls), 1)
+
     def test_timer_targets_are_coroutines(self):
         import inspect
 
@@ -339,19 +360,38 @@ class PreviewEntityTest(unittest.TestCase):
         self.assertEqual(state, "P 380W")
         self.assertTrue(attrs["sent_to_device"])
 
-    def test_preview_updates_even_when_send_skipped(self):
-
+    def test_unchanged_render_does_not_rewrite_the_entity(self):
+        # Found in production: any watched entity triggers a render
+        # every few seconds. Rewriting the preview entity each time
+        # flooded the recorder with identical rows.
         api = FakeAPI()
         hass = FakeHass({"s": FakeState("380")})
         updater = self._updater(hass, api)
 
         asyncio.run(updater.async_refresh())
         hass.set_states.clear()
-        asyncio.run(updater.async_refresh())  # unchanged -> no send
 
-        state, attrs = hass.set_states[self.PREVIEW]
-        self.assertEqual(state, "P 380W")
-        self.assertFalse(attrs["sent_to_device"])
+        for _ in range(5):
+            asyncio.run(updater.async_refresh())  # unchanged
+
+        self.assertEqual(hass.set_states, {})
+        self.assertEqual(len(api.sent), 1)
+
+    def test_entity_is_rewritten_when_the_text_changes(self):
+
+        api = FakeAPI()
+        state = FakeState("380")
+        hass = FakeHass({"s": state})
+        updater = self._updater(hass, api)
+
+        asyncio.run(updater.async_refresh())
+        hass.set_states.clear()
+        state.state = "500"
+        asyncio.run(updater.async_refresh())
+
+        preview_state, attrs = hass.set_states[self.PREVIEW]
+        self.assertEqual(preview_state, "P 500W")
+        self.assertTrue(attrs["sent_to_device"])
 
     def test_dry_run_never_calls_api(self):
 
