@@ -3,19 +3,19 @@ from ..config.entities import Entities
 from ..icons import Icons
 
 
-# (lock_state, door_open) -> (icon, text, importance)
+# (lock_state, door_open) -> (icon, text key, importance)
 DOOR_STATES = {
-    ("locked", False): (Icons.DOOR, "Zu", 20),
-    ("locking", False): (Icons.DOOR, "Zu", 20),
+    ("locked", False): (Icons.DOOR, "locked", 20),
+    ("locking", False): (Icons.DOOR, "locked", 20),
 
-    ("unlocked", False): (Icons.DOOR, "Auf", 60),
-    ("unlocking", False): (Icons.DOOR, "Auf", 60),
+    ("unlocked", False): (Icons.DOOR, "unlocked", 60),
+    ("unlocking", False): (Icons.DOOR, "unlocked", 60),
 
-    ("unlocked", True): (Icons.DOOR, "Offen", 75),
-    ("unlocking", True): (Icons.DOOR, "Offen", 75),
+    ("unlocked", True): (Icons.DOOR, "open", 75),
+    ("unlocking", True): (Icons.DOOR, "open", 75),
 
-    ("locked", True): (Icons.WARNING, "Offen", 100),
-    ("locking", True): (Icons.WARNING, "Offen", 100),
+    ("locked", True): (Icons.WARNING, "open", 100),
+    ("locking", True): (Icons.WARNING, "open", 100),
 }
 
 
@@ -50,14 +50,14 @@ class DoorWidget(BaseWidget):
         lock_state = lock.state
         door_open = contact.state == "on"
 
-        icon, value, importance = DOOR_STATES.get(
+        icon, text_key, importance = DOOR_STATES.get(
             (lock_state, door_open),
-            (Icons.WARNING, "?", 100),
+            (Icons.WARNING, None, 100),
         )
 
         return DashboardItem(
             icon=icon,
-            value=value,
+            value=self.t(text_key) if text_key else "?",
             priority=self.priority,
             importance=importance,
         )

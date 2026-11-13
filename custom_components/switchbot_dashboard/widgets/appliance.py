@@ -109,13 +109,13 @@ class ApplianceWidget(BaseWidget):
             return self._done_item(status_since)
 
         if running in FAILED_STATES:
-            return self._item("Abbruch", 65)
+            return self._item(self.t("aborted"), 65)
 
         if running in PAUSED_STATES:
-            return self._item("Pause", ACTIVE_IMPORTANCE)
+            return self._item(self.t("paused"), ACTIVE_IMPORTANCE)
 
         if running in WAITING_STATES:
-            return self._item("wartet", 15)
+            return self._item(self.t("waiting"), 15)
 
         return None
 
@@ -134,7 +134,7 @@ class ApplianceWidget(BaseWidget):
 
         # The longer it waits, the louder the reminder
         return self._item(
-            "Fertig",
+            self.t("done"),
             time_based_importance(since, DONE_RAMP),
         )
 
@@ -160,9 +160,9 @@ class ApplianceWidget(BaseWidget):
             if minutes > 0:
                 step = REMAINING_STEP_MINUTES
                 rounded = int(math.ceil(minutes / step) * step)
-                return f"{rounded}min"
+                return f"{rounded}{self.t('minutes')}"
 
-        return "läuft"
+        return self.t("running")
 
     @staticmethod
     def _lower(state) -> str:

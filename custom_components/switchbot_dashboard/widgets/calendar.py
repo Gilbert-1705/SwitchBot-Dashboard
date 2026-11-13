@@ -63,10 +63,10 @@ class CalendarWidget(BaseWidget):
             value = message
             importance = 80
         elif days_until == 1:
-            value = f"{message} Morgen"
+            value = f"{message} {self.t('tomorrow')}"
             importance = 65
         else:
-            value = f"{message} {days_until}T"
+            value = f"{message} {days_until}{self.t('days')}"
             importance = 45
 
         return DashboardItem(

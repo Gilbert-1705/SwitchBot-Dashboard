@@ -86,14 +86,14 @@ class WindowWidget(BaseWidget):
     def _render_state(self, open_rooms, tilted_rooms):
 
         if open_rooms and tilted_rooms:
-            value = "Offen+Gekippt"
+            value = f"{self.t('open')}+{self.t('tilted')}"
             importance = 65
         elif open_rooms:
-            value = "Offen"
+            value = self.t("open")
             importance = 65
         else:
             # Tilted only: fine to stay that way, pure background info
-            value = "Gekippt"
+            value = self.t("tilted")
             importance = 25
 
         return DashboardItem(

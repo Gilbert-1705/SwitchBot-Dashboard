@@ -69,7 +69,7 @@ class FuelWidget(BaseWidget):
         price_good = price is not None and price <= self._threshold()
 
         if level_low and price_good:
-            value = f"Tanken {price:.2f}"
+            value = f"{self.t('refuel')} {price:.2f}"
             importance = 85
 
         elif level_low:

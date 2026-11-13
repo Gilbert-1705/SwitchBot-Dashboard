@@ -52,7 +52,7 @@ class PresenceWidget(BaseWidget):
         if not home:
             return DashboardItem(
                 icon=Icons.HOME,
-                value="Leer",
+                value=self.t("empty"),
                 priority=self.priority,
                 importance=45,
             )

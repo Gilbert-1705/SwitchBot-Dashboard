@@ -71,13 +71,13 @@ class WasteWidget(BaseWidget):
         waste_text = "+".join(parts)
 
         if days == 0:
-            value = f"{waste_text} Heute"
+            value = f"{waste_text} {self.t('today')}"
             importance = 85
         elif days == 1:
-            value = f"{waste_text} Morgen"
+            value = f"{waste_text} {self.t('tomorrow')}"
             importance = 75
         else:
-            value = f"{waste_text} {days}T"
+            value = f"{waste_text} {days}{self.t('days')}"
             importance = 50
 
         _LOGGER.debug(

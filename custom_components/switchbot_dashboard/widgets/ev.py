@@ -51,7 +51,7 @@ class EvWidget(BaseWidget):
         if self._is_charging():
             return DashboardItem(
                 icon=self.icon,
-                value=f"{base} lädt",
+                value=f"{base} {self.t('charging')}",
                 priority=self.priority,
                 importance=30,
             )
