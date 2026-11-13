@@ -230,12 +230,29 @@ Renders `⛽ Tanken 1.65` (85), `⛽ 12%` (65), `⛽ 1.65` (40) or nothing.
 
 | Option | Required | Default | Description |
 |---|---|---|---|
-| `name` | **yes** | – | Short label, e.g. `WM`, `TR` |
-| `running_entity` | **yes** | – | Status sensor (`run`/`pause`/`stop`) |
-| `done_entity` | **yes** | – | `input_boolean` reminder flag |
+| `name` | **yes** | – | Short label, e.g. `WM`, `TR`, `GS` |
+| `running_entity` | **yes** | – | Status sensor (see states below) |
+| `done_entity` | no | – | `input_boolean` reminder flag |
+| `remaining_entity` | no | – | Remaining time in minutes |
+| `phase_entity` | no | – | Current phase, shown while running |
 | `icon` | no | `🧺` | Icon |
 
-See [examples.md](examples.md) for the automations.
+Understood states (case-insensitive): running = `on`, `run`,
+`running`, `starting`, `ending`; paused = `pause`, `paused`,
+`user_paused`; waiting = `delay_wait`; done = `finished`, `clean`,
+`anti_wrinkle`; failed = `interrupted`, `force_stopped`. Everything
+else (`off`, `idle`, `stop`, ...) hides the widget.
+
+While running the widget shows the phase if known (`🍽 GS Trocknen`,
+a trailing temperature like "Reinigen 45" is stripped), otherwise
+the remaining time rounded up to 5-minute steps (`🍽 GS 45min`, so
+the e-paper does not refresh every minute), otherwise `läuft`.
+
+The done reminder (`Fertig`) ramps 30 → 60 (1 h) → 95 (3 h). It can
+come from the status entity itself (a done state such as WashData's
+`clean`) or from the manual `done_entity` flag — both work
+together. See [examples.md](examples.md) for the automations and the
+WashData setup.
 
 ### solar
 

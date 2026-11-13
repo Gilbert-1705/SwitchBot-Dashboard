@@ -101,5 +101,56 @@ ApplianceWidgetConfig(
 ),
 ```
 
-Behavior: `🧺 WM Fertig` (importance 80) while the flag is set,
-`🧺 WM läuft` (importance 15) while running, hidden otherwise.
+Behavior: `🧺 WM Fertig` while the flag is set (importance ramps
+30 → 60 after 1 h → 95 after 3 h), `🧺 WM läuft` (importance 15)
+while running, hidden otherwise.
+
+## Dishwasher with WashData
+
+WashData (a custom integration available via HACS) detects state
+and phase of an appliance from its power consumption. The appliance
+widget understands its state sensor directly:
+
+```yaml
+- type: appliance
+  name: GS
+  running_entity: sensor.geschirrspuler_zustand
+  phase_entity: sensor.geschirrspuler_aktuelle_phase
+  remaining_entity: sensor.geschirrspuler_verbleibende_zeit
+  icon: "🍽"
+  priority: 720
+```
+
+Result: `🍽 GS Trocknen` while running, `🍽 GS Fertig` when done,
+`🍽 GS Abbruch` when a cycle was interrupted.
+
+### Keeping the reminder until the dishwasher is unloaded
+
+How long `Fertig` stays depends on WashData: the state sensor
+reports `finished` only for a limited time and then returns to
+`off` - unless the appliance stays in WashData's `clean` state until
+"mark as unloaded" is pressed. If your reminder disappears too
+early, add the manual done flag; it works together with the status
+sensor:
+
+```yaml
+input_boolean:
+  geschirrspueler_fertig:
+    name: Geschirrspüler fertig
+
+automation:
+  - alias: "Geschirrspüler: fertig markieren"
+    trigger:
+      - platform: state
+        entity_id: sensor.geschirrspuler_zustand
+        to: "finished"
+    action:
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.geschirrspueler_fertig
+```
+
+and add `done_entity: input_boolean.geschirrspueler_fertig` to the
+widget. Reset the flag like the laundry reminder above (display
+button via Matter, app or dashboard). A new cycle overrides a stale
+flag automatically.

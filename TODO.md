@@ -78,6 +78,12 @@
 - [x] Tageskontext: boost-Option (Zeitfenster + add, auch negativ,
       über Mitternacht, gedeckelt unter Alarm-Level)
 
+## v2.3 ✅ WashData
+
+- [x] Appliance-Widget versteht WashData-Zustände (clean, delay_wait,
+      interrupted, ...), done_entity optional
+- [x] Phase (phase_entity) und Restzeit (remaining_entity, 5-min-Raster)
+
 ## v3.x Plattform
 
 - [ ] Plugin-System, Themes, Mehrsprachigkeit

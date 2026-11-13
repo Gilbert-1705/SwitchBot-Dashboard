@@ -102,4 +102,15 @@ WIDGETS = [
         icon=Icons.LAUNDRY,
         priority=710,
     ),
+    # Dishwasher via WashData: the state sensor reports the done
+    # state itself, phase and remaining time come for free
+    ApplianceWidgetConfig(
+        type="appliance",
+        name="GS",
+        running_entity=Entities.DISHWASHER_STATE,
+        phase_entity=Entities.DISHWASHER_PHASE,
+        remaining_entity=Entities.DISHWASHER_REMAINING,
+        icon=Icons.DISHWASHER,
+        priority=720,
+    ),
 ]

@@ -108,9 +108,16 @@ class EvWidgetConfig(WidgetConfig):
 class ApplianceWidgetConfig(WidgetConfig):
     # short label for the display, e.g. "WM" or "TR"
     name: str = ""
+    # status entity: simple run/pause/stop sensor or a WashData
+    # state sensor (running/clean/delay_wait/...)
     running_entity: str = ""
-    # input_boolean: on = finished but not emptied yet
+    # optional input_boolean: on = finished but not emptied yet
+    # (not needed when the status entity reports that itself)
     done_entity: str = ""
+    # optional: remaining time in minutes
+    remaining_entity: str = ""
+    # optional: current phase, shown while running
+    phase_entity: str = ""
     icon: str = ""
 
 

@@ -233,3 +233,27 @@ Groups & day context. 🕰
   boosts are capped below alarm level.
 - Both are base options on every widget (incl. custom widgets) and
   fully validated.
+
+
+## [2.3.0] - 2026-11-13
+
+### Added
+
+- Appliance widget understands WashData-style status sensors:
+  `starting`/`running`/`ending`, `paused`/`user_paused`,
+  `delay_wait` ("wartet"), `interrupted`/`force_stopped` ("Abbruch",
+  importance 65) and the done states `finished`/`clean`/
+  `anti_wrinkle` - no manual done flag needed when the status entity
+  reports "finished, not emptied" itself.
+- `phase_entity`: shows the current phase while running
+  ("🍽 GS Trocknen"); trailing temperatures ("Reinigen 45") are
+  stripped.
+- `remaining_entity`: remaining time, rounded up to 5-minute steps
+  so the e-paper does not refresh every minute ("🍽 GS 45min").
+- Dishwasher icon; docs: WashData example.
+
+### Changed
+
+- `done_entity` is optional now; the manual flag and a done state of
+  the status entity work together.
+

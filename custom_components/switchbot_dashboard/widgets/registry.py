@@ -105,7 +105,7 @@ register_widget_type(
 )
 register_widget_type(
     "appliance", ApplianceWidget, ApplianceWidgetConfig,
-    required=("name", "running_entity", "done_entity"),
+    required=("name", "running_entity"),
 )
 register_widget_type(
     "solar", SolarWidget, SolarWidgetConfig,
