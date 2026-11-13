@@ -31,6 +31,7 @@ from datetime import datetime, timezone
 from .base import BaseWidget, DashboardItem
 from ..const import IMPORTANCE_ALARM
 from ..icons import Icons
+from ..text import state_text
 from ..tracker import state_since
 
 SKIP_STATES = ("unknown", "unavailable", "none")
@@ -134,7 +135,7 @@ class AlertWidget(BaseWidget):
             options = (expected,)
 
         return value.lower() in (
-            str(option).lower() for option in options
+            state_text(option).lower() for option in options
         )
 
     @staticmethod

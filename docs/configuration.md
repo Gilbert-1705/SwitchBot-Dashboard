@@ -20,6 +20,7 @@ switchbot_dashboard:
   auto_refresh: true    # optional, event-getriebener Auto-Refresh
   dry_run: false        # optional, true = nur lokale Preview, kein API-Call
   quiet_max_items: 3    # optional, max. Items an ruhigen Tagen
+  language: de          # optional, Sprache der Display-Texte: de oder en
 
   widgets:
     - type: weather
@@ -89,6 +90,36 @@ per minute (SwitchBot recommendation). A periodic refresh every
 bypasses the rate limit; `preview` renders and sends once without the
 updater.
 
+## Changing the configuration without a restart
+
+Call the service `switchbot_dashboard.reload` (Developer Tools →
+Actions) after editing the `switchbot_dashboard:` block. The
+integration reads configuration.yaml again and applies widgets and
+options at once. An invalid configuration is reported in the log and
+the running one stays active. The rate limit carries over, so a changed
+line may reach the display up to a minute later; the preview entity
+shows it immediately.
+
+With the UI setup, the options (maximum number of widgets, quiet-day
+maximum, auto refresh, dry run, language) are also available behind the
+integration's **Configure** button and apply without a restart.
+
+## Language
+
+`language: en` switches every text the widgets print themselves
+("Fertig" → "Done", "Offen" → "Open", "Tanken" → "Refuel", ...). Names
+you configure (rooms, appliance labels, alert texts) and the waste type
+abbreviations are not translated. Default is `de`.
+
+## Durations survive restarts
+
+Reminders that grow louder over time (appliance `Fertig`) and alert
+conditions with `duration` do not rely on Home Assistant's
+`last_changed`, which is re-stamped on every restart. The integration
+keeps its own record of when a state began and persists it, so a
+reminder that has been waiting for three hours is still three hours old
+after a restart.
+
 ## Local preview (development)
 
 The integration mirrors every rendered line to a local entity,
@@ -126,7 +157,9 @@ Configuration errors are reported in the Home Assistant log with widget position
 
 All widgets accept these base options:
 
-- `priority` — display order (lower = further left)
+- `priority` — display order (lower = further left). Without it the
+  widget's own default applies, e.g. alerts and status warnings at the
+  front.
 - `group` — widgets sharing a group render at most one item, the
   most important one. Example: door, window and an alert as group
   `haus` show `⚠ Haus` instead of three separate lines.
@@ -317,8 +350,8 @@ configuring several alerts.
   name: Tür offen!
   conditions:
     - entity: binary_sensor.haustuer
-      state: "on"
-      duration: 600        # seconds in this state
+      state: "on"          # quotes optional: an unquoted on/off works too
+      duration: 600        # seconds in this state, survives restarts
     - entity: person.jan
       not_state: home
 ```
@@ -338,6 +371,76 @@ entities make a condition false — alerts never fire on missing data.
 **Alarm mode:** as soon as any item reaches importance 100, only
 alarms and always-band items (≥ 60) are displayed; everything else
 is displaced so the warning stands out.
+
+### threshold
+
+Shows a numeric sensor only while it is out of bounds - air quality,
+electricity price, humidity, anything that is "fine until it isn't".
+
+```yaml
+- type: threshold            # air quality
+  entity: sensor.wohnzimmer_co2
+  icon: "☁"
+  name: CO₂
+  above: 1000
+  critical_above: 1500
+
+- type: threshold            # cheap electricity
+  entity: sensor.strompreis
+  icon: "€"
+  below: 20
+  unit: ct
+  precision: 1
+  importance: 40
+```
+
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `entity` | **yes** | – | Numeric sensor |
+| `icon` | **yes** | – | Icon |
+| `name` | no | – | Short label in front of the value |
+| `above` / `below` | one of the four | – | Bounds that make the value worth showing |
+| `critical_above` / `critical_below` | one of the four | – | Bounds that raise it to importance 85 |
+| `unit` | no | – | Text appended to the value |
+| `precision` | no | 0 | Decimal places |
+| `importance` | no | 55 | Importance while beyond `above`/`below` |
+
+Hidden inside the bounds and when the sensor has no numeric value.
+
+### status
+
+Shows only what is down - servers, VPN, services.
+
+```yaml
+- type: status
+  entities:
+    binary_sensor.nas_erreichbar: NAS
+    binary_sensor.vpn: VPN
+```
+
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `entities` | **yes** | – | Mapping `entity_id: Name` |
+| `ok_states` | no | on, home, up, online, connected, running, ok, true, active, healthy | States that mean "fine" |
+| `unavailable_is_problem` | no | `true` | Count unavailable/unknown/missing as down |
+| `icon` | no | `!` | Icon |
+| `importance` | no | 85 | Importance while something is down |
+
+Renders `! NAS`, `! NAS+VPN`, `! NAS+2`; hidden when everything is fine.
+
+### wallbox
+
+The charging point itself (for the car's state of charge use `ev`).
+
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `status_entity` | **yes** | – | Status sensor (`charging`, `complete`, `error`, ...) |
+| `power_entity` | no | – | Charging power in W |
+| `name` | no | – | Short label, e.g. `WB` |
+| `icon` | no | `🔌` | Icon |
+
+Renders `🔌 WB 7.4kW` while charging (30), `🔌 WB Voll` when finished
+(45), `🔌 WB Fehler` on an error (85); hidden when idle.
 
 ## Custom widgets
 

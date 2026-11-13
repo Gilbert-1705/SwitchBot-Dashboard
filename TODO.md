@@ -84,11 +84,27 @@
       interrupted, ...), done_entity optional
 - [x] Phase (phase_entity) und Restzeit (remaining_entity, 5-min-Raster)
 
+## v2.4 ✅ Dynamische Tankempfehlung
+
+- [x] max_price_entity + price_margin (z.B. 7-Tage-Tief + 3 ct)
+
+## v2.5 ✅ Betrieb & Plattform
+
+- [x] Neustartfeste Erinnerungen und Alert-Dauern (eigener Zeitstempel)
+- [x] Stromanzeige auf 10 W gerundet
+- [x] reload-Service: Konfiguration ohne Neustart übernehmen
+- [x] Options Flow (max_items, quiet_max_items, auto_refresh, dry_run,
+      language) - in echtem Home Assistant noch ungetestet
+- [x] Mehrsprachigkeit der Display-Texte (de/en)
+- [x] Widgets: threshold (Luftqualität, Strompreis), status
+      (Server/VPN), wallbox
+
 ## v3.x Plattform
 
-- [ ] Plugin-System, Themes, Mehrsprachigkeit
+- [ ] Plugin-System, Themes
 - [ ] Weitere Displaygrößen / E-Paper-Displays
-- [ ] Offizieller HACS-Store (brands-PR)
+- [ ] Offizieller HACS-Store (brands-PR, setzt öffentliches Repo voraus)
+- [ ] Display-Tasten der Wetterstation (braucht Matter-fähigen Hub)
 
 ## Bewusst nicht geplant
 
@@ -97,10 +113,9 @@ Daueranzeige — kontextlose Daten verwässern das Konzept.
 
 ## Backlog
 
-- [ ] Weitere Widgets nach Bedarf: Luftqualität, VPN/Serverstatus,
-      Strompreis, Wallbox
-- [ ] Options Flow (max_items/auto_refresh in der UI ändern)
-- [ ] Refresh am Gerät testen (Debounce/Rate-Limit-Verhalten live)
+- [ ] Screenshots und GIFs vom echten Display fürs README
+- [ ] Liste, welche Emojis die Firmware darstellt
+- [ ] Weitere Sprachen
 
 ## Vision v1.0
 

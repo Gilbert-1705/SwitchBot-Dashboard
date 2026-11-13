@@ -200,7 +200,7 @@ automation:
 Do not exclude `unknown` in `not_from`: a button that has never been
 pressed is `unknown`, and its very first press must count.
 
-Note on the reminder ramp: it is measured from the flag's
-`last_changed`, which Home Assistant re-stamps on every restart. After
-a restart a waiting reminder starts again at its lowest level.
+The reminder ramp survives restarts: the integration keeps its own
+record of when a flag was set instead of relying on `last_changed`,
+which Home Assistant re-stamps on every restart.
 

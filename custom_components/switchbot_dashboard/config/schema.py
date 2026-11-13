@@ -10,6 +10,7 @@ Error messages always name widget position, type and field.
 
 from dataclasses import fields as dataclass_fields
 
+from ..text import state_text
 from ..widgets.registry import get_registration, registered_types
 
 
@@ -88,7 +89,15 @@ def _build_one(index: int, item):
 
         kwargs[key] = _coerce(prefix, key, value, allowed[key].type)
 
-    return config_cls(type=widget_type, **kwargs)
+    config = config_cls(type=widget_type, **kwargs)
+
+    if registration.validator is not None:
+        problem = registration.validator(config)
+
+        if problem:
+            raise ConfigError(f"{prefix}: {problem}")
+
+    return config
 
 
 def _coerce(prefix: str, key: str, value, field_type):
@@ -107,7 +116,17 @@ def _coerce(prefix: str, key: str, value, field_type):
             f"{', '.join(choices)} (got '{value}')"
         )
 
-    type_name = str(field_type)
+    # "float | None" is validated like "float"
+    type_name = str(field_type).replace(" | None", "")
+
+    if key == "ok_states":
+        if not isinstance(value, list) or not all(
+            isinstance(state, (str, bool, int)) for state in value
+        ):
+            raise ConfigError(
+                f"{prefix}: '{key}' must be a list of states"
+            )
+        return [state_text(state) for state in value]
 
     if "dict" in type_name:
         if not isinstance(value, dict) or not all(

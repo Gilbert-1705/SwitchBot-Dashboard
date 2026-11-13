@@ -18,7 +18,7 @@ And on a quiet day:
 
 ## Status
 
-✅ Stable (v2.4.0) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.5.0) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
@@ -46,6 +46,9 @@ The priority engine collects all visible items, keeps the five most important on
 | Battery | `🔋 eBike 15%` | Any battery (PV storage, e-bike, …), important when low |
 | EV | `🔌 64% lädt` | EV state of charge + charging status, reminder when low and unplugged |
 | Alert | `! Regen rein` | Smart alerts: rules across multiple entities ("window open + rain > 70%"), triggers alarm mode |
+| Threshold | `☁ CO₂ 1450` | Any numeric sensor, shown only while out of bounds (air quality, electricity price, humidity) |
+| Status | `! NAS+VPN` | Shows only what is down: servers, VPN, services |
+| Wallbox | `🔌 WB 7.4kW` | Charging point: power while charging, finished, error |
 
 ## Installation
 

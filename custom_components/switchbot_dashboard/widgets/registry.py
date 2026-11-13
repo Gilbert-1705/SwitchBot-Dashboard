@@ -29,6 +29,9 @@ from .config_models import (
     FuelWidgetConfig,
     PresenceWidgetConfig,
     SolarWidgetConfig,
+    StatusWidgetConfig,
+    ThresholdWidgetConfig,
+    WallboxWidgetConfig,
     WasteWidgetConfig,
     WeatherWidgetConfig,
     WidgetConfig,
@@ -40,6 +43,9 @@ from .ev import EvWidget
 from .fuel import FuelWidget
 from .presence import PresenceWidget
 from .solar import SolarWidget
+from .status import StatusWidget
+from .threshold import ThresholdWidget
+from .wallbox import WallboxWidget
 from .waste import WasteWidget
 from .weather import WeatherWidget
 from .window import WindowWidget
@@ -51,6 +57,8 @@ class WidgetRegistration:
     config_cls: type
     # required fields in the YAML configuration
     required: tuple = ()
+    # optional extra check: config -> error text or None
+    validator: object = None
 
 
 _REGISTRY: dict[str, WidgetRegistration] = {}
@@ -61,13 +69,20 @@ def register_widget_type(
     widget_cls: type,
     config_cls: type = WidgetConfig,
     required: tuple = (),
+    validator=None,
 ):
-    """Registers a (possibly custom) widget type."""
+    """Registers a (possibly custom) widget type.
+
+    ``validator`` may check what the field-by-field validation
+    cannot - it receives the built config and returns an error text
+    or None.
+    """
 
     _REGISTRY[name] = WidgetRegistration(
         widget_cls=widget_cls,
         config_cls=config_cls,
         required=required,
+        validator=validator,
     )
 
 
@@ -122,4 +137,35 @@ register_widget_type(
 register_widget_type(
     "alert", AlertWidget, AlertWidgetConfig,
     required=("name", "conditions"),
+)
+
+
+def _threshold_needs_a_bound(config) -> str | None:
+
+    bounds = (
+        config.above, config.below,
+        config.critical_above, config.critical_below,
+    )
+
+    if all(bound is None for bound in bounds):
+        return (
+            "needs at least one of above, below, critical_above, "
+            "critical_below"
+        )
+
+    return None
+
+
+register_widget_type(
+    "threshold", ThresholdWidget, ThresholdWidgetConfig,
+    required=("entity", "icon"),
+    validator=_threshold_needs_a_bound,
+)
+register_widget_type(
+    "status", StatusWidget, StatusWidgetConfig,
+    required=("entities",),
+)
+register_widget_type(
+    "wallbox", WallboxWidget, WallboxWidgetConfig,
+    required=("status_entity",),
 )

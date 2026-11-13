@@ -44,6 +44,23 @@ def cap_bytes(value: str, max_bytes: int) -> str:
     return ""
 
 
+def state_text(value) -> str:
+    """A configured state as Home Assistant spells it.
+
+    YAML reads an unquoted ``on`` / ``off`` as a boolean. Compared as
+    "True" it would never match the entity state "on" - and the
+    widget would silently do nothing.
+    """
+
+    if value is True:
+        return "on"
+
+    if value is False:
+        return "off"
+
+    return str(value)
+
+
 def join_names(names: list[str], max_names: int = 2) -> str:
     """Joins names compactly: 'A', 'A+B', 'A+2'."""
 

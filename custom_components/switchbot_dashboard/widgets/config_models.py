@@ -4,7 +4,9 @@ from dataclasses import dataclass
 @dataclass(slots=True)
 class WidgetConfig:
     type: str
-    priority: int = 100
+    # display order (lower = further left); None: the widget's own
+    # default, e.g. alerts and status warnings at the front
+    priority: int | None = None
     # widgets sharing a group render at most one item (the most
     # important one), e.g. door + window + alarm as group "haus"
     group: str = ""
@@ -72,6 +74,43 @@ class AlertWidgetConfig(WidgetConfig):
     importance: int = 100
     # list of condition mappings, see widgets/alert.py
     conditions: list | None = None
+
+
+@dataclass(slots=True)
+class ThresholdWidgetConfig(WidgetConfig):
+    entity: str = ""
+    icon: str = ""
+    # short label in front of the value, e.g. "CO₂"
+    name: str = ""
+    # bounds that make the value worth showing
+    above: float | None = None
+    below: float | None = None
+    # bounds that raise it to the always-shown band
+    critical_above: float | None = None
+    critical_below: float | None = None
+    unit: str = ""
+    precision: int = 0
+    importance: int = 55
+
+
+@dataclass(slots=True)
+class StatusWidgetConfig(WidgetConfig):
+    # entity_id -> display name
+    entities: dict[str, str] | None = None
+    icon: str = ""
+    # states that mean "fine"; default: on, home, up, online, ...
+    ok_states: list | None = None
+    unavailable_is_problem: bool = True
+    importance: int = 85
+
+
+@dataclass(slots=True)
+class WallboxWidgetConfig(WidgetConfig):
+    status_entity: str = ""
+    # optional: charging power in W
+    power_entity: str = ""
+    name: str = ""
+    icon: str = ""
 
 
 @dataclass(slots=True)

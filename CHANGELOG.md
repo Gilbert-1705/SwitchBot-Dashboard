@@ -314,3 +314,40 @@ Both found in the first minutes of real operation:
   means "at most 3 cents above the recent low" instead of a fixed
   price that is outdated after a few weeks. The fixed `max_price`
   remains the fallback while the reference has no value.
+
+
+## [2.5.0] - 2026-11-13
+
+### Added
+
+- `switchbot_dashboard.reload`: re-reads the YAML block and applies
+  widgets and options without restarting Home Assistant. An invalid
+  configuration is reported and the running one is kept.
+- Options flow for UI setups: maximum widgets, quiet-day maximum, auto
+  refresh, dry run and language, applied without a restart. The YAML
+  block may hold options and widgets only when a config entry supplies
+  the credentials.
+- `language` option (de/en) for every text the widgets print
+  themselves.
+- Threshold widget: any numeric sensor, shown only while out of bounds
+  (air quality, electricity price, humidity).
+- Status widget: shows only what is down (servers, VPN, services).
+- Wallbox widget: charging power, finished, error.
+- Custom widgets can register a `validator` for checks across fields.
+
+### Changed
+
+- Durations survive restarts: the appliance done ramp and alert
+  `duration` use the integration's own persisted record instead of
+  `last_changed`, which Home Assistant re-stamps on restart.
+- Power below 1 kW is rounded to 10 W, so a power meter no longer
+  changes the display line every few seconds.
+- Without `priority` a widget now uses its own default position
+  instead of a blanket 100.
+- Unknown top-level options in the YAML block are rejected with the
+  list of available ones.
+
+### Fixed
+
+- An unquoted `on` / `off` in alert conditions (YAML reads it as a
+  boolean) never matched the entity state; it is understood now.
