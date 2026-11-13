@@ -42,10 +42,12 @@ class ApplianceWidgetTest(unittest.TestCase):
         # fresh done flag starts as a side note
         self.assertEqual(item.importance, 30)
 
-    def test_running_is_background_info(self):
+    def test_running_is_above_filler_band(self):
+        # a running machine must win a slot against fillers such as
+        # "door closed" on a quiet day
         item = self._render("on", "off")
         self.assertEqual(item.value, "WM läuft")
-        self.assertEqual(item.importance, 15)
+        self.assertEqual(item.importance, 30)
 
     def test_new_cycle_overrides_stale_done_flag(self):
         # A new cycle makes the old done reminder obsolete
@@ -66,7 +68,7 @@ class ApplianceWidgetTest(unittest.TestCase):
     def test_pause_state_shows_pause(self):
         item = self._render("pause", "off")
         self.assertEqual(item.value, "WM Pause")
-        self.assertEqual(item.importance, 15)
+        self.assertEqual(item.importance, 30)
 
     def test_stop_state_is_hidden(self):
         self.assertIsNone(self._render("stop", "off"))

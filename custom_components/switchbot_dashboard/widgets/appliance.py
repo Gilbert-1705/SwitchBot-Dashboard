@@ -20,6 +20,11 @@ FLAG_ON_STATES = ("on", "true")
 # values that mean "no detail available"
 EMPTY_STATES = ("", "unknown", "unavailable", "none", "off", "idle")
 
+# A running appliance is not background noise: it sits in the normal
+# band so it gets a slot even on a quiet day (fillers like "door
+# closed" would otherwise always win against it)
+ACTIVE_IMPORTANCE = 30
+
 # The done reminder gets more urgent the longer the appliance waits:
 # side note right away, prominent after 1 h, always shown after 3 h.
 # Capped at 95: waiting laundry is loud, but never an alarm
@@ -37,10 +42,10 @@ class ApplianceWidget(BaseWidget):
     """Household appliance (washer, dryer, dishwasher, ...).
 
         🧺 WM Fertig      cycle finished, not emptied yet
-        🧺 WM läuft       currently running (background info)
+        🧺 WM läuft       currently running
         🍽 GS Trocknen    running, with phase (phase_entity)
         🍽 GS 45min       running, with remaining time
-        🧺 WM Pause       paused (background info)
+        🧺 WM Pause       paused
         🍽 GS wartet      delayed start pending
         🍽 GS Abbruch     cycle interrupted
         (nothing)         idle and emptied
@@ -83,7 +88,7 @@ class ApplianceWidget(BaseWidget):
 
         # A new cycle makes the old done reminder obsolete
         if running in RUNNING_STATES:
-            return self._item(self._running_detail(), 15)
+            return self._item(self._running_detail(), ACTIVE_IMPORTANCE)
 
         # Manual done flag (input_boolean)
         if self.done_entity:
@@ -100,7 +105,7 @@ class ApplianceWidget(BaseWidget):
             return self._item("Abbruch", 65)
 
         if running in PAUSED_STATES:
-            return self._item("Pause", 15)
+            return self._item("Pause", ACTIVE_IMPORTANCE)
 
         if running in WAITING_STATES:
             return self._item("wartet", 15)

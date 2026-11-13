@@ -35,6 +35,21 @@ _LOGGER = logging.getLogger(__name__)
 DEBOUNCE_SECONDS = 5
 MIN_SEND_INTERVAL = 60
 PERIODIC_REFRESH = 900
+# wait this long before re-sending after the API refused a text
+RETRY_AFTER_ERROR = 120
+
+
+def send_succeeded(result) -> bool:
+    """True when the SwitchBot API accepted the text (statusCode 100).
+
+    Anything that is not a result dict (e.g. ``None`` from a test
+    double) counts as success.
+    """
+
+    if not isinstance(result, dict):
+        return True
+
+    return result.get("statusCode") in (100, None)
 
 
 def collect_entities(configs) -> set[str]:
@@ -205,7 +220,15 @@ class DashboardUpdater:
             return
 
         _LOGGER.debug("Sending dashboard: %s", text)
-        await self.api.send_text(text)
+        result = await self.api.send_text(text)
+
+        if not send_succeeded(result):
+            # The display did not take the text (rate limit, API
+            # error). Forget it so the next refresh sends again, and
+            # retry on our own instead of waiting for a state change.
+            self._last_text = None
+            publish_preview(self.hass, text, sent=False)
+            self._schedule_retry(RETRY_AFTER_ERROR)
 
     def _schedule_retry(self, wait: float):
 

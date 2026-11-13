@@ -257,3 +257,20 @@ Groups & day context. 🕰
 - `done_entity` is optional now; the manual flag and a done state of
   the status entity work together.
 
+
+## [2.3.1] - 2026-11-13
+
+### Fixed
+
+- HTTP 429 (SwitchBot rate limit) no longer raises: the API answers
+  rate-limited requests without a JSON body, which crashed
+  `send_text` with aiohttp's ContentTypeError. Non-200 answers and
+  unreadable bodies are now mapped to a result with the HTTP status.
+- A refused send is no longer treated as "display is up to date":
+  the updater forgets the text, marks the preview entity as not sent
+  and retries on its own after two minutes.
+- A running or paused appliance sits in the normal importance band
+  (30) instead of the filler band (15). Rendering against real
+  sensor values showed that "GS Klarspülen" lost its slot to fillers
+  such as "door closed" on a quiet day and never appeared.
+

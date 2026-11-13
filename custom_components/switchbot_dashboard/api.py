@@ -69,9 +69,41 @@ class SwitchBotAPI:
                 json=payload,
             ) as response:
 
-                result = await response.json()
+                result = await self._read_result(response)
 
         self._log_result(result)
+
+        return result
+
+    @staticmethod
+    async def _read_result(response) -> dict:
+        """Reads the API answer without ever raising on its format.
+
+        On HTTP errors SwitchBot answers without a JSON body - most
+        notably 429 (rate limit). ``response.json()`` would raise a
+        ContentTypeError there, so those answers are mapped to a
+        result dict carrying the HTTP status as ``statusCode``.
+        """
+
+        if response.status != 200:
+            return {
+                "statusCode": response.status,
+                "message": f"HTTP {response.status}",
+            }
+
+        try:
+            result = await response.json(content_type=None)
+        except ValueError:
+            return {
+                "statusCode": response.status,
+                "message": "invalid response body",
+            }
+
+        if not isinstance(result, dict):
+            return {
+                "statusCode": response.status,
+                "message": "unexpected response body",
+            }
 
         return result
 
@@ -88,7 +120,12 @@ class SwitchBotAPI:
 
         message = result.get("message", "")
 
-        if status == 190:
+        if status == 429:
+            _LOGGER.warning(
+                "SwitchBot API rate limit hit (HTTP 429) - the "
+                "dashboard will retry later"
+            )
+        elif status == 190:
             _LOGGER.error(
                 "SwitchBot API rejected the payload (statusCode 190, "
                 "'%s') - text too long (>300 bytes UTF-8)",

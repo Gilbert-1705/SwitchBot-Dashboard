@@ -57,7 +57,7 @@ class WashDataStatesTest(unittest.TestCase):
         item = render("running")
         self.assertEqual(item.value, "GS läuft")
         self.assertEqual(item.icon, Icons.DISHWASHER)
-        self.assertEqual(item.importance, 15)
+        self.assertEqual(item.importance, 30)
 
     def test_starting_and_ending_count_as_running(self):
         self.assertEqual(render("starting").value, "GS läuft")
@@ -93,6 +93,36 @@ class WashDataStatesTest(unittest.TestCase):
         self.assertEqual(item.value, "GS Abbruch")
         self.assertEqual(item.importance, 65)
         self.assertEqual(render("force_stopped").value, "GS Abbruch")
+
+
+class QuietDayVisibilityTest(unittest.TestCase):
+    """Regression: found by rendering against real sensor values.
+
+    On a quiet day the display shows weather plus fillers ("door
+    closed", "windows closed"). A running dishwasher used to be a
+    filler as well and lost against them - it never showed up.
+    """
+
+    def test_running_appliance_wins_a_slot_on_a_quiet_day(self):
+        from custom_components.switchbot_dashboard.dashboard import (
+            DashboardRenderer,
+        )
+        from custom_components.switchbot_dashboard.dashboard.item import (
+            DashboardItem,
+        )
+
+        r = DashboardRenderer(max_items=5, quiet_max_items=3)
+        r.add(DashboardItem("W", "0°C", priority=100, importance=90))
+        r.add(DashboardItem("P", "318W", priority=200, importance=10))
+        r.add(DashboardItem("", "●", priority=250, importance=15))
+        r.add(DashboardItem("D", "Zu", priority=300, importance=20))
+        r.add(DashboardItem("H", "Jan", priority=600, importance=15))
+        r.add(render("running", phase="Klarspülen 69"))
+
+        values = [item.value for item in r.select()]
+
+        self.assertIn("GS Klarspülen", values)
+        self.assertEqual(len(values), 3)
 
 
 class RunningDetailTest(unittest.TestCase):

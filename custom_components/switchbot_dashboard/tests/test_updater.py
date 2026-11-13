@@ -161,6 +161,125 @@ class UpdaterTest(unittest.TestCase):
         self.assertEqual(api.sent, ["P 380W", "P 500W"])
 
 
+class FailingAPI:
+    """Refuses the first ``failures`` sends like a rate-limited API."""
+
+    def __init__(self, failures=1, status=429):
+        self.failures = failures
+        self.status = status
+        self.attempts = []
+
+    async def send_text(self, text):
+        self.attempts.append(text)
+
+        if len(self.attempts) <= self.failures:
+            return {"statusCode": self.status, "message": "HTTP 429"}
+
+        return {"statusCode": 100, "message": "success"}
+
+
+class SendFailureTest(unittest.TestCase):
+    """A refused send must not count as 'display is up to date'."""
+
+    def _updater(self, hass, api):
+        return DashboardUpdater(
+            hass,
+            api=api,
+            configs=[
+                EntityWidgetConfig(
+                    type="entity", entity="s", icon="P",
+                    formatter="power",
+                ),
+            ],
+            max_items=5,
+            min_interval=0,
+        )
+
+    def test_rate_limited_send_is_retried(self):
+
+        api = FailingAPI(failures=1)
+        hass = FakeHass({"s": FakeState("380")})
+        updater = self._updater(hass, api)
+
+        asyncio.run(updater.async_refresh())
+
+        # refused: a retry is scheduled and the text is forgotten
+        self.assertIsNotNone(updater._cancel_retry)
+        self.assertIsNone(updater._last_text)
+
+        # the unchanged text is sent again on the next refresh
+        asyncio.run(updater.async_refresh())
+
+        self.assertEqual(api.attempts, ["P 380W", "P 380W"])
+        self.assertEqual(updater._last_text, "P 380W")
+
+    def test_preview_reports_not_sent_after_failure(self):
+
+        api = FailingAPI(failures=1)
+        hass = FakeHass({"s": FakeState("380")})
+
+        asyncio.run(self._updater(hass, api).async_refresh())
+
+        state, attrs = hass.set_states["sensor.switchbot_dashboard"]
+        self.assertEqual(state, "P 380W")
+        self.assertFalse(attrs["sent_to_device"])
+
+    def test_successful_send_schedules_no_retry(self):
+
+        api = FailingAPI(failures=0)
+        hass = FakeHass({"s": FakeState("380")})
+        updater = self._updater(hass, api)
+
+        asyncio.run(updater.async_refresh())
+
+        self.assertIsNone(updater._cancel_retry)
+        self.assertEqual(updater._last_text, "P 380W")
+
+
+class FakeResponse:
+
+    def __init__(self, status, body=None, error=None):
+        self.status = status
+        self._body = body
+        self._error = error
+
+    async def json(self, content_type=None):
+        if self._error is not None:
+            raise self._error
+        return self._body
+
+
+class ReadResultTest(unittest.TestCase):
+    """The API answer must never raise, whatever its format."""
+
+    def _read(self, response):
+        from custom_components.switchbot_dashboard.api import SwitchBotAPI
+
+        return asyncio.run(SwitchBotAPI._read_result(response))
+
+    def test_success_body_is_passed_through(self):
+        result = self._read(
+            FakeResponse(200, {"statusCode": 100, "message": "success"})
+        )
+        self.assertEqual(result["statusCode"], 100)
+
+    def test_http_429_without_json_body(self):
+        # exactly what SwitchBot sends when rate limited: reading the
+        # body as JSON would raise aiohttp's ContentTypeError
+        result = self._read(
+            FakeResponse(429, error=AssertionError("must not be read"))
+        )
+        self.assertEqual(result["statusCode"], 429)
+
+    def test_invalid_json_body(self):
+        result = self._read(FakeResponse(200, error=ValueError("bad")))
+        self.assertEqual(result["message"], "invalid response body")
+
+    def test_non_dict_body(self):
+        result = self._read(FakeResponse(200, ["unexpected"]))
+        self.assertEqual(result["message"], "unexpected response body")
+
+
 class PreviewEntityTest(unittest.TestCase):
     """Local preview entity sensor.switchbot_dashboard."""
 
