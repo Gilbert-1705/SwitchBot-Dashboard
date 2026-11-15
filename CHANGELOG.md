@@ -316,6 +316,17 @@ Both found in the first minutes of real operation:
   remains the fallback while the reference has no value.
 
 
+## [2.6.0] - 2026-11-15
+
+### Added
+
+- Media widget: the current title (or artist, or both) of a media
+  player, shown only while it is playing. Several players can be
+  listed; the first one playing wins. Additions like
+  "(Remastered 2011)" are dropped from long titles.
+- `DashboardItem.max_length`: an item can ask for more (or less) room
+  than the general 14 characters.
+
 ## [2.5.0] - 2026-11-13
 
 ### Added

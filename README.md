@@ -18,7 +18,7 @@ And on a quiet day:
 
 ## Status
 
-✅ Stable (v2.5.0) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.6.0) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
@@ -49,6 +49,7 @@ The priority engine collects all visible items, keeps the five most important on
 | Threshold | `☁ CO₂ 1450` | Any numeric sensor, shown only while out of bounds (air quality, electricity price, humidity) |
 | Status | `! NAS+VPN` | Shows only what is down: servers, VPN, services |
 | Wallbox | `🔌 WB 7.4kW` | Charging point: power while charging, finished, error |
+| Media | `♪ Bohemian Rhapsody` | Current title of a media player, only while playing |
 
 ## Installation
 
@@ -80,7 +81,7 @@ Custom widgets and formatters can be registered via the [widget API](docs/config
 
 ## Display notes
 
-The SwitchBot firmware wraps the line itself (pixel-based, preferring spaces). The renderer therefore separates widgets with three spaces as break hints and caps every widget text at 14 characters; widgets additionally shorten their own output (`Wohnen+2`, `Max Muste…`).
+The SwitchBot firmware wraps the line itself (pixel-based, preferring spaces). The renderer therefore separates widgets with three spaces as break hints and caps every widget text at 14 characters (the media widget gets 20); widgets additionally shorten their own output (`Wohnen+2`, `Max Muste…`).
 
 ## Tests
 

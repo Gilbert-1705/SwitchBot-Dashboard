@@ -99,6 +99,11 @@
 - [x] Widgets: threshold (Luftqualität, Strompreis), status
       (Server/VPN), wallbox
 
+## v2.6 ✅ Musik
+
+- [x] Media-Widget: aktueller Titel, nur während der Wiedergabe
+- [x] Eigene Textlänge pro Item (max_length)
+
 ## v3.x Plattform
 
 - [ ] Plugin-System, Themes

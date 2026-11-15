@@ -114,6 +114,20 @@ class WallboxWidgetConfig(WidgetConfig):
 
 
 @dataclass(slots=True)
+class MediaWidgetConfig(WidgetConfig):
+    # one player ...
+    entity: str = ""
+    # ... or several: the first one playing wins
+    entities: list | None = None
+    icon: str = ""
+    # title, artist or both
+    show: str = "title"
+    # titles are longer than other widget texts
+    max_length: int = 20
+    importance: int = 30
+
+
+@dataclass(slots=True)
 class SolarWidgetConfig(WidgetConfig):
     entity: str = ""
     icon: str = ""

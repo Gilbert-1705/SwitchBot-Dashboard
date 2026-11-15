@@ -27,6 +27,7 @@ from .config_models import (
     EntityWidgetConfig,
     EvWidgetConfig,
     FuelWidgetConfig,
+    MediaWidgetConfig,
     PresenceWidgetConfig,
     SolarWidgetConfig,
     StatusWidgetConfig,
@@ -43,6 +44,7 @@ from .ev import EvWidget
 from .fuel import FuelWidget
 from .presence import PresenceWidget
 from .solar import SolarWidget
+from .media import MediaWidget
 from .status import StatusWidget
 from .threshold import ThresholdWidget
 from .wallbox import WallboxWidget
@@ -168,4 +170,18 @@ register_widget_type(
 register_widget_type(
     "wallbox", WallboxWidget, WallboxWidgetConfig,
     required=("status_entity",),
+)
+
+
+def _media_needs_a_player(config) -> str | None:
+
+    if not config.entity and not config.entities:
+        return "needs 'entity' or 'entities'"
+
+    return None
+
+
+register_widget_type(
+    "media", MediaWidget, MediaWidgetConfig,
+    validator=_media_needs_a_player,
 )

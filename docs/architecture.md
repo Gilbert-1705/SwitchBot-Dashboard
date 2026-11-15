@@ -50,7 +50,9 @@ The renderer keeps the `max_items` (5) most important visible items and displays
 The SwitchBot firmware wraps the transmitted line itself, pixel-based, preferring spaces. Consequences:
 
 - Widgets are joined with `SEPARATOR` (three spaces) as preferred break positions.
-- The renderer hard-caps each value at `MAX_VALUE_LENGTH` (14) characters.
+- The renderer hard-caps each value at `MAX_VALUE_LENGTH` (14) characters;
+  an item may ask for its own limit (`DashboardItem.max_length`, used by
+  the media widget).
 - Widgets shorten semantically first: `join_names()` collapses lists ("Wohnen+2"), `shorten()` truncates with an ellipsis ("Max Muste…").
 - Emoji support of the firmware varies; all icons are defined centrally in `icons.py` so they can be swapped easily.
 

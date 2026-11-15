@@ -102,6 +102,6 @@ class DashboardRenderer:
     def render(self):
 
         return SEPARATOR.join(
-            f"{item.icon} {shorten(item.value, MAX_VALUE_LENGTH)}".strip()
+            f"{item.icon} {shorten(item.value, item.max_length or MAX_VALUE_LENGTH)}".strip()
             for item in self.select()
         )

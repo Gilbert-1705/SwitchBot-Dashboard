@@ -22,6 +22,7 @@ class ConfigError(Exception):
 CHOICES = {
     "mode": ("rooms", "state"),
     "unit": ("%", "l"),
+    "show": ("title", "artist", "both"),
 }
 
 # Allowed keys inside an alert condition (see widgets/alert.py)
@@ -127,6 +128,15 @@ def _coerce(prefix: str, key: str, value, field_type):
                 f"{prefix}: '{key}' must be a list of states"
             )
         return [state_text(state) for state in value]
+
+    if key == "entities" and "list" in type_name:
+        if not isinstance(value, list) or not value or not all(
+            isinstance(entity, str) for entity in value
+        ):
+            raise ConfigError(
+                f"{prefix}: '{key}' must be a list of entity IDs"
+            )
+        return value
 
     if "dict" in type_name:
         if not isinstance(value, dict) or not all(

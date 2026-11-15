@@ -75,7 +75,9 @@ def collect_entities(configs) -> set[str]:
             if field.name == "entity" or field.name.endswith("_entity"):
                 entities.add(value)
 
-            elif field.name == "entities" and isinstance(value, dict):
+            elif field.name == "entities" and isinstance(
+                value, (dict, list)
+            ):
                 entities.update(value)
 
     return entities

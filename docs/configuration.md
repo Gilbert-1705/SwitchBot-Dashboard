@@ -442,6 +442,36 @@ The charging point itself (for the car's state of charge use `ev`).
 Renders `🔌 WB 7.4kW` while charging (30), `🔌 WB Voll` when finished
 (45), `🔌 WB Fehler` on an error (85); hidden when idle.
 
+### media
+
+The current title of a media player - shown only while it is playing.
+
+```yaml
+- type: media
+  entities:
+    - media_player.wohnzimmer
+    - media_player.kueche
+  priority: 900
+```
+
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `entity` | one of both | – | A single media player |
+| `entities` | one of both | – | Several players; the first one playing wins |
+| `show` | no | `title` | `title`, `artist` or `both` (`Queen: Bohemian Rh…`) |
+| `max_length` | no | `20` | Longest text; other widgets are capped at 14 |
+| `importance` | no | `30` | Raise it to keep the title on busy days |
+| `icon` | no | `♪` | Icon |
+
+Renders `♪ Bohemian Rhapsody`; hidden when paused, idle or off. Long
+titles first lose additions such as `(Remastered 2011)` or
+`- Radio Edit`, then they are truncated.
+
+The display is refreshed when the title changes, at most once per
+minute (the general rate limit) - roughly one e-ink refresh per song.
+With the default importance the title competes for a slot and gives
+way when more important things are going on.
+
 ## Custom widgets
 
 ```python

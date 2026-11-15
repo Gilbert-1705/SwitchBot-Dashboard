@@ -35,3 +35,5 @@ class Icons:
 
     BATTERY = "🔋"
     PLUG = "🔌"
+
+    MUSIC = "♪"

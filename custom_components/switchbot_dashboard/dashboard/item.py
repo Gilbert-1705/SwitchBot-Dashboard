@@ -30,3 +30,6 @@ class DashboardItem:
     visible: bool = True
 
     group: str = ""
+
+    # longest text of this item; 0 = the general limit
+    max_length: int = 0
