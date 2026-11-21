@@ -104,6 +104,11 @@
 - [x] Media-Widget: aktueller Titel, nur während der Wiedergabe
 - [x] Eigene Textlänge pro Item (max_length)
 
+## v2.7 ✅ Ruhigere Anzeige
+
+- [x] Temperatur mit Hysterese (kein Springen um x,5 Grad)
+- [x] Referenzsensor als Fallback, wenn der lokale Sensor in der Sonne liegt
+
 ## v3.x Plattform
 
 - [ ] Plugin-System, Themes

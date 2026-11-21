@@ -14,6 +14,13 @@ DOOR_STATES = {
     ("unlocked", True): (Icons.DOOR, "open", 75),
     ("unlocking", True): (Icons.DOOR, "open", 75),
 
+    # "open": the latch is pulled (smart locks with an unlatch
+    # function). Brief transition while someone opens the door.
+    ("open", False): (Icons.DOOR, "unlocked", 60),
+    ("opening", False): (Icons.DOOR, "unlocked", 60),
+    ("open", True): (Icons.DOOR, "open", 75),
+    ("opening", True): (Icons.DOOR, "open", 75),
+
     ("locked", True): (Icons.WARNING, "open", 100),
     ("locking", True): (Icons.WARNING, "open", 100),
 }

@@ -190,8 +190,27 @@ All widgets accept these base options:
 | `temperature_entity` | no | built-in | Temperature sensor |
 | `trend_entity` | no | built-in | Trend sensor (`sunny`, `cloudy`, `rainy`) |
 | `icon` | no | `🌡` | Icon |
+| `hysteresis` | no | `0.75` | The shown degree changes only after the measurement moved this far from it (`0` = plain rounding) |
+| `reference_entity` | no | – | Second temperature sensor as plausibility check, e.g. a weather service |
+| `max_deviation` | no | `4` | If the local sensor differs from the reference by more than this (K), the reference is shown |
 
 Always important (importance 90). Renders `🌡 21°C ☀`.
+
+Every changed degree is a new e-ink refresh. The hysteresis stops a
+sensor hovering around 3.5 °C from flipping between 3 and 4.
+
+A local sensor in the sun easily shows 30 °C on a cold day. With a
+`reference_entity` the widget falls back to the reference while the
+deviation is too large, and also while the local sensor is
+unavailable:
+
+```yaml
+- type: weather
+  temperature_entity: sensor.balkon_temperatur
+  trend_entity: sensor.wettertrend
+  reference_entity: sensor.aussentemperatur_dwd
+  max_deviation: 4
+```
 
 ### entity
 

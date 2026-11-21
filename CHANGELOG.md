@@ -316,6 +316,17 @@ Both found in the first minutes of real operation:
   remains the fallback while the reference has no value.
 
 
+## [2.7.0] - 2026-11-21
+
+### Added
+
+- Weather: `reference_entity` / `max_deviation` - a second sensor (e.g.
+  a weather service) as fallback when the local sensor is off by more
+  than 4 K (sun on the sensor) or unavailable.
+- Weather: `hysteresis` (default 0.75 K) - the shown degree only
+  changes after a clear move, a sensor hovering around x.5 no longer
+  triggers a display refresh every few minutes.
+
 ## [2.6.1] - 2026-11-21
 
 ### Fixed
@@ -326,6 +337,9 @@ Both found in the first minutes of real operation:
   the old content until the next change. Requests now time out after
   15 seconds, network errors become a regular failed result, and the
   usual retry after two minutes takes over.
+- Door: the lock state `open` (latch pulled while the door is being
+  opened) showed up as `! ?` for a few seconds; it now reads `Auf` /
+  `Offen`.
 
 ## [2.6.0] - 2026-11-15
 

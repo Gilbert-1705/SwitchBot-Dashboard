@@ -18,7 +18,7 @@ And on a quiet day:
 
 ## Status
 
-✅ Stable (v2.6.1) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.7.0) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
@@ -33,7 +33,7 @@ The priority engine collects all visible items, keeps the five most important on
 
 | Widget | Example | Shows |
 |---|---|---|
-| Weather | `🌡 21°C ☀` | Temperature + trend |
+| Weather | `🌡 21°C ☀` | Temperature + trend; calm against jitter, optional reference sensor against sun on the sensor |
 | Entity | `P 380W` | Any entity with a formatter (power, number, …) |
 | Door | `🚪 Zu` / `! Offen` | Smart lock + contact sensor combined: Zu, Auf, Offen, Warnung |
 | Window | `○ Wohnen+Essen` / `○ Gekippt` | Open rooms by name (`mode="rooms"`) or compact state only (`mode="state"`), `●` when everything is closed |
