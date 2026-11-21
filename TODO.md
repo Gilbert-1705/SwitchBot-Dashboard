@@ -112,7 +112,8 @@
 - [ ] Plugin-System, Themes
 - [ ] Weitere Displaygrößen / E-Paper-Displays
 - [ ] Offizieller HACS-Store (brands-PR, setzt öffentliches Repo voraus)
-- [ ] Display-Tasten der Wetterstation (braucht Matter-fähigen Hub)
+- [ ] Display-Tasten der Wetterstation (derzeit kein Weg nach Home Assistant
+      bekannt; virtuelle Tasten als Ersatz eingerichtet)
 
 ## Bewusst nicht geplant
 

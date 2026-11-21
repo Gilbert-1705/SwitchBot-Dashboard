@@ -15,18 +15,23 @@ The dashboard does not show as many sensors as possible — it shows exactly the
 ## Core Components
 
 ```
-WidgetManager ──> Widgets ──> DashboardItem ──> DashboardRenderer ──> SwitchBotAPI
-     │                                               │
- widgets/config.py                             Priority Engine
- (typed dataclasses)                        (importance + visible)
+YAML / options ──> Settings ──> WidgetManager ──> Widgets ──> DashboardItem
+                                                                  │
+SwitchBotAPI <── DashboardUpdater <── render_dashboard <── DashboardRenderer
+                 (events, debounce,                        (priority engine)
+                  rate limit, retry)
 ```
 
-- **WidgetManager** (`widgets/manager.py`) instantiates widgets from the typed configs in `widgets/config.py` (`WIDGET_TYPES` registry).
-- **Widgets** (`widgets/*.py`) each render a single `DashboardItem` or `None` when they have nothing relevant to say. Widgets never talk to the display.
-- **DashboardItem** (`dashboard/item.py`) carries `icon`, `value`, `priority` (display order), `importance` (situational relevance) and `visible`.
-- **DashboardRenderer** (`dashboard/renderer.py`) implements the priority engine and layout.
+- **Settings** (`settings.py`) validates the YAML block and merges the options of a config entry; `config/schema.py` turns the `widgets:` list into the typed dataclasses of `widgets/config_models.py`.
+- **Widget registry** (`widgets/registry.py`) maps a type name to widget class, config class, required fields and an optional validator (`register_widget_type`).
+- **WidgetManager** (`widgets/manager.py`) builds the widgets generically: every config field is passed to the constructor, `group` and `boost` are attached for the pipeline.
+- **Widgets** (`widgets/*.py`) each render a single `DashboardItem` or `None` when they have nothing relevant to say. Widgets never talk to the display; display texts come from `i18n.py` (`self.t(key)`).
+- **DashboardItem** (`dashboard/item.py`) carries `icon`, `value`, `priority` (display order), `importance` (situational relevance), `visible`, `group` and an optional `max_length`.
+- **DashboardRenderer** (`dashboard/renderer.py`) implements the priority engine and layout; `render.py` applies groups and time-of-day boosts.
+- **DashboardUpdater** (`updater.py`) listens to every configured entity, debounces changes (5 s), sends only changed text, respects the 60 s rate limit and retries after a refused or failed send.
+- **SinceTracker** (`tracker.py`) remembers since when an entity holds its state, across restarts (`.storage/switchbot_dashboard.since`).
 - **Formatters** (`formatters/`) turn raw states into display strings, created via `FormatterFactory`.
-- **SwitchBotAPI** (`api.py`) signs requests and sends the rendered line to the device (`customPage` command).
+- **SwitchBotAPI** (`api.py`) signs requests and sends the rendered line to the device (`customPage` command), with a 15 s timeout; network errors become a regular failed result.
 
 ## Priority Engine 2.0
 
@@ -34,8 +39,8 @@ Every widget reports how important its information is *right now*. Since v2.0 th
 
 | band | meaning | examples |
 |---|---|---|
-| 100 (`IMPORTANCE_ALARM`) | warning, act immediately | door locked but open, laundry waiting 3 h |
-| 60–99 (`IMPORTANCE_ALWAYS`) | always shown (within `max_items`) | weather, waste today, birthday |
+| 100 (`IMPORTANCE_ALARM`) | warning, act immediately | door locked but open, smart alert, server down |
+| 60–99 (`IMPORTANCE_ALWAYS`) | always shown (within `max_items`) | weather, waste today, birthday, laundry waiting 1 h+ |
 | 21–59 | normal, competes for slots | appointment in 2 days, fresh done reminder |
 | 0–20 (`IMPORTANCE_FILLER`) | background info, quiet days only | power draw, everything closed |
 
@@ -43,7 +48,7 @@ The renderer keeps the `max_items` (5) most important visible items and displays
 
 **Quiet mode:** filler items (≤ 20) never push the display beyond `quiet_max_items` (3). On a busy day they are displaced anyway; on a calm day the display stays calm — `🌡 21°C ☀   ●   🚪 Zu` instead of five slots of noise.
 
-**Time-based importance:** information can get more urgent over time. `ramp.time_based_importance(last_changed, steps)` maps the elapsed time since a state change to an importance value — the appliance widget uses it for the done reminder (30 right away, 60 after 1 h, 100 after 3 h). The updater's periodic refresh re-renders every 15 minutes, so ramps take effect without state changes.
+**Time-based importance:** information can get more urgent over time. `ramp.time_based_importance(last_changed, steps)` maps the elapsed time since a state change to an importance value — the appliance widget uses it for the done reminder (30 right away, 60 after 1 h, 95 after 3 h). The updater's periodic refresh re-renders every 15 minutes, so ramps take effect without state changes.
 
 ## Display constraints
 
@@ -59,13 +64,14 @@ The SwitchBot firmware wraps the transmitted line itself, pixel-based, preferrin
 ## Adding a widget
 
 1. Create `widgets/<name>.py` with a `BaseWidget` subclass; `render()` returns a `DashboardItem` or `None`.
-2. If it needs configuration, add a dataclass in `widgets/config_models.py` and handle it in `widgets/manager.py`.
-3. Register the class in `WIDGET_TYPES` and add an entry to `widgets/config.py`.
-4. Choose importance values following the table above.
+2. Add a config dataclass in `widgets/config_models.py` whose fields mirror the constructor parameters.
+3. Register it in `widgets/registry.py` with `register_widget_type(name, widget_cls, config_cls, required=..., validator=...)`. The manager and the YAML validation need no further code.
+4. Choose importance values following the table above; texts the widget prints itself go into `i18n.py`.
 5. Add tests in `tests/` (Home Assistant is stubbed, no HA installation required).
 
 ## Services
 
+- `switchbot_dashboard.refresh` — render and send right away, bypassing the rate limit
 - `switchbot_dashboard.preview` — render all widgets and send the result to the display
+- `switchbot_dashboard.reload` — re-read the YAML block and apply it without a restart
 - `switchbot_dashboard.send_text` — send raw text
-- `switchbot_dashboard.refresh` — reserved for event-driven refresh

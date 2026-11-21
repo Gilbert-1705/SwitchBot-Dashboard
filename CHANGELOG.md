@@ -316,6 +316,18 @@ Both found in the first minutes of real operation:
   remains the fallback while the reference has no value.
 
 
+## [Unreleased]
+
+### Changed
+
+- README (English and German) brought in line: widget table, services,
+  display refresh behavior, development notes, license note and
+  trademark disclaimer.
+- docs: architecture reflects settings, registry, updater and tracker;
+  examples use YAML and no longer promise Matter display buttons.
+- hacs.json: minimum Home Assistant version 2024.11.0 (the options
+  flow relies on the config entry that newer versions provide).
+
 ## [2.7.0] - 2026-11-21
 
 ### Added

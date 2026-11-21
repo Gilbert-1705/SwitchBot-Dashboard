@@ -50,15 +50,15 @@ jobs:
       - name: Install ruff
         run: pip install "ruff==0.17.6"
 
-      # Nur kritische Fehler (Syntax, undefinierte Namen) blocken
+      # Only critical errors (syntax, undefined names) block
       - name: Ruff (critical)
         run: ruff check custom_components --select E9,F63,F7,F82
 
   hacs:
     runs-on: ubuntu-latest
-    # Nicht blockierend: hacs/action meldet aktuell auch bei validen
-    # Dateien Fehler (hacs/integration#5252); brands erfordert einen
-    # separaten PR im home-assistant/brands-Repo
+    # Non-blocking: hacs/action currently reports errors even for
+    # valid files (hacs/integration#5252); brands needs a separate
+    # PR in the home-assistant/brands repository
     continue-on-error: true
     steps:
       # actions/checkout v7.0.1
