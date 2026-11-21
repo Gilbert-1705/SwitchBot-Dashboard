@@ -318,6 +318,13 @@ Both found in the first minutes of real operation:
 
 ## [Unreleased]
 
+### Fixed
+
+- The first dashboard after a host start could be held back for up to
+  a minute: the rate limit compared against a "last send" of 0, and
+  the monotonic clock starts at boot. Found by the CI on a freshly
+  started runner.
+
 ### Changed
 
 - README (English and German) brought in line: widget table, services,

@@ -212,7 +212,7 @@ class StartAndReloadTest(unittest.TestCase):
             "widgets": [{**WIDGETS[0], "icon": "W"}],
         })
         # the rate limit has long passed
-        first_updater._last_send = 0.0
+        first_updater._last_send = float("-inf")
 
         ok = asyncio.run(integration.async_reload(hass))
 

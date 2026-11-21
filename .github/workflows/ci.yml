@@ -56,6 +56,8 @@ jobs:
 
   hacs:
     runs-on: ubuntu-latest
+    # hacs/action can only validate public repositories
+    if: ${{ !github.event.repository.private }}
     # Non-blocking: hacs/action currently reports errors even for
     # valid files (hacs/integration#5252); brands needs a separate
     # PR in the home-assistant/brands repository

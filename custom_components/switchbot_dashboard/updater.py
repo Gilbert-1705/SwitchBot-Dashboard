@@ -112,7 +112,11 @@ class DashboardUpdater:
 
         self._last_text: str | None = None
         self._last_preview: tuple | None = None
-        self._last_send: float = 0.0
+        # never sent yet. Not 0.0: time.monotonic() counts from boot,
+        # so shortly after a host start 0.0 would look like a send a
+        # few seconds ago and the rate limit would hold back the
+        # first dashboard.
+        self._last_send: float = float("-inf")
         self._cancel_debounce = None
         self._cancel_retry = None
         self._unsubs = []

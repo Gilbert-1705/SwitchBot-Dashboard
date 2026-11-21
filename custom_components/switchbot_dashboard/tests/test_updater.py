@@ -210,6 +210,40 @@ class EventLoopSafetyTest(unittest.TestCase):
             )
 
 
+class FreshHostTest(unittest.TestCase):
+    """The first send must not wait for the rate limit.
+
+    time.monotonic() counts from boot. On a host (or CI runner) that
+    started a few seconds ago, a "last send" of 0.0 looked like a
+    send moments ago and held back the first dashboard.
+    """
+
+    def test_first_send_right_after_boot(self):
+        import custom_components.switchbot_dashboard.updater as module
+
+        original = module.time.monotonic
+        module.time.monotonic = lambda: 5.0
+        try:
+            api = FakeAPI()
+            updater = DashboardUpdater(
+                FakeHass({"s": FakeState("380")}),
+                api=api,
+                configs=[
+                    EntityWidgetConfig(
+                        type="entity", entity="s", icon="P",
+                        formatter="power",
+                    ),
+                ],
+                max_items=5,
+            )
+            self.assertEqual(updater.seconds_until_allowed(), 0)
+            asyncio.run(updater.async_refresh())
+        finally:
+            module.time.monotonic = original
+
+        self.assertEqual(api.sent, ["P 380W"])
+
+
 class FailingAPI:
     """Refuses the first ``failures`` sends like a rate-limited API."""
 
