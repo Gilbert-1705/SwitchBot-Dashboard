@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import hashlib
 import hmac
@@ -5,12 +6,20 @@ import logging
 import time
 import uuid
 
-from aiohttp import ClientSession
+from aiohttp import ClientError, ClientSession, ClientTimeout
 
 from .const import API_URL, MAX_PAYLOAD_BYTES
 from .text import cap_bytes
 
 _LOGGER = logging.getLogger(__name__)
+
+# a hanging connection must not block the updater
+REQUEST_TIMEOUT = 15
+
+# statusCode of the result when the request never got an answer
+# (no connection, DNS failure, timeout). Deliberately not None:
+# a missing statusCode counts as success (see updater.send_succeeded).
+NETWORK_ERROR = -1
 
 
 class SwitchBotAPI:
@@ -61,15 +70,26 @@ class SwitchBotAPI:
             "commandType": "command",
         }
 
-        async with ClientSession() as session:
+        try:
+            async with ClientSession(
+                timeout=ClientTimeout(total=REQUEST_TIMEOUT)
+            ) as session:
 
-            async with session.post(
-                API_URL.format(device_id=self.device_id),
-                headers=self._headers(),
-                json=payload,
-            ) as response:
+                async with session.post(
+                    API_URL.format(device_id=self.device_id),
+                    headers=self._headers(),
+                    json=payload,
+                ) as response:
 
-                result = await self._read_result(response)
+                    result = await self._read_result(response)
+
+        except (ClientError, asyncio.TimeoutError, TimeoutError) as err:
+            # Internet down, DNS failure, SwitchBot not answering: a
+            # normal failed result, so the updater retries later
+            result = {
+                "statusCode": NETWORK_ERROR,
+                "message": f"{type(err).__name__}: {err}".rstrip(": "),
+            }
 
         self._log_result(result)
 
@@ -120,7 +140,13 @@ class SwitchBotAPI:
 
         message = result.get("message", "")
 
-        if status == 429:
+        if status == NETWORK_ERROR:
+            _LOGGER.warning(
+                "SwitchBot API not reachable (%s) - the dashboard will "
+                "retry later",
+                message,
+            )
+        elif status == 429:
             _LOGGER.warning(
                 "SwitchBot API rate limit hit (HTTP 429) - the "
                 "dashboard will retry later"

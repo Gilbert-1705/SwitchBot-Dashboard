@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # Only GitHub Actions: the integration has no Python requirements
+  # (manifest.json "requirements": []), so pip/npm/docker would only
+  # produce Dependabot errors.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    # wait a week before proposing a freshly published version:
+    # gives the community time to spot a compromised release
+    cooldown:
+      default-days: 7

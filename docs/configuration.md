@@ -16,11 +16,11 @@ switchbot_dashboard:
   token: !secret switchbot_token
   secret: !secret switchbot_secret
   device_id: !secret switchbot_device_id
-  max_items: 5          # optional, Anzahl gleichzeitig sichtbarer Widgets
-  auto_refresh: true    # optional, event-getriebener Auto-Refresh
-  dry_run: false        # optional, true = nur lokale Preview, kein API-Call
-  quiet_max_items: 3    # optional, max. Items an ruhigen Tagen
-  language: de          # optional, Sprache der Display-Texte: de oder en
+  max_items: 5          # optional, widgets shown at the same time
+  auto_refresh: true    # optional, event-driven auto refresh
+  dry_run: false        # optional, true = local preview only, no API call
+  quiet_max_items: 3    # optional, max. items on quiet days
+  language: de          # optional, language of the display texts: de or en
 
   widgets:
     - type: weather
@@ -37,7 +37,7 @@ switchbot_dashboard:
       entities:
         binary_sensor.balkontuer_1: Balkon 1
         binary_sensor.balkontuer_2: Balkon 2
-      mode: state        # "rooms" (Namen) oder "state" (Offen/Gekippt)
+      mode: state        # "rooms" (names) or "state" (Offen/Gekippt)
       priority: 250
 
     - type: door
@@ -67,7 +67,7 @@ switchbot_dashboard:
       price_entity: sensor.spritpreis
       min_level: 20      # in "unit"
       max_price: 1.75    # EUR/l
-      unit: "%"          # "%" oder "l"
+      unit: "%"          # "%" or "l"
       priority: 610
 
     - type: appliance
@@ -148,7 +148,12 @@ Per SwitchBot's custom-page documentation:
 - Sending an **empty string clears** the custom page (the dashboard
   does this when no widget has anything to show).
 - The custom page is **not the default screen** — swipe to it on the
-  device once; refreshes can take a few seconds.
+  device once.
+- The device does **not redraw when a text arrives**. It fetches the
+  custom page on its own schedule: at the fixed times set in the
+  SwitchBot app, otherwise about every three hours. Short events may
+  never reach the screen; the line always holds the latest state for
+  the next redraw.
 - API rate: max one call per minute (enforced by the updater).
 
 Configuration errors are reported in the Home Assistant log with widget position, type and field, e.g. `Widget 3 (window): unknown option 'entitys'. Available: entities, mode, priority`.
@@ -190,8 +195,27 @@ All widgets accept these base options:
 | `temperature_entity` | no | built-in | Temperature sensor |
 | `trend_entity` | no | built-in | Trend sensor (`sunny`, `cloudy`, `rainy`) |
 | `icon` | no | `🌡` | Icon |
+| `hysteresis` | no | `0.75` | The shown degree changes only after the measurement moved this far from it (`0` = plain rounding) |
+| `reference_entity` | no | – | Second temperature sensor as plausibility check, e.g. a weather service |
+| `max_deviation` | no | `4` | If the local sensor differs from the reference by more than this (K), the reference is shown |
 
 Always important (importance 90). Renders `🌡 21°C ☀`.
+
+Every changed degree is a new e-ink refresh. The hysteresis stops a
+sensor hovering around 3.5 °C from flipping between 3 and 4.
+
+A local sensor in the sun easily shows 30 °C on a cold day. With a
+`reference_entity` the widget falls back to the reference while the
+deviation is too large, and also while the local sensor is
+unavailable:
+
+```yaml
+- type: weather
+  temperature_entity: sensor.balkon_temperatur
+  trend_entity: sensor.wettertrend
+  reference_entity: sensor.aussentemperatur_dwd
+  max_deviation: 4
+```
 
 ### entity
 

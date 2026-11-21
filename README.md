@@ -1,5 +1,7 @@
 # SwitchBot Dashboard
 
+*[Deutsche Version](README.de.md)*
+
 A Home Assistant custom integration that turns the SwitchBot Weather Station into a context-aware E-Ink dashboard.
 
 Unlike classic dashboards that permanently show every available sensor, SwitchBot Dashboard displays only the information that is relevant *right now*. Walking past the display should answer three questions in seconds:
@@ -18,7 +20,7 @@ And on a quiet day:
 
 ## Status
 
-✅ Stable (v2.6.0) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.7.0) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
@@ -33,7 +35,7 @@ The priority engine collects all visible items, keeps the five most important on
 
 | Widget | Example | Shows |
 |---|---|---|
-| Weather | `🌡 21°C ☀` | Temperature + trend |
+| Weather | `🌡 21°C ☀` | Temperature + trend; calm against jitter, optional reference sensor against sun on the sensor |
 | Entity | `P 380W` | Any entity with a formatter (power, number, …) |
 | Door | `🚪 Zu` / `! Offen` | Smart lock + contact sensor combined: Zu, Auf, Offen, Warnung |
 | Window | `○ Wohnen+Essen` / `○ Gekippt` | Open rooms by name (`mode="rooms"`) or compact state only (`mode="state"`), `●` when everything is closed |
@@ -59,7 +61,7 @@ The priority engine collects all visible items, keeps the five most important on
 
 ## Configuration
 
-Everything is configured in `configuration.yaml` — see the [full widget reference](docs/configuration.md):
+The credentials (token, secret and device ID from the developer options of the SwitchBot app) go into YAML or the UI (Settings → Devices & Services); the widgets are configured in `configuration.yaml` — see the [full widget reference](docs/configuration.md):
 
 ```yaml
 switchbot_dashboard:
@@ -77,22 +79,32 @@ switchbot_dashboard:
       days: 1
 ```
 
-Custom widgets and formatters can be registered via the [widget API](docs/configuration.md#custom-widgets). Services: `switchbot_dashboard.preview` renders and sends the dashboard, `switchbot_dashboard.send_text` sends raw text.
+Ready-made setups (laundry reminder, dishwasher with WashData, virtual buttons) are in [docs/examples.md](docs/examples.md). Custom widgets and formatters can be registered via the [widget API](docs/configuration.md#custom-widgets). Services: `switchbot_dashboard.refresh` renders and sends right away, `switchbot_dashboard.preview` renders and sends the dashboard, `switchbot_dashboard.reload` applies a changed YAML block without a restart, `switchbot_dashboard.send_text` sends raw text.
 
 ## Display notes
 
+The display does not redraw as soon as a new text arrives: it fetches the custom page on its own schedule (the fixed times set in the SwitchBot app, otherwise about every three hours). Short events - a window tilted for ten minutes - may never reach the screen; the dashboard is built for the state you see when walking past.
+
 The SwitchBot firmware wraps the line itself (pixel-based, preferring spaces). The renderer therefore separates widgets with three spaces as break hints and caps every widget text at 14 characters (the media widget gets 20); widgets additionally shorten their own output (`Wohnen+2`, `Max Muste…`).
+
+## Development
+
+`sensor.switchbot_dashboard` mirrors the rendered line inside Home Assistant (attributes `sent_to_device`, `rendered_at`). With `dry_run: true` the SwitchBot API is never called — widget development without a device and without the rate limit. The architecture is described in [docs/architecture.md](docs/architecture.md).
 
 ## Tests
 
 ```
-python3 custom_components/switchbot_dashboard/tests/test_sprint3.py
-python3 custom_components/switchbot_dashboard/tests/test_sprint4.py
+for t in custom_components/switchbot_dashboard/tests/test_*.py; do python3 "$t"; done
 ```
 
-The tests stub Home Assistant and run without an HA installation.
+Every test file also runs on its own. The tests stub Home Assistant and run without an HA installation.
 
 ## Roadmap
 
-- Sprint 5: simplified YAML configuration, validation, custom widget API
-- Sprint 6: HACS release, GitHub Actions, documentation, v1.0
+Done and open items: [TODO.md](TODO.md). Next up: screenshots from the real display, a list of the emojis the firmware renders, the first GitHub release and the official HACS store listing.
+
+## License
+
+MIT — see [LICENSE](LICENSE). You may use, change and redistribute the code, also commercially, as long as the copyright notice and the license text are kept. The software comes without any warranty.
+
+SwitchBot is a trademark of its respective owner. This project is an independent community integration and is not affiliated with or endorsed by SwitchBot or Home Assistant.

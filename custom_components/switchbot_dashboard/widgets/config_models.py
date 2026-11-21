@@ -20,6 +20,12 @@ class WeatherWidgetConfig(WidgetConfig):
     temperature_entity: str = ""
     trend_entity: str = ""
     icon: str = ""
+    # optional second sensor; used when the local one is off by
+    # more than max_deviation (sun on the sensor) or unavailable
+    reference_entity: str = ""
+    max_deviation: float = 4.0
+    # shown degree changes only after moving this far (0 = off)
+    hysteresis: float = 0.75
 
 
 @dataclass(slots=True)

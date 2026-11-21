@@ -316,6 +316,50 @@ Both found in the first minutes of real operation:
   remains the fallback while the reference has no value.
 
 
+## [Unreleased]
+
+### Fixed
+
+- The first dashboard after a host start could be held back for up to
+  a minute: the rate limit compared against a "last send" of 0, and
+  the monotonic clock starts at boot. Found by the CI on a freshly
+  started runner.
+
+### Changed
+
+- README (English and German) brought in line: widget table, services,
+  display refresh behavior, development notes, license note and
+  trademark disclaimer.
+- docs: architecture reflects settings, registry, updater and tracker;
+  examples use YAML and no longer promise Matter display buttons.
+- hacs.json: minimum Home Assistant version 2024.11.0 (the options
+  flow relies on the config entry that newer versions provide).
+
+## [2.7.0] - 2026-11-21
+
+### Added
+
+- Weather: `reference_entity` / `max_deviation` - a second sensor (e.g.
+  a weather service) as fallback when the local sensor is off by more
+  than 4 K (sun on the sensor) or unavailable.
+- Weather: `hysteresis` (default 0.75 K) - the shown degree only
+  changes after a clear move, a sensor hovering around x.5 no longer
+  triggers a display refresh every few minutes.
+
+## [2.6.1] - 2026-11-21
+
+### Fixed
+
+- A dropped or hanging connection to the SwitchBot cloud (internet
+  outage, DNS failure, no answer) raised an unhandled error in
+  `send_text`. The text already counted as sent, so the display kept
+  the old content until the next change. Requests now time out after
+  15 seconds, network errors become a regular failed result, and the
+  usual retry after two minutes takes over.
+- Door: the lock state `open` (latch pulled while the door is being
+  opened) showed up as `! ?` for a few seconds; it now reads `Auf` /
+  `Offen`.
+
 ## [2.6.0] - 2026-11-15
 
 ### Added

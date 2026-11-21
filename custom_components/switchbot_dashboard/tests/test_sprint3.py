@@ -53,6 +53,23 @@ class DoorWidgetTest(unittest.TestCase):
         self.assertEqual(item.icon, Icons.WARNING)
         self.assertEqual(item.importance, 100)
 
+    def test_unlatching_is_no_alarm(self):
+        # lock state "open": the latch is pulled for a few seconds;
+        # this showed up as "! ?" before
+        item = self._render("open", "off")
+        self.assertEqual(item.value, "Auf")
+        self.assertEqual(item.icon, Icons.DOOR)
+        self.assertLess(item.importance, 100)
+
+        item = self._render("open", "on")
+        self.assertEqual(item.value, "Offen")
+        self.assertEqual(item.icon, Icons.DOOR)
+
+    def test_unknown_lock_state_still_warns(self):
+        item = self._render("jammed", "off")
+        self.assertEqual(item.icon, Icons.WARNING)
+        self.assertEqual(item.importance, 100)
+
     def test_unavailable_hides_widget(self):
         self.assertIsNone(self._render("unavailable", "off"))
         self.assertIsNone(self._render("locked", "unknown"))
