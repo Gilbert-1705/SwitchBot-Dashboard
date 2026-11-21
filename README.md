@@ -77,22 +77,22 @@ switchbot_dashboard:
       days: 1
 ```
 
-Custom widgets and formatters can be registered via the [widget API](docs/configuration.md#custom-widgets). Services: `switchbot_dashboard.preview` renders and sends the dashboard, `switchbot_dashboard.send_text` sends raw text.
+Custom widgets and formatters can be registered via the [widget API](docs/configuration.md#custom-widgets). Services: `switchbot_dashboard.refresh` renders and sends right away, `switchbot_dashboard.preview` renders and sends the dashboard, `switchbot_dashboard.reload` applies a changed YAML block without a restart, `switchbot_dashboard.send_text` sends raw text.
 
 ## Display notes
+
+The display does not redraw as soon as a new text arrives: it fetches the custom page on its own schedule (the fixed times set in the SwitchBot app, otherwise about every three hours). Short events - a window tilted for ten minutes - may never reach the screen; the dashboard is built for the state you see when walking past.
 
 The SwitchBot firmware wraps the line itself (pixel-based, preferring spaces). The renderer therefore separates widgets with three spaces as break hints and caps every widget text at 14 characters (the media widget gets 20); widgets additionally shorten their own output (`Wohnen+2`, `Max Muste…`).
 
 ## Tests
 
 ```
-python3 custom_components/switchbot_dashboard/tests/test_sprint3.py
-python3 custom_components/switchbot_dashboard/tests/test_sprint4.py
+for t in custom_components/switchbot_dashboard/tests/test_*.py; do python3 "$t"; done
 ```
 
-The tests stub Home Assistant and run without an HA installation.
+Every test file also runs on its own. The tests stub Home Assistant and run without an HA installation.
 
 ## Roadmap
 
-- Sprint 5: simplified YAML configuration, validation, custom widget API
-- Sprint 6: HACS release, GitHub Actions, documentation, v1.0
+Done and open items: [TODO.md](TODO.md). Next up: screenshots from the real display, a list of the emojis the firmware renders, the first GitHub release and the official HACS store listing.

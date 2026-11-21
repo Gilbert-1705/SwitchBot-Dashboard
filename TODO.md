@@ -37,15 +37,13 @@
 - [x] Widget-Dokumentation (docs/configuration.md)
 - [x] max_items-Option
 
-## Sprint 6 🚧 Open Source & v1.0 (v0.5.0)
+## Sprint 6 ✅ Open Source & v1.0 (v0.5.0)
 
 - [x] GitHub Actions: Tests + Lint + HACS-Validation bei jedem Push
 - [x] hacs.json + manifest.json (Version, issue_tracker)
 - [x] README: Installationsanleitung (HACS + manuell)
 - [x] Energie-Widgets: solar, battery (generisch, auch eBike), ev
-- [ ] Screenshots und GIFs vom echten Display (Jan)
-- [ ] Icon-Kompatibilität am Gerät dokumentieren (welche Emojis rendert die Firmware?)
-- [ ] Erstes GitHub-Release (Semver, Release Notes aus CHANGELOG)
+- Offene Punkte nach "Backlog" verschoben
 
 ## v1.1 ✅ Backlog-Abbau
 
@@ -123,8 +121,9 @@ Daueranzeige — kontextlose Daten verwässern das Konzept.
 
 ## Backlog
 
-- [ ] Screenshots und GIFs vom echten Display fürs README
-- [ ] Liste, welche Emojis die Firmware darstellt
+- [ ] Screenshots und GIFs vom echten Display fürs README (Jan)
+- [ ] Liste, welche Emojis die Firmware darstellt (Jan, z. B. 🍽 ♪ ⛽)
+- [ ] Erstes GitHub-Release (Semver, Release Notes aus CHANGELOG)
 - [ ] Weitere Sprachen
 
 ## Vision v1.0
