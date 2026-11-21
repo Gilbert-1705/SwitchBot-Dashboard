@@ -8,3 +8,7 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # wait a week before proposing a freshly published version:
+    # gives the community time to spot a compromised release
+    cooldown:
+      default-days: 7
