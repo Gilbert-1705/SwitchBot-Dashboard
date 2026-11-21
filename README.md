@@ -20,7 +20,7 @@ And on a quiet day:
 
 ## Status
 
-✅ Stable (v2.7.1) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.8.0) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
@@ -89,7 +89,7 @@ The SwitchBot firmware wraps the line itself (pixel-based, at spaces). The rende
 
 ## Development
 
-`sensor.switchbot_dashboard` mirrors the rendered line inside Home Assistant (attributes `sent_to_device`, `rendered_at`). With `dry_run: true` the SwitchBot API is never called — widget development without a device and without the rate limit. The architecture is described in [docs/architecture.md](docs/architecture.md).
+`sensor.switchbot_dashboard` mirrors the rendered line inside Home Assistant (attributes `sent_to_device`, `rendered_at`) and predicts how the panel wraps it (`display_lines`, `display_fits`); `scripts/simulate_display.py` does the same on the command line and draws a mock picture — see [display simulator](docs/configuration.md#display-simulator). With `dry_run: true` the SwitchBot API is never called — widget development without a device and without the rate limit. The architecture is described in [docs/architecture.md](docs/architecture.md).
 
 ## Tests
 
