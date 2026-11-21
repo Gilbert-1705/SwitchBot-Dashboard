@@ -329,6 +329,131 @@ class ReadResultTest(unittest.TestCase):
         self.assertEqual(result["message"], "unexpected response body")
 
 
+class FakeSession:
+    """Stands in for aiohttp.ClientSession; ``post`` fails with ``error``."""
+
+    instances = []
+
+    def __init__(self, error=None, response=None, **kwargs):
+        self.error = error
+        self.response = response
+        self.kwargs = kwargs
+        FakeSession.instances.append(self)
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *exc):
+        return False
+
+    def post(self, *args, **kwargs):
+        session = self
+
+        class _Request:
+            async def __aenter__(self):
+                if session.error is not None:
+                    raise session.error
+                return session.response
+
+            async def __aexit__(self, *exc):
+                return False
+
+        return _Request()
+
+
+class NetworkFailureTest(unittest.TestCase):
+    """A dropped or hanging connection is a failed send, not a crash."""
+
+    def setUp(self):
+        from custom_components.switchbot_dashboard import api as api_module
+
+        self.api_module = api_module
+        self._original = api_module.ClientSession
+        FakeSession.instances = []
+
+    def tearDown(self):
+        self.api_module.ClientSession = self._original
+
+    def _send(self, error=None, response=None):
+        self.api_module.ClientSession = (
+            lambda **kwargs: FakeSession(error, response, **kwargs)
+        )
+        api = self.api_module.SwitchBotAPI("token", "secret", "device")
+        return asyncio.run(api.send_text("P 380W"))
+
+    def test_connection_error_becomes_a_failed_result(self):
+        import aiohttp
+        from custom_components.switchbot_dashboard.updater import (
+            send_succeeded,
+        )
+
+        with self.assertLogs(
+            "custom_components.switchbot_dashboard.api", "WARNING"
+        ):
+            result = self._send(aiohttp.ClientError("Cannot connect"))
+
+        self.assertEqual(result["statusCode"], self.api_module.NETWORK_ERROR)
+        self.assertIn("Cannot connect", result["message"])
+        self.assertFalse(send_succeeded(result))
+
+    def test_timeout_becomes_a_failed_result(self):
+        with self.assertLogs(
+            "custom_components.switchbot_dashboard.api", "WARNING"
+        ):
+            result = self._send(asyncio.TimeoutError())
+
+        self.assertEqual(result["statusCode"], self.api_module.NETWORK_ERROR)
+        self.assertEqual(result["message"], "TimeoutError")
+
+    def test_request_has_a_timeout(self):
+        self._send(
+            response=FakeResponse(200, {"statusCode": 100})
+        )
+
+        timeout = FakeSession.instances[0].kwargs["timeout"]
+        self.assertEqual(timeout.total, self.api_module.REQUEST_TIMEOUT)
+
+    def test_successful_send_is_unchanged(self):
+        result = self._send(
+            response=FakeResponse(200, {"statusCode": 100})
+        )
+        self.assertEqual(result["statusCode"], 100)
+
+    def test_updater_retries_after_a_network_failure(self):
+        import aiohttp
+
+        self.api_module.ClientSession = (
+            lambda **kwargs: FakeSession(
+                aiohttp.ClientError("Network is unreachable"), **kwargs
+            )
+        )
+        api = self.api_module.SwitchBotAPI("token", "secret", "device")
+        hass = FakeHass({"s": FakeState("380")})
+        updater = DashboardUpdater(
+            hass,
+            api=api,
+            configs=[
+                EntityWidgetConfig(
+                    type="entity", entity="s", icon="P",
+                    formatter="power",
+                ),
+            ],
+            max_items=5,
+            min_interval=0,
+        )
+
+        with self.assertLogs(
+            "custom_components.switchbot_dashboard.api", "WARNING"
+        ):
+            asyncio.run(updater.async_refresh())
+
+        # not remembered as sent, a retry is scheduled, preview honest
+        self.assertIsNone(updater._last_text)
+        self.assertIsNotNone(updater._cancel_retry)
+        state, attrs = hass.set_states["sensor.switchbot_dashboard"]
+        self.assertFalse(attrs["sent_to_device"])
+
+
 class PreviewEntityTest(unittest.TestCase):
     """Local preview entity sensor.switchbot_dashboard."""
 

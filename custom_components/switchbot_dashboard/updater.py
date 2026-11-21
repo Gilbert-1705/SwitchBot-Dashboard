@@ -45,7 +45,8 @@ def send_succeeded(result) -> bool:
     """True when the SwitchBot API accepted the text (statusCode 100).
 
     Anything that is not a result dict (e.g. ``None`` from a test
-    double) counts as success.
+    double) counts as success. A network failure arrives as
+    ``api.NETWORK_ERROR`` and therefore fails.
     """
 
     if not isinstance(result, dict):

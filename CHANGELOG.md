@@ -316,6 +316,17 @@ Both found in the first minutes of real operation:
   remains the fallback while the reference has no value.
 
 
+## [2.6.1] - 2026-11-21
+
+### Fixed
+
+- A dropped or hanging connection to the SwitchBot cloud (internet
+  outage, DNS failure, no answer) raised an unhandled error in
+  `send_text`. The text already counted as sent, so the display kept
+  the old content until the next change. Requests now time out after
+  15 seconds, network errors become a regular failed result, and the
+  usual retry after two minutes takes over.
+
 ## [2.6.0] - 2026-11-15
 
 ### Added

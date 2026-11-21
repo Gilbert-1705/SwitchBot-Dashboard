@@ -79,6 +79,16 @@ if "homeassistant" not in sys.modules:
 if "aiohttp" not in sys.modules:
     aiohttp = types.ModuleType("aiohttp")
     aiohttp.ClientSession = object
+
+    class ClientError(Exception):
+        pass
+
+    class ClientTimeout:
+        def __init__(self, total=None):
+            self.total = total
+
+    aiohttp.ClientError = ClientError
+    aiohttp.ClientTimeout = ClientTimeout
     sys.modules["aiohttp"] = aiohttp
 
 
