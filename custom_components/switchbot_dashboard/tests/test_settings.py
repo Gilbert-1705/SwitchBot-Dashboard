@@ -137,7 +137,8 @@ class RecordingAPI:
         self.token = token
 
     async def send_text(self, text):
-        RecordingAPI.sent.append(text)
+        # readable form; the device gets no-break spaces inside items
+        RecordingAPI.sent.append(text.replace("\u00a0", " "))
         return {"statusCode": 100}
 
 

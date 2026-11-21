@@ -28,9 +28,13 @@ class FakeAPI:
 
     def __init__(self):
         self.sent = []
+        self.raw = []
 
     async def send_text(self, text):
-        self.sent.append(text)
+        # raw: exactly what goes to the device (no-break spaces inside
+        # items); sent: as readable text for the assertions
+        self.raw.append(text)
+        self.sent.append(text.replace("\u00a0", " "))
 
 
 class CollectEntitiesTest(unittest.TestCase):
@@ -244,6 +248,57 @@ class FreshHostTest(unittest.TestCase):
         self.assertEqual(api.sent, ["P 380W"])
 
 
+class KeepItemsTogetherTest(unittest.TestCase):
+    """The device may only wrap between items, never inside one."""
+
+    def test_text_helper(self):
+        from custom_components.switchbot_dashboard.text import (
+            NBSP, keep_items_together,
+        )
+
+        sent = keep_items_together(
+            "🌡 2°C ☀   🧺 TR Fertig   ⛽ Tanken 1.98", "   "
+        )
+        self.assertEqual(
+            sent,
+            f"🌡{NBSP}2°C{NBSP}☀   🧺{NBSP}TR{NBSP}Fertig   "
+            f"⛽{NBSP}Tanken{NBSP}1.98",
+        )
+        # only the separators remain breakable
+        self.assertEqual(sent.count(" "), 6)
+
+    def test_single_item_and_empty_text(self):
+        from custom_components.switchbot_dashboard.text import (
+            NBSP, keep_items_together,
+        )
+
+        self.assertEqual(keep_items_together("● ", "   "), f"●{NBSP}")
+        self.assertEqual(keep_items_together("", "   "), "")
+
+    def test_updater_sends_protected_text_preview_stays_plain(self):
+        from custom_components.switchbot_dashboard.text import NBSP
+
+        api = FakeAPI()
+        hass = FakeHass({"s": FakeState("380")})
+        updater = DashboardUpdater(
+            hass,
+            api=api,
+            configs=[
+                EntityWidgetConfig(
+                    type="entity", entity="s", icon="P",
+                    formatter="power",
+                ),
+            ],
+            max_items=5,
+            min_interval=0,
+        )
+        asyncio.run(updater.async_refresh())
+
+        self.assertEqual(api.raw, [f"P{NBSP}380W"])
+        state, _ = hass.set_states["sensor.switchbot_dashboard"]
+        self.assertEqual(state, "P 380W")
+
+
 class FailingAPI:
     """Refuses the first ``failures`` sends like a rate-limited API."""
 
@@ -253,7 +308,7 @@ class FailingAPI:
         self.attempts = []
 
     async def send_text(self, text):
-        self.attempts.append(text)
+        self.attempts.append(text.replace("\u00a0", " "))
 
         if len(self.attempts) <= self.failures:
             return {"statusCode": self.status, "message": "HTTP 429"}

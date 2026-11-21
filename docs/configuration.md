@@ -144,7 +144,11 @@ Per SwitchBot's custom-page documentation:
   triple spaces.
 - **Simple emojis only**: skin-tone modifiers and ZWJ combinations may
   not render. Recommended set includes ✅❌📅🌤🏠💧⚡📬🐱🎂📊💪.
-  All icons live in `icons.py` and are easy to swap.
+  Confirmed on a Weather Station: 🌡 ☀ 🧺 🍽 🚪 ⛽. All icons live in
+  `icons.py` and are easy to swap.
+- **Wrapping**: the firmware breaks at any space. The integration sends
+  spaces inside an item as no-break spaces (U+00A0, rendered as a
+  normal space), so lines only break between items.
 - Sending an **empty string clears** the custom page (the dashboard
   does this when no widget has anything to show).
 - The custom page is **not the default screen** — swipe to it on the

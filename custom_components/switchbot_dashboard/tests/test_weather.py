@@ -100,6 +100,29 @@ class ReferenceSensorTest(unittest.TestCase):
         self.assertEqual(widget.render().value, "32°C")
 
 
+class FallbackHysteresisTest(unittest.TestCase):
+    """At the deviation limit the source must not flip back and forth."""
+
+    def setUp(self):
+        self.states = {"dwd": FakeState("1.3")}
+        self.hass = FakeHass(self.states)
+
+    def _show(self, local):
+        self.states["temp"] = FakeState(local)
+        widget = WeatherWidget(
+            self.hass, temperature_entity="temp", trend_entity="",
+            reference_entity="dwd", hysteresis=0,
+        )
+        return widget.render().value
+
+    def test_stays_on_the_reference_near_the_limit(self):
+        self.assertEqual(self._show("5.0"), "5°C")   # 3.7 off: local
+        self.assertEqual(self._show("5.6"), "1°C")   # 4.3 off: reference
+        self.assertEqual(self._show("5.2"), "1°C")   # 3.9 off: still reference
+        self.assertEqual(self._show("4.6"), "1°C")   # 3.3 off: still reference
+        self.assertEqual(self._show("4.2"), "4°C")   # 2.9 off: local again
+
+
 class WeatherYamlTest(unittest.TestCase):
 
     def test_options_via_yaml_and_reference_is_watched(self):

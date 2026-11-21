@@ -8,8 +8,10 @@ from .const import (
     DOMAIN,
     MAX_ITEMS,
     QUIET_MAX_ITEMS,
+    SEPARATOR,
 )
 from .render import publish_preview, render_dashboard
+from .text import keep_items_together
 
 
 async def async_send_text(call: ServiceCall):
@@ -55,7 +57,7 @@ async def async_preview(call: ServiceCall):
     if dry_run:
         return
 
-    await data["api"].send_text(text)
+    await data["api"].send_text(keep_items_together(text, SEPARATOR))
 
 
 async def async_register_services(hass: HomeAssistant):

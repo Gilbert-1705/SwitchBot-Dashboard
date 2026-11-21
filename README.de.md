@@ -20,7 +20,7 @@ Und an einem ruhigen Tag:
 
 ## Status
 
-✅ Stabil (v2.7.0) — siehe [CHANGELOG](CHANGELOG.md)
+✅ Stabil (v2.7.1) — siehe [CHANGELOG](CHANGELOG.md)
 
 ## Funktionsweise
 
@@ -87,7 +87,7 @@ Services: `switchbot_dashboard.refresh` rendert und sendet sofort, `switchbot_da
 
 Das Display zeichnet nicht neu, sobald ein neuer Text ankommt: Es holt die Custom-Seite nach eigenem Zeitplan ab (zu den festen Uhrzeiten aus der SwitchBot-App, sonst etwa alle drei Stunden). Kurze Ereignisse — ein zehn Minuten gekipptes Fenster — erreichen den Bildschirm unter Umständen nie; das Dashboard ist für den Stand gemacht, den man im Vorbeigehen sieht.
 
-Die Firmware bricht die Zeile selbst um (pixelbasiert, bevorzugt an Leerzeichen). Der Renderer trennt die Widgets deshalb mit drei Leerzeichen und kürzt jeden Widget-Text auf 14 Zeichen (das Media-Widget bekommt 20); die Widgets kürzen zusätzlich selbst (`Wohnen+2`, `Max Muste…`).
+Die Firmware bricht die Zeile selbst um (pixelbasiert, an Leerzeichen). Der Renderer trennt die Widgets deshalb mit drei Leerzeichen, sendet die Leerzeichen innerhalb eines Widgets als geschützte Leerzeichen, damit ein Symbol nie von seinem Text getrennt wird, und kürzt jeden Widget-Text auf 14 Zeichen (das Media-Widget bekommt 20); die Widgets kürzen zusätzlich selbst (`Wohnen+2`, `Max Muste…`).
 
 ## Entwicklung
 

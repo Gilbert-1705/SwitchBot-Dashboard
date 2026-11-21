@@ -316,10 +316,18 @@ Both found in the first minutes of real operation:
   remains the fallback while the reference has no value.
 
 
-## [Unreleased]
+## [2.7.1] - 2026-11-21
 
 ### Fixed
 
+- The display wrapped the line inside an item, e.g. a lone `🧺` at the
+  end of one line and `TR Fertig` on the next. Spaces inside an item
+  are now sent as no-break spaces, so the firmware only wraps between
+  items (verified on the device). The preview entity keeps plain
+  spaces.
+- Weather: a local sensor hovering at `max_deviation` no longer flips
+  between its own and the reference value (seen live: 6 °C, 2 °C,
+  6 °C); it returns to the local value only once it is 1 K closer.
 - The first dashboard after a host start could be held back for up to
   a minute: the rate limit compared against a "last send" of 0, and
   the monotonic clock starts at boot. Found by the CI on a freshly

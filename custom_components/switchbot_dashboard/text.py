@@ -74,3 +74,21 @@ def join_names(names: list[str], max_names: int = 2) -> str:
     rest = len(names) - len(shown)
 
     return "+".join(shown) + f"+{rest}"
+
+
+NBSP = "\u00a0"
+
+
+def keep_items_together(text: str, separator: str) -> str:
+    """Lets the display wrap only between dashboard items.
+
+    The firmware breaks the line at any space - also between an icon
+    and its text, which leaves a lone "🧺" at the end of one line and
+    "TR Fertig" on the next. Inside an item every space becomes a
+    no-break space (tested on the device: rendered as a normal space,
+    never broken), the separators between items stay breakable.
+    """
+
+    return separator.join(
+        part.replace(" ", NBSP) for part in text.split(separator)
+    )
