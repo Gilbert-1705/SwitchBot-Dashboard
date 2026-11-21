@@ -8,6 +8,7 @@ CONF_MAX_ITEMS = "max_items"
 CONF_AUTO_REFRESH = "auto_refresh"
 CONF_DRY_RUN = "dry_run"
 CONF_QUIET_MAX_ITEMS = "quiet_max_items"
+CONF_FIT_DISPLAY = "fit_display"
 
 # Local preview entity: shows the currently rendered display line
 PREVIEW_ENTITY_ID = "sensor.switchbot_dashboard"

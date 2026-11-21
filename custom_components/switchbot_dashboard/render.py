@@ -15,12 +15,14 @@ def render_dashboard(
     configs=None,
     max_items: int = MAX_ITEMS,
     quiet_max_items: int = QUIET_MAX_ITEMS,
+    fit_display: bool = True,
 ) -> str:
     """Renders all widgets into one display line."""
 
     renderer = DashboardRenderer(
         max_items=max_items,
         quiet_max_items=quiet_max_items,
+        fit_display=fit_display,
     )
     manager = WidgetManager(hass, configs=configs)
 
@@ -66,5 +68,6 @@ def publish_preview(hass, text: str, sent: bool):
             "rendered_at": datetime.now().isoformat(timespec="seconds"),
             "display_lines": layout.readable_lines(),
             "display_fits": layout.fits,
+            "display_scale": layout.scale,
         },
     )

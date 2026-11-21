@@ -7,7 +7,8 @@ from ..const import (
     QUIET_MAX_ITEMS,
     SEPARATOR,
 )
-from ..text import shorten
+from ..simulator import simulate
+from ..text import keep_items_together, shorten
 from .item import DashboardItem
 
 
@@ -26,15 +27,23 @@ class DashboardRenderer:
     Alarm mode: as soon as any item reaches IMPORTANCE_ALARM (100),
     only alarms and always-band items (>= 60) are shown - normal
     items and fillers are displaced so the warning stands out.
+
+    Fit to the display: when the selection is too long for the full
+    font size, the Weather Station shrinks the font to half - hard to
+    read in passing. With ``fit_display`` the least important items are
+    left out until the text fits (see simulator.py); alarms are never
+    dropped.
     """
 
     def __init__(
         self,
         max_items: int = MAX_ITEMS,
         quiet_max_items: int = QUIET_MAX_ITEMS,
+        fit_display: bool = True,
     ):
         self.max_items = max_items
         self.quiet_max_items = quiet_max_items
+        self.fit_display = fit_display
         self.items: list[DashboardItem] = []
 
     def add(self, item: DashboardItem):
@@ -101,7 +110,53 @@ class DashboardRenderer:
 
     def render(self):
 
-        return SEPARATOR.join(
-            f"{item.icon} {shorten(item.value, item.max_length or MAX_VALUE_LENGTH)}".strip()
-            for item in self.select()
+        items = self.select()
+
+        if self.fit_display:
+            items = fit_to_display(items)
+
+        return join_items(items)
+
+
+def item_text(item: DashboardItem) -> str:
+
+    limit = item.max_length or MAX_VALUE_LENGTH
+
+    return f"{item.icon} {shorten(item.value, limit)}".strip()
+
+
+def join_items(items) -> str:
+
+    return SEPARATOR.join(item_text(item) for item in items)
+
+
+def fit_to_display(items: list[DashboardItem]) -> list[DashboardItem]:
+    """Drops the least important items until the full font size holds.
+
+    Among equally important items the rightmost goes first. Alarms
+    (importance >= IMPORTANCE_ALARM) stay even if the font shrinks -
+    a warning in small print beats no warning.
+    """
+
+    items = list(items)
+
+    while len(items) > 1:
+
+        layout = simulate(keep_items_together(join_items(items), SEPARATOR))
+
+        if layout.fits:
+            break
+
+        droppable = [
+            item for item in items if item.importance < IMPORTANCE_ALARM
+        ]
+
+        if not droppable:
+            break
+
+        victim = min(
+            droppable, key=lambda item: (item.importance, -item.priority)
         )
+        items.remove(victim)
+
+    return items

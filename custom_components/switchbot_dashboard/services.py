@@ -4,6 +4,7 @@ from .const import (
     CONF_DRY_RUN,
     CONF_MAX_ITEMS,
     CONF_QUIET_MAX_ITEMS,
+    CONF_FIT_DISPLAY,
     CONF_WIDGETS,
     DOMAIN,
     MAX_ITEMS,
@@ -48,6 +49,7 @@ async def async_preview(call: ServiceCall):
         configs=data.get(CONF_WIDGETS),
         max_items=data.get(CONF_MAX_ITEMS, MAX_ITEMS),
         quiet_max_items=data.get(CONF_QUIET_MAX_ITEMS, QUIET_MAX_ITEMS),
+        fit_display=data.get(CONF_FIT_DISPLAY, True),
     )
 
     dry_run = data.get(CONF_DRY_RUN, False)

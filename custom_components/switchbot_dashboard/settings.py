@@ -16,6 +16,7 @@ from .const import (
     CONF_AUTO_REFRESH,
     CONF_DEVICE_ID,
     CONF_DRY_RUN,
+    CONF_FIT_DISPLAY,
     CONF_MAX_ITEMS,
     CONF_QUIET_MAX_ITEMS,
     CONF_SECRET,
@@ -37,6 +38,7 @@ OPTION_KEYS = (
     CONF_AUTO_REFRESH,
     CONF_DRY_RUN,
     CONF_LANGUAGE,
+    CONF_FIT_DISPLAY,
 )
 
 ALLOWED_KEYS = CREDENTIAL_KEYS + (CONF_WIDGETS,) + OPTION_KEYS
@@ -53,6 +55,7 @@ class Settings:
     auto_refresh: bool = True
     dry_run: bool = False
     language: str = DEFAULT_LANGUAGE
+    fit_display: bool = True
 
 
 def settings_from_yaml(conf) -> Settings:
@@ -130,7 +133,7 @@ def _validate(key: str, value):
             )
         return number
 
-    if key in (CONF_AUTO_REFRESH, CONF_DRY_RUN):
+    if key in (CONF_AUTO_REFRESH, CONF_DRY_RUN, CONF_FIT_DISPLAY):
         if not isinstance(value, bool):
             raise ConfigError(
                 f"'{key}' must be true or false (got '{value}')"

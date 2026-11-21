@@ -61,7 +61,9 @@ def render_png(simulator, simulation, path, font_path=None):
     font_file = font_path or next(
         (f for f in FONT_CANDIDATES if Path(f).exists()), None
     )
-    size = round(simulator.ADVANCES["F"] / 0.53)  # glyph size from metrics
+    scale = simulation.scale
+    # glyph size from the metrics, at the font size the panel picks
+    size = round(simulator.ADVANCES["F"] / 0.53 * scale)
     font = (
         ImageFont.truetype(font_file, size) if font_file
         else ImageFont.load_default()
@@ -71,7 +73,7 @@ def render_png(simulator, simulation, path, font_path=None):
         else ImageFont.load_default()
     )
     tiny = (
-        ImageFont.truetype(font_file, 13) if font_file
+        ImageFont.truetype(font_file, max(8, round(13 * scale))) if font_file
         else ImageFont.load_default()
     )
 
@@ -88,42 +90,56 @@ def render_png(simulator, simulation, path, font_path=None):
     # text block, vertically centred between header and footer
     header_bottom = 75
     lines = simulation.lines
-    block = len(lines) * simulator.LINE_HEIGHT
+    pitch = simulator.LINE_HEIGHT * scale
+    left = simulator.margin(scale)
+    limit = simulator.line_width(scale)
+    block = len(lines) * pitch
     top = header_bottom + max(0, (footer_top - header_bottom - block) // 2)
 
     for row, line in enumerate(lines):
-        x = simulator.MARGIN_X
-        y = top + row * simulator.LINE_HEIGHT
+        x = left
+        y = top + row * pitch
 
         for char in line:
-            width = simulator.char_width(char)
-            if width == simulator.EMOJI_WIDTH or char in simulator.WIDTH_OVERRIDES:
+            base = simulator.char_width(char)
+            if char == simulator.NBSP:
+                width = simulator.nbsp_width(scale)
+            else:
+                width = base * scale
+            is_emoji = (
+                base == simulator.EMOJI_WIDTH
+                or (char in simulator.WIDTH_OVERRIDES and char not in simulator.ADVANCES)
+            )
+            if char in simulator.NOT_RENDERED:
+                pass  # blank on the device
+            elif is_emoji:
                 draw.rounded_rectangle(
-                    (x + 4, y + 14, x + width - 4, y + 70),
-                    radius=8, outline=30, width=3,
+                    (x + 4 * scale, y + 14 * scale,
+                     x + width - 4 * scale, y + 70 * scale),
+                    radius=8 * scale, outline=30, width=max(1, round(3 * scale)),
                 )
                 # emoji name as a hint, e.g. "BASKET"
                 label = EMOJI_LABELS.get(
                     char, unicodedata.name(char, "?").split()[-1][:6]
                 )
                 draw.text(
-                    (x + width / 2, y + 42), label, fill=30, font=tiny,
-                    anchor="mm",
+                    (x + width / 2, y + 42 * scale), label, fill=30,
+                    font=tiny, anchor="mm",
                 )
             elif char not in (" ", simulator.NBSP):
                 # stroke imitates the heavier firmware font without
                 # changing the calibrated advances
                 draw.text(
                     (x, y), char, fill=20, font=font,
-                    stroke_width=1, stroke_fill=20,
+                    stroke_width=1 if scale == 1.0 else 0, stroke_fill=20,
                 )
             x += width
 
-        if x - simulator.MARGIN_X > simulator.LINE_WIDTH:
-            draw.line((x, y + 10, x, y + 74), fill=0, width=3)
+        if x - left > limit:
+            draw.line((x, y + 10 * scale, x, y + 74 * scale), fill=0, width=3)
 
     # usable area
-    right = simulator.MARGIN_X + simulator.LINE_WIDTH
+    right = left + limit
     draw.line((right, header_bottom, right, footer_top), fill=150, width=1)
 
     image.save(path)

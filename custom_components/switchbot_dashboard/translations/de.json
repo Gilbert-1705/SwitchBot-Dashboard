@@ -25,7 +25,8 @@
           "quiet_max_items": "Maximum an ruhigen Tagen",
           "auto_refresh": "Display automatisch aktualisieren",
           "dry_run": "Probelauf (nicht ans Gerät senden)",
-          "language": "Sprache der Display-Texte"
+          "language": "Sprache der Display-Texte",
+          "fit_display": "Unwichtigste Widgets weglassen statt die Schrift zu verkleinern"
         }
       }
     }
