@@ -2,9 +2,11 @@
 
 from datetime import datetime
 
-from .const import MAX_ITEMS, PREVIEW_ENTITY_ID, QUIET_MAX_ITEMS
+from .const import MAX_ITEMS, PREVIEW_ENTITY_ID, QUIET_MAX_ITEMS, SEPARATOR
 from .context import active_boost, apply_boost
 from .dashboard import DashboardRenderer
+from .simulator import simulate
+from .text import keep_items_together
 from .widgets.manager import WidgetManager
 
 
@@ -51,6 +53,9 @@ def publish_preview(hass, text: str, sent: bool):
     dashboards, template debugging) without looking at the e-paper.
     """
 
+    # predicted layout on the panel (see simulator.py)
+    layout = simulate(keep_items_together(text, SEPARATOR))
+
     hass.states.async_set(
         PREVIEW_ENTITY_ID,
         text,
@@ -59,5 +64,7 @@ def publish_preview(hass, text: str, sent: bool):
             "icon": "mdi:monitor-dashboard",
             "sent_to_device": sent,
             "rendered_at": datetime.now().isoformat(timespec="seconds"),
+            "display_lines": layout.readable_lines(),
+            "display_fits": layout.fits,
         },
     )

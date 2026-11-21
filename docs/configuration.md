@@ -132,6 +132,33 @@ With `dry_run: true` the SwitchBot API is never called: the dashboard
 only updates the preview entity. Ideal for development — no device,
 no rate limit, full priority-engine behavior.
 
+## Display simulator
+
+The preview entity also predicts the layout on the panel:
+
+- `display_lines` — the lines as the Weather Station will wrap them
+- `display_fits` — `false` when the text needs more than four lines or
+  a single item is wider than a line
+
+The model behind it (`simulator.py`) is calibrated on photos of the
+real device: 800 x 480 panel, Noto Sans CJK widths at 54.6 px, emojis
+73 px, 744 px usable line width, 84 px line pitch. It reproduces the
+line breaks of every reference photo. Not yet verified: that four
+lines are the maximum, and what the firmware does beyond that.
+
+For development there is a command line version that also draws a
+mock picture of the panel:
+
+```
+python3 scripts/simulate_display.py "🌡 2°C ☀   🧺 WM Fertig   🍽 GS Fertig"
+python3 scripts/simulate_display.py --png panel.png "..."
+```
+
+It prepares the text exactly like the integration (no-break spaces
+inside items; `--plain` turns that off) and exits with 1 when the text
+does not fit. New reference photos can refine the model:
+`scripts/generate_display_metrics.py` regenerates the width table.
+
 ## Display constraints (official)
 
 Per SwitchBot's custom-page documentation:

@@ -125,8 +125,12 @@ Daueranzeige — kontextlose Daten verwässern das Konzept.
 - [ ] Screenshots und GIFs vom echten Display fürs README (Jan)
 - [ ] Liste, welche Emojis die Firmware darstellt (bestätigt: 🌡 ☀ 🧺 🍽 🚪 ⛽;
       offen: ♪ ⌂ ○ ● ☂ ☁ 🔋 🔌 📅 🎂 ★ ✈ 🗑)
-- [ ] Display-Simulator: Umbruch und Platz lokal vorhersagen, eingemessen
-      mit Referenzfotos (Schriftbreite, Zeilen, Emojis)
+- [x] Display-Simulator: Umbruch und Platz vorhersagen, eingemessen mit
+      drei Referenzfotos (Attribute display_lines/display_fits, CLI mit
+      Vorschaubild)
+- [ ] Simulator: maximale Zeilenzahl am Gerät prüfen (Annahme: 4)
+- [ ] Auswahl nach Platz: Einträge mit geringster Wichtigkeit weglassen,
+      wenn der Text nicht auf das Display passt
 - [ ] Erstes GitHub-Release (Semver, Release Notes aus CHANGELOG)
 - [ ] Weitere Sprachen
 

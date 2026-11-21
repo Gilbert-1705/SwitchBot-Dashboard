@@ -316,6 +316,23 @@ Both found in the first minutes of real operation:
   remains the fallback while the reference has no value.
 
 
+## [2.8.0] - 2026-11-21
+
+### Added
+
+- Display simulator: predicts how the Weather Station wraps the line,
+  calibrated on photos of the real panel (reproduces all reference
+  line breaks). The preview entity gains `display_lines` and
+  `display_fits`.
+- `scripts/simulate_display.py`: the same on the command line, with an
+  800 x 480 mock picture of the panel (`--png`).
+- `scripts/generate_display_metrics.py` regenerates the width table.
+
+### Fixed
+
+- CHANGELOG: the door fix (`! ?` while unlatching) belongs to 2.7.0,
+  not 2.6.1.
+
 ## [2.7.1] - 2026-11-21
 
 ### Fixed
@@ -354,6 +371,12 @@ Both found in the first minutes of real operation:
   changes after a clear move, a sensor hovering around x.5 no longer
   triggers a display refresh every few minutes.
 
+### Fixed
+
+- Door: the lock state `open` (latch pulled while the door is being
+  opened) showed up as `! ?` for a few seconds; it now reads `Auf` /
+  `Offen`.
+
 ## [2.6.1] - 2026-11-21
 
 ### Fixed
@@ -364,9 +387,6 @@ Both found in the first minutes of real operation:
   the old content until the next change. Requests now time out after
   15 seconds, network errors become a regular failed result, and the
   usual retry after two minutes takes over.
-- Door: the lock state `open` (latch pulled while the door is being
-  opened) showed up as `! ?` for a few seconds; it now reads `Auf` /
-  `Offen`.
 
 ## [2.6.0] - 2026-11-15
 
