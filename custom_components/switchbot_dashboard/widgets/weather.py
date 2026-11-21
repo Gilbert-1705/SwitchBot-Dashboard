@@ -13,8 +13,15 @@ TREND_ICONS = {
     "rainy": Icons.RAIN,
 }
 
-# hass.data key: last shown temperature per sensor (hysteresis)
+# hass.data keys: last shown temperature per sensor (hysteresis) and
+# sensors currently replaced by their reference
 SHOWN_KEY = "weather_shown"
+FALLBACK_KEY = "weather_fallback"
+
+# back to the local sensor only once it is this much closer than
+# max_deviation - otherwise a sensor hovering at the limit flips
+# between local and reference value (seen live: 6 °C -> 2 °C -> 6 °C)
+FALLBACK_MARGIN = 1.0
 
 
 class WeatherWidget(EntityWidget):
@@ -83,16 +90,30 @@ class WeatherWidget(EntityWidget):
         if local is None:
             return reference
 
-        if (
-            reference is not None
-            and abs(local - reference) > self.max_deviation
-        ):
-            _LOGGER.debug(
-                "%s deviates from %s (%.1f vs %.1f), using the reference",
-                self.entity, self.reference_entity, local, reference,
-            )
+        if reference is None:
+            return local
+
+        fallback = self.hass.data.setdefault(DOMAIN, {}).setdefault(
+            FALLBACK_KEY, set()
+        )
+        deviation = abs(local - reference)
+
+        if self.entity in fallback:
+            limit = self.max_deviation - FALLBACK_MARGIN
+        else:
+            limit = self.max_deviation
+
+        if deviation > limit:
+            if self.entity not in fallback:
+                _LOGGER.debug(
+                    "%s deviates from %s (%.1f vs %.1f), using the "
+                    "reference",
+                    self.entity, self.reference_entity, local, reference,
+                )
+            fallback.add(self.entity)
             return reference
 
+        fallback.discard(self.entity)
         return local
 
     def shown(self, value: float) -> int:

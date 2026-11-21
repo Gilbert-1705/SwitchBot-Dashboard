@@ -28,8 +28,9 @@ from homeassistant.helpers.event import (
     async_track_time_interval,
 )
 
-from .const import QUIET_MAX_ITEMS
+from .const import QUIET_MAX_ITEMS, SEPARATOR
 from .render import publish_preview, render_dashboard
+from .text import keep_items_together
 from .widgets.config import WIDGETS
 
 _LOGGER = logging.getLogger(__name__)
@@ -257,7 +258,9 @@ class DashboardUpdater:
             return
 
         _LOGGER.debug("Sending dashboard: %s", text)
-        result = await self.api.send_text(text)
+        result = await self.api.send_text(
+            keep_items_together(text, SEPARATOR)
+        )
 
         if not send_succeeded(result):
             # The display did not take the text (rate limit, API

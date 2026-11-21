@@ -123,7 +123,10 @@ Daueranzeige — kontextlose Daten verwässern das Konzept.
 ## Backlog
 
 - [ ] Screenshots und GIFs vom echten Display fürs README (Jan)
-- [ ] Liste, welche Emojis die Firmware darstellt (Jan, z. B. 🍽 ♪ ⛽)
+- [ ] Liste, welche Emojis die Firmware darstellt (bestätigt: 🌡 ☀ 🧺 🍽 🚪 ⛽;
+      offen: ♪ ⌂ ○ ● ☂ ☁ 🔋 🔌 📅 🎂 ★ ✈ 🗑)
+- [ ] Display-Simulator: Umbruch und Platz lokal vorhersagen, eingemessen
+      mit Referenzfotos (Schriftbreite, Zeilen, Emojis)
 - [ ] Erstes GitHub-Release (Semver, Release Notes aus CHANGELOG)
 - [ ] Weitere Sprachen
 

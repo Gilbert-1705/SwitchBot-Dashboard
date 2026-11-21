@@ -20,7 +20,7 @@ And on a quiet day:
 
 ## Status
 
-✅ Stable (v2.7.0) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.7.1) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
@@ -85,7 +85,7 @@ Ready-made setups (laundry reminder, dishwasher with WashData, virtual buttons) 
 
 The display does not redraw as soon as a new text arrives: it fetches the custom page on its own schedule (the fixed times set in the SwitchBot app, otherwise about every three hours). Short events - a window tilted for ten minutes - may never reach the screen; the dashboard is built for the state you see when walking past.
 
-The SwitchBot firmware wraps the line itself (pixel-based, preferring spaces). The renderer therefore separates widgets with three spaces as break hints and caps every widget text at 14 characters (the media widget gets 20); widgets additionally shorten their own output (`Wohnen+2`, `Max Muste…`).
+The SwitchBot firmware wraps the line itself (pixel-based, at spaces). The renderer therefore separates widgets with three spaces, sends the spaces inside a widget as no-break spaces so an icon never ends up apart from its text, and caps every widget text at 14 characters (the media widget gets 20); widgets additionally shorten their own output (`Wohnen+2`, `Max Muste…`).
 
 ## Development
 
