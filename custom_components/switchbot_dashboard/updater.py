@@ -98,6 +98,7 @@ class DashboardUpdater:
         interval: float = PERIODIC_REFRESH,
         dry_run: bool = False,
         quiet_max_items: int = QUIET_MAX_ITEMS,
+        fit_display: bool = True,
     ):
         self.hass = hass
         self.api = api
@@ -107,6 +108,7 @@ class DashboardUpdater:
         self.min_interval = min_interval
         self.interval = interval
         self.quiet_max_items = quiet_max_items
+        self.fit_display = fit_display
         # dry_run: only update the local preview entity, never
         # call the SwitchBot API (development)
         self.dry_run = dry_run
@@ -232,6 +234,7 @@ class DashboardUpdater:
             self.configs,
             self.max_items,
             self.quiet_max_items,
+            self.fit_display,
         )
 
         if not self.should_send(text, force=force):

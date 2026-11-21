@@ -16,6 +16,7 @@ from .const import (
     CONF_AUTO_REFRESH,
     CONF_DEVICE_ID,
     CONF_DRY_RUN,
+    CONF_FIT_DISPLAY,
     CONF_MAX_ITEMS,
     CONF_QUIET_MAX_ITEMS,
     CONF_SECRET,
@@ -59,6 +60,10 @@ def options_schema(options) -> vol.Schema:
             CONF_LANGUAGE,
             default=options.get(CONF_LANGUAGE, DEFAULT_LANGUAGE),
         ): vol.In(LANGUAGES),
+        vol.Optional(
+            CONF_FIT_DISPLAY,
+            default=options.get(CONF_FIT_DISPLAY, True),
+        ): bool,
     })
 
 

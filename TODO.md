@@ -123,14 +123,17 @@ Daueranzeige — kontextlose Daten verwässern das Konzept.
 ## Backlog
 
 - [ ] Screenshots und GIFs vom echten Display fürs README (Jan)
-- [ ] Liste, welche Emojis die Firmware darstellt (bestätigt: 🌡 ☀ 🧺 🍽 🚪 ⛽;
-      offen: ♪ ⌂ ○ ● ☂ ☁ 🔋 🔌 📅 🎂 ★ ✈ 🗑)
+- [ ] Liste, welche Emojis die Firmware darstellt (bestätigt: 🌡 ☀ 🧺 🍽 🚪 ⛽ 🗑 📅 ○ ⌂ ♪;
+      nicht dargestellt: 🔋; offen: ● ☂ ☁ 🔌 🎂 ★ ✈)
 - [x] Display-Simulator: Umbruch und Platz vorhersagen, eingemessen mit
       drei Referenzfotos (Attribute display_lines/display_fits, CLI mit
       Vorschaubild)
-- [ ] Simulator: maximale Zeilenzahl am Gerät prüfen (Annahme: 4)
-- [ ] Auswahl nach Platz: Einträge mit geringster Wichtigkeit weglassen,
-      wenn der Text nicht auf das Display passt
+- [x] Zeilentest: bei sechs Zeilen halbiert das Display die Schrift
+      (kein Abschneiden)
+- [x] Auswahl nach Platz (fit_display): unwichtigste Einträge weglassen
+      statt Schrift zu verkleinern
+- [ ] Simulator: genaue Grenze (4 oder 5 Zeilen) und Zwischengrößen prüfen
+- [ ] Battery-Widget: anderes Standard-Icon, 🔋 wird nicht dargestellt
 - [ ] Erstes GitHub-Release (Semver, Release Notes aus CHANGELOG)
 - [ ] Weitere Sprachen
 

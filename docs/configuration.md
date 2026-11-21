@@ -21,6 +21,7 @@ switchbot_dashboard:
   dry_run: false        # optional, true = local preview only, no API call
   quiet_max_items: 3    # optional, max. items on quiet days
   language: de          # optional, language of the display texts: de or en
+  fit_display: true     # optional, drop widgets instead of shrinking the font
 
   widgets:
     - type: weather
@@ -134,17 +135,30 @@ no rate limit, full priority-engine behavior.
 
 ## Display simulator
 
-The preview entity also predicts the layout on the panel:
+The Weather Station picks the font size itself: the largest at which
+the text fits. A text that needs more than four lines at full size is
+shown at half size - two items per line, hard to read in passing.
+
+The preview entity predicts the layout on the panel:
 
 - `display_lines` — the lines as the Weather Station will wrap them
-- `display_fits` — `false` when the text needs more than four lines or
-  a single item is wider than a line
+- `display_scale` — font size, `1.0` (full) or `0.5` (half)
+- `display_fits` — `true` when the text is shown at full size
 
 The model behind it (`simulator.py`) is calibrated on photos of the
 real device: 800 x 480 panel, Noto Sans CJK widths at 54.6 px, emojis
-73 px, 744 px usable line width, 84 px line pitch. It reproduces the
-line breaks of every reference photo. Not yet verified: that four
-lines are the maximum, and what the firmware does beyond that.
+73 px, 744 px usable line width, 84 px line pitch at full size; half
+size observed with six lines of text. It reproduces the line breaks
+of every reference photo. Not yet verified: whether four lines are the
+exact limit, and whether there are sizes between full and half.
+
+### Fit to the display
+
+`fit_display: true` (default) leaves out the least important widgets
+until the line fits at full size; among equally important widgets the
+rightmost goes first. Alarms are never left out - a warning in small
+print beats no warning. With `fit_display: false` everything selected
+by `max_items` is sent and the panel shrinks the font.
 
 For development there is a command line version that also draws a
 mock picture of the panel:
@@ -171,8 +185,10 @@ Per SwitchBot's custom-page documentation:
   triple spaces.
 - **Simple emojis only**: skin-tone modifiers and ZWJ combinations may
   not render. Recommended set includes ✅❌📅🌤🏠💧⚡📬🐱🎂📊💪.
-  Confirmed on a Weather Station: 🌡 ☀ 🧺 🍽 🚪 ⛽. All icons live in
-  `icons.py` and are easy to swap.
+  Confirmed on a Weather Station: 🌡 ☀ 🧺 🍽 🚪 ⛽ 🗑 📅 ○ ⌂ ♪.
+  **Not rendered (blank): 🔋** - the battery widget's default icon;
+  set another `icon` for it. All icons live in `icons.py` and are easy
+  to swap.
 - **Wrapping**: the firmware breaks at any space. The integration sends
   spaces inside an item as no-break spaces (U+00A0, rendered as a
   normal space), so lines only break between items.

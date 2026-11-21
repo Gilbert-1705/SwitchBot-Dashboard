@@ -14,6 +14,7 @@ from .const import (
     CONF_DRY_RUN,
     CONF_MAX_ITEMS,
     CONF_QUIET_MAX_ITEMS,
+    CONF_FIT_DISPLAY,
     CONF_WIDGETS,
     PREVIEW_ENTITY_ID,
 )
@@ -157,6 +158,7 @@ async def _async_start(hass: HomeAssistant, settings: Settings):
     data[CONF_WIDGETS] = settings.widgets
     data[CONF_MAX_ITEMS] = settings.max_items
     data[CONF_QUIET_MAX_ITEMS] = settings.quiet_max_items
+    data[CONF_FIT_DISPLAY] = settings.fit_display
     data[CONF_DRY_RUN] = settings.dry_run
     data[LANGUAGE_KEY] = settings.language
 
@@ -182,6 +184,7 @@ async def _async_start(hass: HomeAssistant, settings: Settings):
         max_items=settings.max_items,
         dry_run=settings.dry_run,
         quiet_max_items=settings.quiet_max_items,
+        fit_display=settings.fit_display,
     )
 
     if previous is not None and previous.dry_run == settings.dry_run:

@@ -20,7 +20,7 @@ Und an einem ruhigen Tag:
 
 ## Status
 
-✅ Stabil (v2.8.0) — siehe [CHANGELOG](CHANGELOG.md)
+✅ Stabil (v2.9.0) — siehe [CHANGELOG](CHANGELOG.md)
 
 ## Funktionsweise
 
@@ -91,7 +91,7 @@ Die Firmware bricht die Zeile selbst um (pixelbasiert, an Leerzeichen). Der Rend
 
 ## Entwicklung
 
-`sensor.switchbot_dashboard` spiegelt die gerenderte Zeile in Home Assistant (Attribute `sent_to_device`, `rendered_at`) und sagt voraus, wie das Display sie umbricht (`display_lines`, `display_fits`); `scripts/simulate_display.py` macht dasselbe auf der Kommandozeile und zeichnet ein Vorschaubild — siehe [Display-Simulator](docs/configuration.md#display-simulator). Mit `dry_run: true` wird die SwitchBot-API nie aufgerufen — Widget-Entwicklung ohne Gerät und ohne Rate-Limit. Die Architektur ist in [docs/architecture.md](docs/architecture.md) beschrieben.
+`sensor.switchbot_dashboard` spiegelt die gerenderte Zeile in Home Assistant (Attribute `sent_to_device`, `rendered_at`) und sagt voraus, wie das Display sie umbricht (`display_lines`, `display_scale`, `display_fits`); mit `fit_display` (Standard) werden die unwichtigsten Widgets weggelassen, wenn das Display sonst auf halbe Schriftgröße schalten würde; `scripts/simulate_display.py` macht dasselbe auf der Kommandozeile und zeichnet ein Vorschaubild — siehe [Display-Simulator](docs/configuration.md#display-simulator). Mit `dry_run: true` wird die SwitchBot-API nie aufgerufen — Widget-Entwicklung ohne Gerät und ohne Rate-Limit. Die Architektur ist in [docs/architecture.md](docs/architecture.md) beschrieben.
 
 ## Tests
 

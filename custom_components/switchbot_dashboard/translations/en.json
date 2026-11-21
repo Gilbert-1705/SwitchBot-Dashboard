@@ -25,7 +25,8 @@
           "quiet_max_items": "Maximum on a quiet day",
           "auto_refresh": "Update the display automatically",
           "dry_run": "Dry run (do not send to the device)",
-          "language": "Language of the display texts"
+          "language": "Language of the display texts",
+          "fit_display": "Leave out the least important widgets instead of shrinking the font"
         }
       }
     }

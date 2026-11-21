@@ -316,6 +316,25 @@ Both found in the first minutes of real operation:
   remains the fallback while the reference has no value.
 
 
+## [2.9.0] - 2026-11-21
+
+### Added
+
+- `fit_display` (default on, also in the options flow): when the line
+  is too long for the full font size, the least important widgets are
+  left out instead of letting the panel shrink the font to half.
+  Alarms always stay.
+- Preview entity: `display_scale` (1.0 or 0.5).
+
+### Changed
+
+- Simulator: the panel picks the largest font size that fits; a text
+  that needs more than four lines is shown at half size (verified with
+  six lines, IMG_3539). `display_fits` now means "shown at full size".
+- Simulator: symbols the font has (♪ ○ ⌂) count as text glyphs;
+  no-break spaces shrink less than other characters at half size.
+- Confirmed emojis: 🗑 📅 ○ ⌂ ♪. 🔋 is not rendered by the device.
+
 ## [2.8.0] - 2026-11-21
 
 ### Added
