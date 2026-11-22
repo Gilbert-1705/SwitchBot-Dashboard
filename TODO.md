@@ -2,144 +2,157 @@
 
 ## Sprint 1 ✅ Foundation (v0.1.0)
 
-- [x] Widget-System, Renderer, DashboardItem
-- [x] Formatter-System, Prioritäten, Icons
-- [x] Weather-, Entity-, Door-, Window-, Waste-Widget
+- [x] Widget system, renderer, DashboardItem
+- [x] Formatter system, priorities, icons
+- [x] Weather, entity, door, window and waste widgets
 
 ## Sprint 2 ✅ Smart Home (v0.1.1)
 
-- [x] Intelligentes Müllwidget
-- [x] PowerFormatter, Fensterzählung, Türstatus, Wettertrend
-- [x] Unicode/Icon-System
+- [x] Smart waste widget
+- [x] PowerFormatter, window count, door state, weather trend
+- [x] Unicode/icon system
 
 ## Sprint 3 ✅ Smart Dashboard (v0.2.0)
 
-- [x] Smart Door: Schloss + Türkontakt (Zu / Auf / Offen / Warnung)
-- [x] Calendar Widget (Geburtstage, Termine, Feiertage, Urlaub)
-- [x] Window 2.0: Raumnamen statt Zähler
-- [x] Priority Engine: importance + visible, Dashboard wählt Top 5
+- [x] Smart door: lock + door contact (Zu / Auf / Offen / warning)
+- [x] Calendar widget (birthdays, appointments, holidays, vacation)
+- [x] Window 2.0: room names instead of a counter
+- [x] Priority engine: importance + visible, the dashboard picks the top 5
 
 ## Sprint 4 ✅ Polish & Widget Library (v0.3.0)
 
-- [x] Textkürzungen (shorten, join_names, Renderer-Cap 14 Zeichen)
-- [x] Anwesenheits-Widget (⌂ Jan+Anna / ⌂ Leer)
-- [x] Tank-Widget (Füllstand % oder l + Preisempfehlung)
-- [x] Wäsche-Widget (WM/TR mit Fertig-Flag + manuellem Reset)
-- [x] Window: Zustände Offen/Geschlossen/Gekippt, mode="state"
-- [x] Appliance: run/pause/stop-Zustände
+- [x] Text shortening (shorten, join_names, renderer cap of 14 characters)
+- [x] Presence widget (⌂ Jan+Anna / ⌂ Leer)
+- [x] Fuel widget (level in % or l + refuel recommendation)
+- [x] Laundry widget (washer/dryer with done flag + manual reset)
+- [x] Window: states Offen/Geschlossen/Gekippt, mode="state"
+- [x] Appliance: run/pause/stop states
 
-## Sprint 5 ✅ Konfiguration & Erweiterbarkeit (v0.4.0)
+## Sprint 5 ✅ Configuration & Extensibility (v0.4.0)
 
-- [x] YAML-Konfiguration (configuration.yaml, Python-Config als Fallback)
-- [x] Konfigurationsvalidierung mit verständlichen Fehlermeldungen
-- [x] Widget-Registry (register_widget_type) für Custom Widgets
-- [x] Formatter-Registry (FormatterFactory.register)
-- [x] Widget-Dokumentation (docs/configuration.md)
-- [x] max_items-Option
+- [x] YAML configuration (configuration.yaml, Python config as fallback)
+- [x] Configuration validation with clear error messages
+- [x] Widget registry (register_widget_type) for custom widgets
+- [x] Formatter registry (FormatterFactory.register)
+- [x] Widget documentation (docs/configuration.md)
+- [x] max_items option
 
 ## Sprint 6 ✅ Open Source & v1.0 (v0.5.0)
 
-- [x] GitHub Actions: Tests + Lint + HACS-Validation bei jedem Push
-- [x] hacs.json + manifest.json (Version, issue_tracker)
-- [x] README: Installationsanleitung (HACS + manuell)
-- [x] Energie-Widgets: solar, battery (generisch, auch eBike), ev
-- Offene Punkte nach "Backlog" verschoben
+- [x] GitHub Actions: tests + lint + HACS validation on every push
+- [x] hacs.json + manifest.json (version, issue_tracker)
+- [x] README: installation guide (HACS + manual)
+- [x] Energy widgets: solar, battery (generic, also e-bike), ev
+- Open items moved to "Backlog"
 
-## v1.1 ✅ Backlog-Abbau
+## v1.1 ✅ Backlog Cleanup
 
-- [x] Event-driven Refresh: State-Listener, 5s Debounce, 60s Rate-Limit,
-      Änderungserkennung, periodischer Refresh (Datumswechsel)
-- [x] refresh-Service erzwingt sofortiges Update
-- [x] Config Flow (UI-Setup für token/secret/device_id, de/en)
-- [x] Gemeinsame Test-Helpers (tests/helpers.py)
-- [x] enabled()/NAME entfernt, Lint-Aufräumen
+- [x] Event-driven refresh: state listener, 5 s debounce, 60 s rate limit,
+      change detection, periodic refresh (day change)
+- [x] refresh service forces an immediate update
+- [x] Config flow (UI setup for token/secret/device_id, de/en)
+- [x] Shared test helpers (tests/helpers.py)
+- [x] enabled()/NAME removed, lint cleanup
 
 ## v2.0 ✅ Priority Engine 2.0
 
-- [x] Sprach-Cleanup: Code durchgehend Englisch, README.de.md
-- [x] Importance-Bänder als offizielle Semantik:
-      0-20 Füller / 21-59 normal / 60+ immer / 100 Alarm
-- [x] Zeitrampe: Wichtigkeit steigt mit Dauer (state.last_changed),
-      "WM Fertig": 30 → 60 (1h) → 100 (3h)
-- [x] Ruhemodus: quiet_max_items (Standard 3), Füller verdrängen nichts
+- [x] Language cleanup: code in English throughout, README.de.md
+- [x] Importance bands as official semantics:
+      0-20 filler / 21-59 normal / 60+ always / 100 alarm
+- [x] Time ramp: importance grows with duration (state.last_changed),
+      "WM Fertig": 30 → 60 (1 h) → 95 (3 h)
+- [x] Quiet mode: quiet_max_items (default 3), fillers displace nothing
 
 ## v2.1 ✅ Smart Alerts
 
-- [x] Alert-Widget für Zustandskombinationen
-      (state/not_state/above/below, AND-verknüpft)
-- [x] Zeitbedingungen (duration: Tür seit 10 min offen)
-- [x] Alarmmodus: importance 100 verdrängt Normal- und Füller-Items
+- [x] Alert widget for combinations of states
+      (state/not_state/above/below, combined with AND)
+- [x] Time conditions (duration: door open for 10 min)
+- [x] Alarm mode: importance 100 displaces normal and filler items
 
-## v2.2 ✅ Gruppen & Tageskontext
+## v2.2 ✅ Groups & Day Context
 
-- [x] Widget-Gruppen: group-Option, nur das wichtigste Item pro Gruppe
-- [x] Tageskontext: boost-Option (Zeitfenster + add, auch negativ,
-      über Mitternacht, gedeckelt unter Alarm-Level)
+- [x] Widget groups: group option, only the most important item per group
+- [x] Day context: boost option (time window + add, also negative,
+      across midnight, capped below alarm level)
 
 ## v2.3 ✅ WashData
 
-- [x] Appliance-Widget versteht WashData-Zustände (clean, delay_wait,
+- [x] Appliance widget understands WashData states (clean, delay_wait,
       interrupted, ...), done_entity optional
-- [x] Phase (phase_entity) und Restzeit (remaining_entity, 5-min-Raster)
+- [x] Phase (phase_entity) and remaining time (remaining_entity, 5-minute steps)
 
-## v2.4 ✅ Dynamische Tankempfehlung
+## v2.4 ✅ Dynamic Fuel Recommendation
 
-- [x] max_price_entity + price_margin (z.B. 7-Tage-Tief + 3 ct)
+- [x] max_price_entity + price_margin (e.g. 7-day low + 3 ct)
 
-## v2.5 ✅ Betrieb & Plattform
+## v2.5 ✅ Operations & Platform
 
-- [x] Neustartfeste Erinnerungen und Alert-Dauern (eigener Zeitstempel)
-- [x] Stromanzeige auf 10 W gerundet
-- [x] reload-Service: Konfiguration ohne Neustart übernehmen
-- [x] Options Flow (max_items, quiet_max_items, auto_refresh, dry_run,
-      language) - in echtem Home Assistant noch ungetestet
-- [x] Mehrsprachigkeit der Display-Texte (de/en)
-- [x] Widgets: threshold (Luftqualität, Strompreis), status
-      (Server/VPN), wallbox
+- [x] Restart-proof reminders and alert durations (own timestamps)
+- [x] Power display rounded to 10 W
+- [x] reload service: apply the configuration without a restart
+- [x] Options flow (max_items, quiet_max_items, auto_refresh, dry_run,
+      language)
+- [x] Display texts in several languages (de/en)
+- [x] Widgets: threshold (air quality, electricity price), status
+      (server/VPN), wallbox
 
-## v2.6 ✅ Musik
+## v2.6 ✅ Music
 
-- [x] Media-Widget: aktueller Titel, nur während der Wiedergabe
-- [x] Eigene Textlänge pro Item (max_length)
+- [x] Media widget: current title, only while playing
+- [x] Text length per item (max_length)
 
-## v2.7 ✅ Ruhigere Anzeige
+## v2.7 ✅ Calmer Display
 
-- [x] Temperatur mit Hysterese (kein Springen um x,5 Grad)
-- [x] Referenzsensor als Fallback, wenn der lokale Sensor in der Sonne liegt
+- [x] Temperature with hysteresis (no flipping around x.5 degrees)
+- [x] Reference sensor as fallback when the local sensor is in the sun
+- [x] Spaces inside an item as no-break spaces (no wrap inside an item)
 
-## v3.x Plattform
+## v2.8 / v2.9 ✅ Display Simulator & Fit to Display
 
-- [ ] Plugin-System, Themes
-- [ ] Weitere Displaygrößen / E-Paper-Displays
-- [ ] Offizieller HACS-Store (brands-PR, setzt öffentliches Repo voraus)
-- [ ] Display-Tasten der Wetterstation (derzeit kein Weg nach Home Assistant
-      bekannt; virtuelle Tasten als Ersatz eingerichtet)
+- [x] Display simulator: predicts line breaks and space, calibrated on
+      reference photos (attributes display_lines/display_fits/display_scale,
+      CLI with a mock picture)
+- [x] Line test: with six lines the display halves the font (no cut-off)
+- [x] Fit to display (fit_display): leave out the least important items
+      instead of shrinking the font
 
-## Bewusst nicht geplant
+## v2.10 ✅ Configuration in the UI
 
-Aktien, News, RSS, 7-Tage-Forecast, Server-Metriken als
-Daueranzeige — kontextlose Daten verwässern das Konzept.
+- [x] Widget editor: every widget as a config subentry
+      ("Add widget", edit, delete), forms generated from the widget
+      definitions, labels de/en
+- [x] One-time import of the YAML block (credentials, options, widgets),
+      repair notice for the leftover block
+
+## v3.x Platform
+
+- [ ] Plugin system, themes
+- [ ] More display sizes / e-paper displays
+- [ ] Official HACS store (brands PR)
+- [ ] Display buttons of the Weather Station (no way into Home Assistant
+      known yet; virtual buttons set up as a stand-in)
+
+## Deliberately not planned
+
+Stocks, news, RSS, 7-day forecast, server metrics as a permanent
+display — data without context dilutes the concept.
 
 ## Backlog
 
-- [ ] Screenshots und GIFs vom echten Display fürs README (Jan)
-- [ ] Liste, welche Emojis die Firmware darstellt (bestätigt: 🌡 ☀ 🧺 🍽 🚪 ⛽ 🗑 📅 ○ ⌂ ♪;
-      nicht dargestellt: 🔋; offen: ● ☂ ☁ 🔌 🎂 ★ ✈)
-- [x] Display-Simulator: Umbruch und Platz vorhersagen, eingemessen mit
-      drei Referenzfotos (Attribute display_lines/display_fits, CLI mit
-      Vorschaubild)
-- [x] Zeilentest: bei sechs Zeilen halbiert das Display die Schrift
-      (kein Abschneiden)
-- [x] Auswahl nach Platz (fit_display): unwichtigste Einträge weglassen
-      statt Schrift zu verkleinern
-- [ ] Simulator: genaue Grenze (4 oder 5 Zeilen) und Zwischengrößen prüfen
-- [ ] Battery-Widget: anderes Standard-Icon, 🔋 wird nicht dargestellt
-- [ ] Erstes GitHub-Release (Semver, Release Notes aus CHANGELOG)
-- [ ] Weitere Sprachen
+- [ ] Screenshots and GIFs of the real display for the README
+- [ ] List of the emojis the firmware renders (confirmed: 🌡 ☀ 🧺 🍽 🚪 ⛽ 🗑 📅 ○ ⌂ ♪;
+      not rendered: 🔋; open: ● ☂ ☁ 🔌 🎂 ★ ✈)
+- [ ] Simulator: exact limit (4 or 5 lines) and sizes between full and half
+- [ ] Battery widget: another default icon, 🔋 is not rendered
+- [ ] Battery warning for the Weather Station itself (Bluetooth sensor)
+- [ ] Widget editor: friendly names in the widget titles instead of entity IDs
+- [x] First GitHub release (semver, release notes from the CHANGELOG)
+- [ ] More languages
 
-## Vision v1.0
+## Vision
 
-Ein Dashboard, das beim Vorbeigehen in Sekunden beantwortet:
-Ist alles in Ordnung? Muss ich noch etwas tun? Gibt es heute etwas Wichtiges?
-Kontextabhängige Priorisierung statt Sensor-Vollanzeige — Leitlinie
-für alle weiteren Entscheidungen.
+A dashboard that answers in seconds when walking past:
+Is everything fine? Do I still have to do something? Is anything important today?
+Context-aware prioritization instead of showing every sensor — the guiding
+principle for all further decisions.

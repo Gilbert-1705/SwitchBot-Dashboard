@@ -20,7 +20,7 @@ Und an einem ruhigen Tag:
 
 ## Status
 
-✅ Stabil (v2.9.0) — siehe [CHANGELOG](CHANGELOG.md)
+✅ Stabil (v2.10.0) — siehe [CHANGELOG](CHANGELOG.md)
 
 ## Funktionsweise
 
@@ -61,9 +61,12 @@ Die Priority Engine sammelt alle sichtbaren Einträge, behält die fünf wichtig
 
 ## Konfiguration
 
-Die Zugangsdaten (Token, Secret und Geräte-ID aus den Entwickleroptionen der SwitchBot-App) kommen per YAML oder per UI (Einstellungen → Geräte & Dienste); die Widgets werden in der `configuration.yaml` konfiguriert:
+Alles wird im UI eingerichtet: Einstellungen → Geräte & Dienste → Integration hinzufügen → **SwitchBot Dashboard** fragt Token, Secret und Geräte-ID ab (Entwickleroptionen der SwitchBot-App). Danach legst du Widgets über **Widget hinzufügen** auf der Seite der Integration an — jedes Widget hat ein eigenes Formular mit Entitätsauswahl; unter **Konfigurieren** stehen die Display-Optionen. Alle Widget-Optionen beschreibt die [Widget-Referenz](docs/configuration.md).
+
+YAML funktioniert weiterhin und wird einmalig übernommen: Ein `switchbot_dashboard:`-Block mit Zugangsdaten wird beim nächsten Start ins UI importiert, samt Widgets; danach kann der Block weg (eine Reparatur-Meldung erinnert daran).
 
 ```yaml
+# wird beim nächsten Start ins UI übernommen
 switchbot_dashboard:
   token: !secret switchbot_token
   secret: !secret switchbot_secret
@@ -81,7 +84,7 @@ switchbot_dashboard:
 
 Die vollständige Widget-Referenz mit allen Optionen steht in [docs/configuration.md](docs/configuration.md), fertige Beispiele (Wäsche-Erinnerung, Geschirrspüler mit WashData, virtuelle Tasten) in [docs/examples.md](docs/examples.md) — beides auf Englisch. Eigene Widgets und Formatter lassen sich über die [Widget-API](docs/configuration.md#custom-widgets) registrieren.
 
-Services: `switchbot_dashboard.refresh` rendert und sendet sofort, `switchbot_dashboard.preview` rendert und sendet das Dashboard, `switchbot_dashboard.reload` übernimmt einen geänderten YAML-Block ohne Neustart, `switchbot_dashboard.send_text` sendet beliebigen Text.
+Services: `switchbot_dashboard.refresh` rendert und sendet sofort, `switchbot_dashboard.preview` rendert und sendet das Dashboard, `switchbot_dashboard.reload` übernimmt einen geänderten YAML-Block ohne Neustart (für Setups, die ihre Widgets in YAML behalten), `switchbot_dashboard.send_text` sendet beliebigen Text.
 
 ## Hinweise zum Display
 

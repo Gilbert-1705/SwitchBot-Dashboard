@@ -1,15 +1,34 @@
 # Configuration
 
-Widgets can be configured in two ways:
+## In the UI (recommended)
 
-1. **YAML** in `configuration.yaml` (recommended) — no code changes needed
-2. **Python** in `custom_components/switchbot_dashboard/widgets/config.py` — used as fallback when no `widgets:` block is present
+Settings → Devices & Services → Add Integration → SwitchBot Dashboard
+asks for token, secret and device ID. On the integration page:
 
-## Full example
+- **Add widget** — pick a widget type, then fill in its form. Entity
+  fields come with an entity picker; lists and mappings (`entities`,
+  `conditions`, `boost`, `ok_states`) are entered as YAML in the form.
+  Empty fields use the widget's defaults. The options of every type
+  are described in the [widget reference](#widget-reference) below.
+- **⚙ next to a widget** — edit it; **⋮** — delete it.
+- **Configure** — display options (`max_items`, `quiet_max_items`,
+  `auto_refresh`, `dry_run`, `language`, `fit_display`).
 
-The credentials can alternatively be configured via the UI
-(Settings → Devices & Services → Add Integration → SwitchBot Dashboard);
-the `widgets:` block stays in YAML either way.
+Changes apply immediately, no restart needed.
+
+## YAML
+
+A `switchbot_dashboard:` block with credentials is **imported into the
+UI once** at the next start: credentials, options and every widget
+(one entry per widget, in YAML order). From then on the block is
+ignored and a repair notice asks you to remove it. Should the import
+fail, the dashboard keeps running from YAML.
+
+Without credentials in YAML (UI setup), a `widgets:` block is still
+used as long as the integration has no widgets of its own in the UI.
+A Python fallback (`widgets/config.py`) applies when neither exists.
+
+The YAML options are the same as in the UI:
 
 ```yaml
 switchbot_dashboard:
