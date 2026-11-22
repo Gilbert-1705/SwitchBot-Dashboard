@@ -316,6 +316,25 @@ Both found in the first minutes of real operation:
   remains the fallback while the reference has no value.
 
 
+## [2.10.0] - 2026-11-21
+
+### Added
+
+- Widget editor in the UI: every widget is a config subentry of the
+  integration - "Add widget" (pick a type, then its form), edit and
+  delete on the integration page. Forms are generated from the widget
+  definitions (entity pickers, number fields, choices, YAML for lists
+  and mappings), validated like YAML, labels in English and German.
+- One-time import of a `switchbot_dashboard:` YAML block into the UI
+  (credentials, options, all widgets). Afterwards the block is
+  ignored and a repair notice suggests removing it; a failed import
+  falls back to YAML so the display keeps running.
+
+### Changed
+
+- Minimum Home Assistant version 2025.3.0 (config subentries).
+- TODO.md is in English.
+
 ## [2.9.0] - 2026-11-21
 
 ### Added

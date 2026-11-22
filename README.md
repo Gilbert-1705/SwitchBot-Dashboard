@@ -20,7 +20,7 @@ And on a quiet day:
 
 ## Status
 
-✅ Stable (v2.9.0) — see [CHANGELOG](CHANGELOG.md)
+✅ Stable (v2.10.0) — see [CHANGELOG](CHANGELOG.md)
 
 ## How it works
 
@@ -61,9 +61,12 @@ The priority engine collects all visible items, keeps the five most important on
 
 ## Configuration
 
-The credentials (token, secret and device ID from the developer options of the SwitchBot app) go into YAML or the UI (Settings → Devices & Services); the widgets are configured in `configuration.yaml` — see the [full widget reference](docs/configuration.md):
+Everything is configured in the UI: Settings → Devices & Services → Add Integration → **SwitchBot Dashboard** asks for token, secret and device ID (developer options of the SwitchBot app). Then add widgets with **Add widget** on the integration page — every widget has its own form, entity pickers included; **Configure** holds the display options. All widget options are described in the [widget reference](docs/configuration.md).
+
+YAML still works and is imported once: a `switchbot_dashboard:` block with credentials is moved into the UI at the next start, widgets included; afterwards the block can be removed (a repair notice reminds you).
 
 ```yaml
+# imported into the UI on the next start
 switchbot_dashboard:
   token: !secret switchbot_token
   secret: !secret switchbot_secret
@@ -79,7 +82,7 @@ switchbot_dashboard:
       days: 1
 ```
 
-Ready-made setups (laundry reminder, dishwasher with WashData, virtual buttons) are in [docs/examples.md](docs/examples.md). Custom widgets and formatters can be registered via the [widget API](docs/configuration.md#custom-widgets). Services: `switchbot_dashboard.refresh` renders and sends right away, `switchbot_dashboard.preview` renders and sends the dashboard, `switchbot_dashboard.reload` applies a changed YAML block without a restart, `switchbot_dashboard.send_text` sends raw text.
+Ready-made setups (laundry reminder, dishwasher with WashData, virtual buttons) are in [docs/examples.md](docs/examples.md). Custom widgets and formatters can be registered via the [widget API](docs/configuration.md#custom-widgets). Services: `switchbot_dashboard.refresh` renders and sends right away, `switchbot_dashboard.preview` renders and sends the dashboard, `switchbot_dashboard.reload` applies a changed YAML block without a restart (setups that keep their widgets in YAML), `switchbot_dashboard.send_text` sends raw text.
 
 ## Display notes
 

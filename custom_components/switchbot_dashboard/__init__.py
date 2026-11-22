@@ -1,11 +1,12 @@
 import logging
+from dataclasses import replace
 
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.reload import async_integration_yaml_config
 from homeassistant.helpers.storage import Store
 
 from .api import SwitchBotAPI
-from .config.schema import ConfigError
+from .config.schema import ConfigError, build_widget_configs
 from .const import (
     DOMAIN,
     CONF_TOKEN,
@@ -28,6 +29,7 @@ from .settings import (
 )
 from .tracker import TRACKER_KEY, SinceTracker
 from .updater import DashboardUpdater
+from .widget_forms import SUBENTRY_TYPE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -37,6 +39,9 @@ KEY_ENTRY_OPTIONS = "entry_options"
 KEY_CREDENTIALS = "credentials"
 KEY_UPDATER = "updater"
 KEY_API = "api"
+KEY_ENTRY_WIDGETS = "entry_widgets"
+
+ISSUE_YAML_MIGRATED = "yaml_migrated"
 
 STORAGE_VERSION = 1
 STORAGE_KEY = f"{DOMAIN}.since"
@@ -55,6 +60,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
     conf = config.get(DOMAIN)
 
     if conf is None:
+        _clear_yaml_leftover(hass)
         return True
 
     try:
@@ -71,6 +77,22 @@ async def async_setup(hass: HomeAssistant, config: dict):
         # options/widgets only: a config entry starts the integration
         return True
 
+    config_entries = getattr(hass, "config_entries", None)
+
+    if config_entries is not None:
+
+        if config_entries.async_entries(DOMAIN):
+            # already in the UI: the config entry runs the dashboard,
+            # the YAML block is a leftover
+            _report_yaml_leftover(hass)
+            return True
+
+        # first start with a full YAML block: move it into the UI once
+        hass.async_create_task(
+            _async_import_or_run_yaml(hass, conf, credentials, settings)
+        )
+        return True
+
     data[KEY_CREDENTIALS] = credentials
 
     await _async_register_services(hass)
@@ -79,8 +101,42 @@ async def async_setup(hass: HomeAssistant, config: dict):
     return True
 
 
+async def _async_import_or_run_yaml(hass, conf, credentials, settings):
+    """Imports the YAML block into a config entry.
+
+    Should the import fail, the dashboard keeps running from YAML as
+    before - a failed migration must not leave the display dark.
+    """
+
+    try:
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN,
+            context={"source": "import"},
+            data=dict(conf),
+        )
+    except Exception as err:  # noqa: BLE001 - keep the display running
+        _LOGGER.error("Import into the UI failed, using YAML: %s", err)
+        result = None
+
+    if result is not None and result.get("type") in (
+        "create_entry", "abort"
+    ):
+        # create_entry: the new entry starts the dashboard
+        # abort: an entry for this device exists already
+        return
+
+    data = hass.data[DOMAIN]
+    data[KEY_CREDENTIALS] = credentials
+    await _async_register_services(hass)
+    await _async_start(hass, settings)
+
+
 async def async_setup_entry(hass: HomeAssistant, entry):
-    """UI setup (config flow). Widgets still come from YAML."""
+    """UI setup (config flow).
+
+    Widgets come from the widget subentries of the entry; without any,
+    from the ``widgets:`` list in configuration.yaml.
+    """
 
     data = hass.data.setdefault(DOMAIN, {})
 
@@ -90,6 +146,7 @@ async def async_setup_entry(hass: HomeAssistant, entry):
         entry.data[CONF_DEVICE_ID],
     )
     data[KEY_ENTRY_OPTIONS] = dict(entry.options)
+    data[KEY_ENTRY_WIDGETS] = entry_widgets(entry)
 
     await _async_register_services(hass)
     await _async_start(hass, _effective_settings(hass))
@@ -113,18 +170,65 @@ async def async_unload_entry(hass: HomeAssistant, entry):
     return True
 
 
+def entry_widgets(entry) -> list:
+    """Widget configs from the subentries; invalid ones are skipped."""
+
+    configs = []
+    subentries = getattr(entry, "subentries", None) or {}
+
+    for subentry in subentries.values():
+
+        if subentry.subentry_type != SUBENTRY_TYPE:
+            continue
+
+        try:
+            configs.extend(build_widget_configs([dict(subentry.data)]))
+        except ConfigError as err:
+            _LOGGER.error(
+                "Widget '%s' is invalid and skipped: %s", subentry.title, err
+            )
+
+    return configs
+
+
 def _effective_settings(hass: HomeAssistant) -> Settings:
-    """YAML settings with the options of the config entry on top."""
+    """YAML settings with the options and widgets of the entry on top."""
 
     data = hass.data[DOMAIN]
 
     settings = data.get(KEY_YAML_SETTINGS) or Settings()
+
+    if data.get(KEY_ENTRY_WIDGETS):
+        settings = replace(settings, widgets=data[KEY_ENTRY_WIDGETS])
 
     try:
         return with_options(settings, data.get(KEY_ENTRY_OPTIONS))
     except ConfigError as err:
         _LOGGER.error("Ignoring invalid options: %s", err)
         return settings
+
+
+def _report_yaml_leftover(hass: HomeAssistant):
+    """Repair notice: the YAML block is no longer used."""
+
+    _LOGGER.warning(
+        "switchbot_dashboard is configured in the UI; the YAML block in "
+        "configuration.yaml is ignored and can be removed"
+    )
+
+    try:
+        from homeassistant.helpers import issue_registry as ir
+    except ImportError:  # tests without Home Assistant
+        return
+
+    ir.async_create_issue(
+        hass,
+        DOMAIN,
+        ISSUE_YAML_MIGRATED,
+        is_fixable=False,
+        severity=ir.IssueSeverity.WARNING,
+        translation_key=ISSUE_YAML_MIGRATED,
+    )
 
 
 def _stop_updater(hass: HomeAssistant):
@@ -258,3 +362,13 @@ async def async_reload(hass: HomeAssistant) -> bool:
     _LOGGER.info("Configuration reloaded")
 
     return True
+
+
+def _clear_yaml_leftover(hass: HomeAssistant):
+
+    try:
+        from homeassistant.helpers import issue_registry as ir
+    except ImportError:  # tests without Home Assistant
+        return
+
+    ir.async_delete_issue(hass, DOMAIN, ISSUE_YAML_MIGRATED)

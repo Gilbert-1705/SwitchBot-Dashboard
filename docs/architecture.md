@@ -22,6 +22,7 @@ SwitchBotAPI <── DashboardUpdater <── render_dashboard <── Dashboard
                   rate limit, retry)
 ```
 
+- **Config entry and widget editor** (`config_flow.py`, `widget_forms.py`): credentials in the config entry, options in its options flow, every widget as a config subentry of type `widget` whose data is one item of the YAML `widgets:` list. The forms are derived from the config dataclasses; a YAML block with credentials is imported once.
 - **Settings** (`settings.py`) validates the YAML block and merges the options of a config entry; `config/schema.py` turns the `widgets:` list into the typed dataclasses of `widgets/config_models.py`.
 - **Widget registry** (`widgets/registry.py`) maps a type name to widget class, config class, required fields and an optional validator (`register_widget_type`).
 - **WidgetManager** (`widgets/manager.py`) builds the widgets generically: every config field is passed to the constructor, `group` and `boost` are attached for the pipeline.

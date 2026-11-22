@@ -19,7 +19,7 @@
     "step": {
       "init": {
         "title": "Display options",
-        "description": "Applied immediately, no restart needed. Widgets are configured in configuration.yaml.",
+        "description": "Applied immediately, no restart needed. Widgets are managed with \"Add widget\" on the integration page.",
         "data": {
           "max_items": "Maximum number of widgets shown",
           "quiet_max_items": "Maximum on a quiet day",
@@ -29,6 +29,161 @@
           "fit_display": "Leave out the least important widgets instead of shrinking the font"
         }
       }
+    }
+  },
+  "config_subentries": {
+    "widget": {
+      "entry_type": "Widget",
+      "initiate_flow": {
+        "user": "Add widget",
+        "reconfigure": "Edit widget"
+      },
+      "step": {
+        "user": {
+          "title": "Add widget",
+          "description": "Choose the kind of information the widget shows.",
+          "data": {
+            "type": "Widget type"
+          }
+        },
+        "widget": {
+          "title": "Widget settings ({type})",
+          "description": "Empty fields use the widget's defaults. Options are described in docs/configuration.md.",
+          "data": {
+            "above": "Show above",
+            "below": "Show below",
+            "boost": "Time windows (boost, YAML list)",
+            "charging_entity": "Charging status entity",
+            "conditions": "Conditions (YAML list)",
+            "contact_entity": "Door contact",
+            "critical_above": "Critical above",
+            "critical_below": "Critical below",
+            "days": "Look ahead (days)",
+            "done_entity": "Done flag (input_boolean)",
+            "entities": "Entities (YAML: entity_id: name, or a list)",
+            "entity": "Entity",
+            "formatter": "Formatter (e.g. power, number)",
+            "group": "Group",
+            "hysteresis": "Hysteresis (K)",
+            "icon": "Icon",
+            "importance": "Importance",
+            "level_entity": "Level entity",
+            "lock_entity": "Lock",
+            "max_deviation": "Max. deviation from reference (K)",
+            "max_length": "Max. text length",
+            "max_price": "Max. price",
+            "max_price_entity": "Reference price entity",
+            "min_level": "Min. level",
+            "min_power": "Min. power (W)",
+            "mode": "Mode",
+            "name": "Name",
+            "ok_states": "States that mean OK (YAML list)",
+            "phase_entity": "Phase entity",
+            "power_entity": "Power entity",
+            "precision": "Decimal places",
+            "price_entity": "Price entity",
+            "price_margin": "Price margin",
+            "priority": "Position (priority)",
+            "reference_entity": "Reference temperature (fallback)",
+            "remaining_entity": "Remaining time entity",
+            "running_entity": "State entity",
+            "show": "Show",
+            "show_always": "Always show",
+            "soc_entity": "State of charge entity",
+            "status_entity": "Status entity",
+            "temperature_entity": "Temperature",
+            "trend_entity": "Trend",
+            "unavailable_is_problem": "Unavailable counts as a problem",
+            "unit": "Unit"
+          }
+        },
+        "reconfigure": {
+          "title": "Edit widget ({type})",
+          "description": "Empty fields use the widget's defaults.",
+          "data": {
+            "above": "Show above",
+            "below": "Show below",
+            "boost": "Time windows (boost, YAML list)",
+            "charging_entity": "Charging status entity",
+            "conditions": "Conditions (YAML list)",
+            "contact_entity": "Door contact",
+            "critical_above": "Critical above",
+            "critical_below": "Critical below",
+            "days": "Look ahead (days)",
+            "done_entity": "Done flag (input_boolean)",
+            "entities": "Entities (YAML: entity_id: name, or a list)",
+            "entity": "Entity",
+            "formatter": "Formatter (e.g. power, number)",
+            "group": "Group",
+            "hysteresis": "Hysteresis (K)",
+            "icon": "Icon",
+            "importance": "Importance",
+            "level_entity": "Level entity",
+            "lock_entity": "Lock",
+            "max_deviation": "Max. deviation from reference (K)",
+            "max_length": "Max. text length",
+            "max_price": "Max. price",
+            "max_price_entity": "Reference price entity",
+            "min_level": "Min. level",
+            "min_power": "Min. power (W)",
+            "mode": "Mode",
+            "name": "Name",
+            "ok_states": "States that mean OK (YAML list)",
+            "phase_entity": "Phase entity",
+            "power_entity": "Power entity",
+            "precision": "Decimal places",
+            "price_entity": "Price entity",
+            "price_margin": "Price margin",
+            "priority": "Position (priority)",
+            "reference_entity": "Reference temperature (fallback)",
+            "remaining_entity": "Remaining time entity",
+            "running_entity": "State entity",
+            "show": "Show",
+            "show_always": "Always show",
+            "soc_entity": "State of charge entity",
+            "status_entity": "Status entity",
+            "temperature_entity": "Temperature",
+            "trend_entity": "Trend",
+            "unavailable_is_problem": "Unavailable counts as a problem",
+            "unit": "Unit"
+          }
+        }
+      },
+      "error": {
+        "invalid_widget": "{error}"
+      },
+      "abort": {
+        "reconfigure_successful": "Widget saved."
+      }
+    }
+  },
+  "selector": {
+    "widget_type": {
+      "options": {
+        "weather": "Weather",
+        "entity": "Entity",
+        "door": "Door",
+        "window": "Window",
+        "waste": "Waste",
+        "calendar": "Calendar",
+        "presence": "Presence",
+        "fuel": "Fuel",
+        "appliance": "Appliance",
+        "solar": "Solar",
+        "battery": "Battery",
+        "ev": "EV",
+        "alert": "Alert",
+        "threshold": "Threshold",
+        "status": "Status",
+        "wallbox": "Wallbox",
+        "media": "Media"
+      }
+    }
+  },
+  "issues": {
+    "yaml_migrated": {
+      "title": "SwitchBot Dashboard: YAML no longer used",
+      "description": "The switchbot_dashboard block was imported into the UI (credentials, options and widgets). It is ignored now - remove it from configuration.yaml and restart."
     }
   }
 }
